@@ -9,6 +9,9 @@
 	"behavior",
 	"tree"
   ],
+  "dependencies": {
+    "com.zor.simple-blackboard": "https://github.com/ZorPastaman/Simple-Blackboard.git"
+  },
   "author": {
     "name": "Vladimir Popov",
     "email": "zor1994@gmail.com",
