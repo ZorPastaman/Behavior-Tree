@@ -26,6 +26,12 @@ namespace Zor.BehaviorTree.Core
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Initialize()
+		{
+			m_root.Initialize();
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Tick()
 		{
 			return m_root.Tick();
