@@ -11,7 +11,7 @@ namespace Zor.BehaviorTree.Core
 		Success = 1 << 1,
 		Running = 1 << 2,
 		Failure = 1 << 3,
-		Abort = 1 << 4,
-		Error = 1 << 5
+		Error = 1 << 4,
+		Abort = 1 << 5
 	}
 }
