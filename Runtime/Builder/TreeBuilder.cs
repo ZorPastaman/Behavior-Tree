@@ -26,11 +26,11 @@ namespace Zor.BehaviorTree.Builder
 		{
 			IBehaviorBuilder behaviorBuilder;
 
-			if (nodeType.IsAssignableFrom(typeof(Composite)))
+			if (typeof(Composite).IsAssignableFrom(nodeType))
 			{
 				behaviorBuilder = new CompositeBuilder(nodeType);
 			}
-			else if (nodeType.IsAssignableFrom(typeof(Decorator)))
+			else if (typeof(Decorator).IsAssignableFrom(nodeType))
 			{
 				behaviorBuilder = new DecoratorBuilder(nodeType);
 			}
@@ -54,11 +54,11 @@ namespace Zor.BehaviorTree.Builder
 		{
 			IBehaviorBuilder behaviorBuilder;
 
-			if (nodeType.IsAssignableFrom(typeof(Composite)))
+			if (typeof(Composite).IsAssignableFrom(nodeType))
 			{
 				behaviorBuilder = new CustomCompositeBuilder(nodeType, customData);
 			}
-			else if (nodeType.IsAssignableFrom(typeof(Decorator)))
+			else if (typeof(Decorator).IsAssignableFrom(nodeType))
 			{
 				behaviorBuilder = new CustomDecoratorBuilder(nodeType, customData);
 			}

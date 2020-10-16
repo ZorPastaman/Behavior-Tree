@@ -2,10 +2,12 @@
 
 using System;
 using JetBrains.Annotations;
+using UnityEngine.Scripting;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Conditions
 {
+	[UsedImplicitly, Preserve]
 	public sealed class IsClassEqual<T> : Behavior where T : class, IEquatable<T>
 	{
 		private readonly T m_value;

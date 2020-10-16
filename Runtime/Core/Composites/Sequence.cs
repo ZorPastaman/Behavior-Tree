@@ -1,10 +1,12 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using JetBrains.Annotations;
+using UnityEngine.Scripting;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
+	[UsedImplicitly, Preserve]
 	public sealed class Sequence : Composite
 	{
 		private int m_currentChildIndex;

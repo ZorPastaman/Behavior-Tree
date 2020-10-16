@@ -2,10 +2,12 @@
 
 using System;
 using JetBrains.Annotations;
+using UnityEngine.Scripting;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
+	[UsedImplicitly, Preserve]
 	public sealed class Parallel : Composite
 	{
 		private readonly Mode m_mode;

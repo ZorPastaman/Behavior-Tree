@@ -1,10 +1,12 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using JetBrains.Annotations;
+using UnityEngine.Scripting;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Decorators
 {
+	[UsedImplicitly, Preserve]
 	public sealed class Repeat : Decorator
 	{
 		private readonly uint m_repeats;
@@ -18,7 +20,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		protected override void Begin()
 		{
 			base.Begin();
-			m_currentRepeats = 0;
+			m_currentRepeats = 0u;
 		}
 
 		protected override Status Execute()
