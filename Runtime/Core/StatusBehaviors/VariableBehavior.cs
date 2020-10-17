@@ -16,6 +16,11 @@ namespace Zor.BehaviorTree.Core.StatusBehaviors
 			m_variableName = variableName;
 		}
 
+		public VariableBehavior([NotNull] Blackboard blackboard, [NotNull] string variableName) : base(blackboard)
+		{
+			m_variableName = new BlackboardPropertyName(variableName);
+		}
+
 		protected override Status Execute()
 		{
 			return blackboard.TryGetStructValue(m_variableName, out Status variableStatus)

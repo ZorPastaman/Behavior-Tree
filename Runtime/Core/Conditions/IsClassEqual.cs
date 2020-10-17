@@ -20,6 +20,13 @@ namespace Zor.BehaviorTree.Core.Conditions
 			m_propertyName = propertyName;
 		}
 
+		public IsClassEqual([NotNull] Blackboard blackboard, [CanBeNull] T value, [NotNull] string propertyName)
+			: base(blackboard)
+		{
+			m_value = value;
+			m_propertyName = new BlackboardPropertyName(propertyName);
+		}
+
 		protected override Status Execute()
 		{
 			if (blackboard.TryGetClassValue(m_propertyName, out T currentValue))

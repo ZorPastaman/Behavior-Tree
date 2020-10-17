@@ -19,6 +19,13 @@ namespace Zor.BehaviorTree.Core.Actions
 			m_propertyName = propertyName;
 		}
 
+		public SetClassValue([NotNull] Blackboard blackboard, [CanBeNull] T value, [NotNull] string propertyName)
+			: base(blackboard)
+		{
+			m_value = value;
+			m_propertyName = new BlackboardPropertyName(propertyName);
+		}
+
 		protected override Status Execute()
 		{
 			blackboard.SetClassValue(m_propertyName, m_value);
