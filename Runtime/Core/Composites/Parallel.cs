@@ -68,6 +68,16 @@ namespace Zor.BehaviorTree.Core.Composites
 			return Status.Running;
 		}
 
+		protected override void End()
+		{
+			base.End();
+
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				children[i].Abort();
+			}
+		}
+
 		[Flags]
 		public enum Mode : byte
 		{
