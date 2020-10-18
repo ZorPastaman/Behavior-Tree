@@ -232,6 +232,8 @@ namespace Zor.BehaviorTree.Tests
 				.AddBehavior<VariableBehavior>(propertyNames[4]).Finish()
 			.Finish();
 			tree = treeBuilder.Build(blackboard);
+			root = rootField.GetValue(tree);
+			children = (Behavior[])childrenField.GetValue(root);
 			tree.Initialize();
 
 			Assert.AreEqual(Status.Success, tree.Tick());
@@ -263,6 +265,122 @@ namespace Zor.BehaviorTree.Tests
 
 			blackboard.SetStructValue(propertyNames[1], Status.Error);
 			Assert.AreEqual(Status.Error, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			tree.Dispose();
+
+			blackboard.SetStructValue(propertyNames[0], Status.Success);
+			blackboard.SetStructValue(propertyNames[1], Status.Success);
+			blackboard.SetStructValue(propertyNames[2], Status.Success);
+			blackboard.SetStructValue(propertyNames[3], Status.Success);
+			blackboard.SetStructValue(propertyNames[4], Status.Success);
+
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddBehavior<Parallel>(Parallel.Mode.All, Parallel.Mode.Any)
+				.AddBehavior<VariableBehavior>(propertyNames[0]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[1]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[2]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[3]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[4]).Finish()
+			.Finish();
+			tree = treeBuilder.Build(blackboard);
+			root = rootField.GetValue(tree);
+			children = (Behavior[])childrenField.GetValue(root);
+			tree.Initialize();
+
+			Assert.AreEqual(Status.Success, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			blackboard.SetStructValue(propertyNames[0], Status.Running);
+			Assert.AreEqual(Status.Running, tree.Tick());
+			for (int i = 1, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			blackboard.SetStructValue(propertyNames[3], Status.Failure);
+			Assert.AreEqual(Status.Failure, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			blackboard.SetStructValue(propertyNames[3], Status.Error);
+			Assert.AreEqual(Status.Error, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			tree.Dispose();
+
+			blackboard.SetStructValue(propertyNames[0], Status.Success);
+			blackboard.SetStructValue(propertyNames[1], Status.Success);
+			blackboard.SetStructValue(propertyNames[2], Status.Success);
+			blackboard.SetStructValue(propertyNames[3], Status.Success);
+			blackboard.SetStructValue(propertyNames[4], Status.Success);
+
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddBehavior<Parallel>(Parallel.Mode.Any, Parallel.Mode.All)
+				.AddBehavior<VariableBehavior>(propertyNames[0]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[1]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[2]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[3]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[4]).Finish()
+			.Finish();
+			tree = treeBuilder.Build(blackboard);
+			root = rootField.GetValue(tree);
+			children = (Behavior[])childrenField.GetValue(root);
+			tree.Initialize();
+
+			Assert.AreEqual(Status.Success, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			blackboard.SetStructValue(propertyNames[4], Status.Running);
+			Assert.AreEqual(Status.Success, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			blackboard.SetStructValue(propertyNames[0], Status.Error);
+			Assert.AreEqual(Status.Error, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			blackboard.SetStructValue(propertyNames[0], Status.Running);
+			Assert.AreEqual(Status.Success, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
+
+			blackboard.SetStructValue(propertyNames[1], Status.Running);
+			blackboard.SetStructValue(propertyNames[2], Status.Running);
+			blackboard.SetStructValue(propertyNames[3], Status.Running);
+			Assert.AreEqual(Status.Running, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreEqual(Status.Running, children[i].status);
+			}
+
+			blackboard.SetStructValue(propertyNames[0], Status.Failure);
+			blackboard.SetStructValue(propertyNames[1], Status.Failure);
+			blackboard.SetStructValue(propertyNames[2], Status.Failure);
+			blackboard.SetStructValue(propertyNames[3], Status.Failure);
+			blackboard.SetStructValue(propertyNames[4], Status.Failure);
+			Assert.AreEqual(Status.Failure, tree.Tick());
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				Assert.AreNotEqual(Status.Running, children[i].status);

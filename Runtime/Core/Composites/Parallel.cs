@@ -10,12 +10,22 @@ namespace Zor.BehaviorTree.Core.Composites
 	[UsedImplicitly, Preserve]
 	public sealed class Parallel : Composite
 	{
-		private readonly Mode m_mode;
+		private readonly Mode m_successMode;
+		private readonly Mode m_failureMode;
 
 		public Parallel([NotNull] Blackboard blackboard, [NotNull] Behavior[] children, Mode mode)
 			: base(blackboard, children)
 		{
-			m_mode = mode;
+			m_successMode = mode;
+			m_failureMode = mode;
+		}
+
+		public Parallel([NotNull] Blackboard blackboard, [NotNull] Behavior[] children,
+			Mode successMode, Mode failureMode)
+			: base(blackboard, children)
+		{
+			m_successMode = successMode;
+			m_failureMode = failureMode;
 		}
 
 		protected override Status Execute()
@@ -32,7 +42,7 @@ namespace Zor.BehaviorTree.Core.Composites
 				{
 					++successes;
 
-					if (m_mode == Mode.Any)
+					if (m_successMode == Mode.Any)
 					{
 						return Status.Success;
 					}
@@ -41,7 +51,7 @@ namespace Zor.BehaviorTree.Core.Composites
 				{
 					++failures;
 
-					if (m_mode == Mode.Any)
+					if (m_failureMode == Mode.Any)
 					{
 						return Status.Failure;
 					}
@@ -52,17 +62,14 @@ namespace Zor.BehaviorTree.Core.Composites
 				}
 			}
 
-			if (m_mode == Mode.All)
+			if (m_successMode == Mode.All & successes == childrenCount)
 			{
-				if (successes == childrenCount)
-				{
-					return Status.Success;
-				}
+				return Status.Success;
+			}
 
-				if (failures == childrenCount)
-				{
-					return Status.Failure;
-				}
+			if (m_failureMode == Mode.All & failures == childrenCount)
+			{
+				return Status.Failure;
 			}
 
 			return Status.Running;
