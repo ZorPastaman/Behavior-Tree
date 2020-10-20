@@ -10,10 +10,12 @@ namespace Zor.BehaviorTree.Core.Composites
 	[UsedImplicitly, Preserve]
 	public sealed class Parallel : Composite
 	{
+		private int m_success;
+		private int m_failures;
+		private bool m_initialTick;
+
 		private readonly Mode m_successMode;
 		private readonly Mode m_failureMode;
-
-		private bool m_initialTick;
 
 		public Parallel([NotNull] Blackboard blackboard, [NotNull] Behavior[] children, Mode mode)
 			: base(blackboard, children)
@@ -34,15 +36,14 @@ namespace Zor.BehaviorTree.Core.Composites
 		{
 			base.Begin();
 
+			m_success = 0;
+			m_failures = 0;
 			m_initialTick = true;
 		}
 
 		protected override Status Execute()
 		{
 			int childrenCount = children.Length;
-			int successes = 0;
-			int failures = 0;
-			int running = 0;
 
 			for (int i = 0; i < childrenCount; ++i)
 			{
@@ -53,54 +54,49 @@ namespace Zor.BehaviorTree.Core.Composites
 					continue;
 				}
 
-				Status childStatus = children[i].Tick();
+				Status childStatus = child.Tick();
 
 				if (childStatus == Status.Success)
 				{
-					++successes;
-
 					if (m_successMode == Mode.Any)
 					{
 						return Status.Success;
 					}
+
+					++m_success;
 				}
 				else if (childStatus == Status.Failure)
 				{
-					++failures;
-
 					if (m_failureMode == Mode.Any)
 					{
 						return Status.Failure;
 					}
+
+					++m_failures;
 				}
 				else if (childStatus != Status.Running)
 				{
 					return childStatus;
 				}
-				else
-				{
-					++running;
-				}
 			}
 
-			if (m_successMode == Mode.All & successes == childrenCount)
+			if (m_successMode == Mode.All & m_success >= childrenCount)
 			{
 				return Status.Success;
 			}
 
-			if (m_failureMode == Mode.All & failures == childrenCount)
+			if (m_failureMode == Mode.All & m_failures >= childrenCount)
 			{
 				return Status.Failure;
 			}
 
-			if (running == 0)
+			if (m_success > 0 & m_failures > 0)
 			{
 				return Status.Error;
 			}
 
 			m_initialTick = false;
 			return Status.Running;
-
 		}
 
 		protected override void End()
