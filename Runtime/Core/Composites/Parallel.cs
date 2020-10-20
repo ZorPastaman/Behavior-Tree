@@ -13,6 +13,8 @@ namespace Zor.BehaviorTree.Core.Composites
 		private readonly Mode m_successMode;
 		private readonly Mode m_failureMode;
 
+		private bool m_initialTick;
+
 		public Parallel([NotNull] Blackboard blackboard, [NotNull] Behavior[] children, Mode mode)
 			: base(blackboard, children)
 		{
@@ -28,14 +30,29 @@ namespace Zor.BehaviorTree.Core.Composites
 			m_failureMode = failureMode;
 		}
 
+		protected override void Begin()
+		{
+			base.Begin();
+
+			m_initialTick = true;
+		}
+
 		protected override Status Execute()
 		{
 			int childrenCount = children.Length;
 			int successes = 0;
 			int failures = 0;
+			int running = 0;
 
 			for (int i = 0; i < childrenCount; ++i)
 			{
+				Behavior child = children[i];
+
+				if (!m_initialTick & child.status != Status.Running)
+				{
+					continue;
+				}
+
 				Status childStatus = children[i].Tick();
 
 				if (childStatus == Status.Success)
@@ -60,6 +77,10 @@ namespace Zor.BehaviorTree.Core.Composites
 				{
 					return childStatus;
 				}
+				else
+				{
+					++running;
+				}
 			}
 
 			if (m_successMode == Mode.All & successes == childrenCount)
@@ -72,7 +93,14 @@ namespace Zor.BehaviorTree.Core.Composites
 				return Status.Failure;
 			}
 
+			if (running == 0)
+			{
+				return Status.Error;
+			}
+
+			m_initialTick = false;
 			return Status.Running;
+
 		}
 
 		protected override void End()

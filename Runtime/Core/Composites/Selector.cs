@@ -23,17 +23,18 @@ namespace Zor.BehaviorTree.Core.Composites
 
 		protected override Status Execute()
 		{
-			for (int count = children.Length; m_currentChildIndex < count; ++m_currentChildIndex)
-			{
-				Status childStatus = children[m_currentChildIndex].Tick();
+			var childStatus = Status.Failure;
 
-				if (childStatus != Status.Failure)
-				{
-					return childStatus;
-				}
+			for (int count = children.Length;
+				m_currentChildIndex < count & childStatus == Status.Failure;
+				++m_currentChildIndex)
+			{
+				childStatus = children[m_currentChildIndex].Tick();
 			}
 
-			return Status.Failure;
+			--m_currentChildIndex;
+
+			return childStatus;
 		}
 	}
 }

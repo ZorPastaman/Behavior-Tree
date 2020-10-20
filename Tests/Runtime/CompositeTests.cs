@@ -4,6 +4,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
+using Zor.BehaviorTree.Core.Actions;
 using Zor.BehaviorTree.Core.Composites;
 using Zor.BehaviorTree.Core.StatusBehaviors;
 using Zor.SimpleBlackboard.Core;
@@ -109,7 +110,7 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(propertyNames[3], Status.Failure);
 			blackboard.SetStructValue(propertyNames[4], Status.Failure);
 			Assert.AreEqual(Status.Failure, tree.Tick());
-			Assert.AreEqual(5, currentIndexField.GetValue(root));
+			Assert.AreEqual(4, currentIndexField.GetValue(root));
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				Assert.AreNotEqual(Status.Running, children[i].status);
@@ -182,13 +183,14 @@ namespace Zor.BehaviorTree.Tests
 				}
 			}
 
-			blackboard.SetStructValue(propertyNames[4], Status.Error);
+			blackboard.SetStructValue(propertyNames[3], Status.Error);
 			Assert.AreEqual(Status.Error, tree.Tick());
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				Assert.AreNotEqual(Status.Running, children[i].status);
 			}
 
+			blackboard.SetStructValue(propertyNames[3], Status.Running);
 			blackboard.SetStructValue(propertyNames[4], Status.Failure);
 			Assert.AreEqual(Status.Running, tree.Tick());
 			for (int i = 0, count = children.Length; i < count; ++i)
@@ -200,7 +202,7 @@ namespace Zor.BehaviorTree.Tests
 			}
 
 			blackboard.SetStructValue(propertyNames[3], Status.Failure);
-			Assert.AreEqual(Status.Running, tree.Tick());
+			Assert.AreEqual(Status.Error, tree.Tick());
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				Assert.AreNotEqual(Status.Running, children[i].status);
@@ -209,6 +211,11 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(propertyNames[0], Status.Failure);
 			blackboard.SetStructValue(propertyNames[1], Status.Failure);
 			blackboard.SetStructValue(propertyNames[2], Status.Failure);
+			Assert.AreEqual(Status.Failure, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Assert.AreNotEqual(Status.Running, children[i].status);
+			}
 			Assert.AreEqual(Status.Failure, tree.Tick());
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
@@ -304,6 +311,18 @@ namespace Zor.BehaviorTree.Tests
 				Assert.AreNotEqual(Status.Running, children[i].status);
 			}
 
+			blackboard.SetStructValue(propertyNames[0], Status.Success);
+			blackboard.SetStructValue(propertyNames[3], Status.Running);
+			Assert.AreEqual(Status.Error, tree.Tick());
+			Assert.AreEqual(Status.Running, tree.Tick());
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				if (i != 3)
+				{
+					Assert.AreNotEqual(Status.Running, children[i].status);
+				}
+			}
+
 			blackboard.SetStructValue(propertyNames[3], Status.Failure);
 			Assert.AreEqual(Status.Failure, tree.Tick());
 			for (int i = 0, count = children.Length; i < count; ++i)
@@ -387,6 +406,33 @@ namespace Zor.BehaviorTree.Tests
 			}
 
 			tree.Dispose();
+
+			blackboard.SetStructValue(propertyNames[0], Status.Success);
+			blackboard.SetStructValue(propertyNames[1], Status.Running);
+			blackboard.SetStructValue(propertyNames[2], Status.Running);
+			blackboard.SetStructValue(propertyNames[3], Status.Running);
+			blackboard.SetStructValue(propertyNames[4], Status.Running);
+
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddBehavior<Parallel>(Parallel.Mode.All)
+				.AddBehavior<SetStructValue<int>>(100, propertyNames[0]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[1]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[2]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[3]).Finish()
+				.AddBehavior<VariableBehavior>(propertyNames[4]).Finish()
+			.Finish();
+			tree = treeBuilder.Build(blackboard);
+			tree.Initialize();
+
+			Assert.AreEqual(Status.Running, tree.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(propertyNames[0], out int value));
+			Assert.AreEqual(100, value);
+			blackboard.SetStructValue(propertyNames[0], 0);
+			Assert.AreEqual(Status.Running, tree.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(propertyNames[0], out value));
+			Assert.AreNotEqual(100, value);
+
+			tree.Dispose();
 		}
 
 		[Test]
@@ -447,7 +493,7 @@ namespace Zor.BehaviorTree.Tests
 
 			blackboard.SetStructValue(propertyNames[1], Status.Failure);
 			Assert.AreEqual(Status.Failure, tree.Tick());
-			Assert.AreEqual(5, currentIndexField.GetValue(root));
+			Assert.AreEqual(4, currentIndexField.GetValue(root));
 
 			blackboard.SetStructValue(propertyNames[3], Status.Error);
 			Assert.AreEqual(Status.Error, tree.Tick());
@@ -496,7 +542,7 @@ namespace Zor.BehaviorTree.Tests
 			tree.Initialize();
 
 			Assert.AreEqual(Status.Success, tree.Tick());
-			Assert.AreEqual(5, currentIndexField.GetValue(root));
+			Assert.AreEqual(4, currentIndexField.GetValue(root));
 
 			blackboard.SetStructValue(propertyNames[1], Status.Running);
 			Assert.AreEqual(Status.Running, tree.Tick());
