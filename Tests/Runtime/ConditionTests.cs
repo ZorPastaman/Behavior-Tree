@@ -11,6 +11,44 @@ namespace Zor.BehaviorTree.Tests
 	public static class ConditionTests
 	{
 		[Test]
+		public static void HasClassValueTest()
+		{
+			var propertyName = new BlackboardPropertyName("value");
+			const string value = "value";
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddBehavior<HasClassValue<string>>(propertyName).Finish();
+			Tree tree = treeBuilder.Build(blackboard);
+			tree.Initialize();
+
+			Assert.AreEqual(Status.Failure, tree.Tick());
+
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Success, tree.Tick());
+
+			tree.Dispose();
+		}
+
+		[Test]
+		public static void HasStructValueTest()
+		{
+			var propertyName = new BlackboardPropertyName("value");
+			const int value = 3;
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddBehavior<HasStructValue<int>>(propertyName).Finish();
+			Tree tree = treeBuilder.Build(blackboard);
+			tree.Initialize();
+
+			Assert.AreEqual(Status.Failure, tree.Tick());
+
+			blackboard.SetStructValue(propertyName, value);
+			Assert.AreEqual(Status.Success, tree.Tick());
+
+			tree.Dispose();
+		}
+
+		[Test]
 		public static void IsClassEqualTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
