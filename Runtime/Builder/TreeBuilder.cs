@@ -75,7 +75,7 @@ namespace Zor.BehaviorTree.Builder
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public TreeBuilder Finish()
 		{
-			m_behaviorBuilders.Pop();
+			m_root = m_behaviorBuilders.Pop();
 			return this;
 		}
 
@@ -100,11 +100,6 @@ namespace Zor.BehaviorTree.Builder
 			}
 
 			m_behaviorBuilders.Push(behaviorBuilderWrapper);
-
-			if (m_root == null)
-			{
-				m_root = behaviorBuilderWrapper;
-			}
 		}
 	}
 }
