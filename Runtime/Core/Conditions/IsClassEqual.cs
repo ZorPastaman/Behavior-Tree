@@ -13,15 +13,13 @@ namespace Zor.BehaviorTree.Core.Conditions
 		private readonly T m_value;
 		private readonly BlackboardPropertyName m_propertyName;
 
-		public IsClassEqual([NotNull] Blackboard blackboard, [CanBeNull] T value, BlackboardPropertyName propertyName)
-			: base(blackboard)
+		public IsClassEqual([CanBeNull] T value, BlackboardPropertyName propertyName)
 		{
 			m_value = value;
 			m_propertyName = propertyName;
 		}
 
-		public IsClassEqual([NotNull] Blackboard blackboard, [CanBeNull] T value, [NotNull] string propertyName)
-			: base(blackboard)
+		public IsClassEqual([CanBeNull] T value, [NotNull] string propertyName)
 		{
 			m_value = value;
 			m_propertyName = new BlackboardPropertyName(propertyName);

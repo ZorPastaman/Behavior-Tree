@@ -2,7 +2,6 @@
 
 using JetBrains.Annotations;
 using UnityEngine.Scripting;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
@@ -11,7 +10,7 @@ namespace Zor.BehaviorTree.Core.Composites
 	{
 		private int m_currentChildIndex;
 
-		public ActiveSelector([NotNull] Blackboard blackboard, [NotNull] Behavior[] children) : base(blackboard, children)
+		public ActiveSelector([NotNull] Behavior[] children) : base(children)
 		{
 		}
 

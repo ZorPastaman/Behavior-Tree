@@ -11,12 +11,12 @@ namespace Zor.BehaviorTree.Core.Conditions
 	{
 		private readonly BlackboardPropertyName m_propertyName;
 
-		public HasClassValue([NotNull] Blackboard blackboard, BlackboardPropertyName propertyName) : base(blackboard)
+		public HasClassValue(BlackboardPropertyName propertyName)
 		{
 			m_propertyName = propertyName;
 		}
 
-		public HasClassValue([NotNull] Blackboard blackboard, [NotNull] string propertyName) : base(blackboard)
+		public HasClassValue([NotNull] string propertyName)
 		{
 			m_propertyName = new BlackboardPropertyName(propertyName);
 		}

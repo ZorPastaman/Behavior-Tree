@@ -11,12 +11,12 @@ namespace Zor.BehaviorTree.Core.StatusBehaviors
 	{
 		private readonly BlackboardPropertyName m_variableName;
 
-		public VariableBehavior([NotNull] Blackboard blackboard, BlackboardPropertyName variableName) : base(blackboard)
+		public VariableBehavior(BlackboardPropertyName variableName)
 		{
 			m_variableName = variableName;
 		}
 
-		public VariableBehavior([NotNull] Blackboard blackboard, [NotNull] string variableName) : base(blackboard)
+		public VariableBehavior([NotNull] string variableName)
 		{
 			m_variableName = new BlackboardPropertyName(variableName);
 		}

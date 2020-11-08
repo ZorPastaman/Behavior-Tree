@@ -3,7 +3,6 @@
 using System;
 using JetBrains.Annotations;
 using Zor.BehaviorTree.Core;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Builder
 {
@@ -18,13 +17,12 @@ namespace Zor.BehaviorTree.Builder
 			m_customData = customData;
 		}
 
-		public Behavior Build(Blackboard blackboard, Behavior[] children)
+		public Behavior Build(Behavior[] children)
 		{
 			int customDataLength = m_customData.Length;
-			var args = new object[customDataLength + 2];
-			args[0] = blackboard;
-			args[1] = children;
-			Array.Copy(m_customData, 0, args, 2, customDataLength);
+			var args = new object[customDataLength + 1];
+			args[0] = children;
+			Array.Copy(m_customData, 0, args, 1, customDataLength);
 
 			return (Behavior)Activator.CreateInstance(m_nodeType, args);
 		}

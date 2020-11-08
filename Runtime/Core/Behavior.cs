@@ -9,13 +9,8 @@ namespace Zor.BehaviorTree.Core
 {
 	public abstract class Behavior : IDisposable
 	{
-		private readonly Blackboard m_blackboard;
+		private Blackboard m_blackboard;
 		private Status m_status = Status.Idle;
-
-		protected Behavior([NotNull] Blackboard blackboard)
-		{
-			m_blackboard = blackboard;
-		}
 
 		public Status status
 		{
@@ -62,6 +57,11 @@ namespace Zor.BehaviorTree.Core
 			}
 
 			return m_status;
+		}
+
+		internal virtual void ApplyBlackboard(Blackboard blackboardToApply)
+		{
+			m_blackboard = blackboardToApply;
 		}
 
 		protected virtual void Begin() {}

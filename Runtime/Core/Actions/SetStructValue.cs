@@ -12,15 +12,13 @@ namespace Zor.BehaviorTree.Core.Actions
 		private readonly T m_value;
 		private readonly BlackboardPropertyName m_propertyName;
 
-		public SetStructValue([NotNull] Blackboard blackboard, T value, BlackboardPropertyName propertyName)
-			: base(blackboard)
+		public SetStructValue(T value, BlackboardPropertyName propertyName)
 		{
 			m_value = value;
 			m_propertyName = propertyName;
 		}
 
-		public SetStructValue([NotNull] Blackboard blackboard, T value, [NotNull] string propertyName)
-			: base(blackboard)
+		public SetStructValue(T value, [NotNull] string propertyName)
 		{
 			m_value = value;
 			m_propertyName = new BlackboardPropertyName(propertyName);

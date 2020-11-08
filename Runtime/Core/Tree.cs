@@ -16,6 +16,7 @@ namespace Zor.BehaviorTree.Core
 		{
 			m_blackboard = blackboard;
 			m_root = root;
+			m_root.ApplyBlackboard(m_blackboard);
 		}
 
 		[NotNull]

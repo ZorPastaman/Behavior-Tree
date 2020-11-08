@@ -11,14 +11,12 @@ namespace Zor.BehaviorTree.Core.Actions
 	{
 		private readonly BlackboardPropertyName m_propertyName;
 
-		public RemoveStructValue([NotNull] Blackboard blackboard, BlackboardPropertyName propertyName)
-			: base(blackboard)
+		public RemoveStructValue(BlackboardPropertyName propertyName)
 		{
 			m_propertyName = propertyName;
 		}
 
-		public RemoveStructValue([NotNull] Blackboard blackboard, [NotNull] string propertyName)
-			: base(blackboard)
+		public RemoveStructValue([NotNull] string propertyName)
 		{
 			m_propertyName = new BlackboardPropertyName(propertyName);
 		}

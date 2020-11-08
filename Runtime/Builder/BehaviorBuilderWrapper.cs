@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Zor.BehaviorTree.Core;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Builder
 {
@@ -22,17 +21,17 @@ namespace Zor.BehaviorTree.Builder
 			m_children.Add(behaviorBuilderWrapper);
 		}
 
-		public Behavior Build([NotNull] Blackboard blackboard)
+		public Behavior Build()
 		{
 			int childrenCount = m_children.Count;
 			var children = new Behavior[childrenCount];
 
 			for (int i = 0; i < childrenCount; ++i)
 			{
-				children[i] = m_children[i].Build(blackboard);
+				children[i] = m_children[i].Build();
 			}
 
-			return m_behaviorBuilder.Build(blackboard, children);
+			return m_behaviorBuilder.Build(children);
 		}
 	}
 }

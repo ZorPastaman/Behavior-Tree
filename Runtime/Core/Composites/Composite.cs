@@ -9,7 +9,7 @@ namespace Zor.BehaviorTree.Core.Composites
 	{
 		[NotNull] protected readonly Behavior[] children;
 
-		protected Composite([NotNull] Blackboard blackboard, [NotNull] Behavior[] children) : base(blackboard)
+		protected Composite([NotNull] Behavior[] children)
 		{
 			this.children = children;
 		}
@@ -41,6 +41,16 @@ namespace Zor.BehaviorTree.Core.Composites
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				children[i].Abort();
+			}
+		}
+
+		internal override void ApplyBlackboard(Blackboard blackboardToApply)
+		{
+			base.ApplyBlackboard(blackboardToApply);
+
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				children[i].ApplyBlackboard(blackboardToApply);
 			}
 		}
 	}

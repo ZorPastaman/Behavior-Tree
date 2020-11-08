@@ -2,14 +2,13 @@
 
 using JetBrains.Annotations;
 using UnityEngine.Scripting;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Decorators
 {
 	[UsedImplicitly, Preserve]
 	public sealed class Inverter : Decorator
 	{
-		public Inverter([NotNull] Blackboard blackboard, [NotNull] Behavior child) : base(blackboard, child)
+		public Inverter([NotNull] Behavior child) : base(child)
 		{
 		}
 

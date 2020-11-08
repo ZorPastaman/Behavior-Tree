@@ -86,7 +86,7 @@ namespace Zor.BehaviorTree.Builder
 
 		public Tree Build([NotNull] Blackboard blackboard)
 		{
-			Behavior root = m_root.Build(blackboard);
+			Behavior root = m_root.Build();
 			return new Tree(blackboard, root);
 		}
 

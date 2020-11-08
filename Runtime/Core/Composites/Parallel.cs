@@ -3,7 +3,6 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine.Scripting;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
@@ -17,16 +16,13 @@ namespace Zor.BehaviorTree.Core.Composites
 		private readonly Mode m_successMode;
 		private readonly Mode m_failureMode;
 
-		public Parallel([NotNull] Blackboard blackboard, [NotNull] Behavior[] children, Mode mode)
-			: base(blackboard, children)
+		public Parallel([NotNull] Behavior[] children, Mode mode) : base(children)
 		{
 			m_successMode = mode;
 			m_failureMode = mode;
 		}
 
-		public Parallel([NotNull] Blackboard blackboard, [NotNull] Behavior[] children,
-			Mode successMode, Mode failureMode)
-			: base(blackboard, children)
+		public Parallel([NotNull] Behavior[] children, Mode successMode, Mode failureMode) : base(children)
 		{
 			m_successMode = successMode;
 			m_failureMode = failureMode;

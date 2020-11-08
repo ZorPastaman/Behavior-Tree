@@ -9,7 +9,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 	{
 		[NotNull] protected readonly Behavior child;
 
-		protected Decorator([NotNull] Blackboard blackboard, [NotNull] Behavior child) : base(blackboard)
+		protected Decorator([NotNull] Behavior child)
 		{
 			this.child = child;
 		}
@@ -30,6 +30,12 @@ namespace Zor.BehaviorTree.Core.Decorators
 		{
 			base.OnAbort();
 			child.Abort();
+		}
+
+		internal override void ApplyBlackboard(Blackboard blackboardToApply)
+		{
+			base.ApplyBlackboard(blackboardToApply);
+			child.ApplyBlackboard(blackboardToApply);
 		}
 	}
 }

@@ -2,7 +2,6 @@
 
 using JetBrains.Annotations;
 using UnityEngine.Scripting;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Decorators
 {
@@ -12,7 +11,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		private readonly uint m_repeats;
 		private uint m_currentRepeats;
 
-		public Repeat([NotNull] Blackboard blackboard, [NotNull] Behavior child, uint repeats) : base(blackboard, child)
+		public Repeat([NotNull] Behavior child, uint repeats) : base(child)
 		{
 			m_repeats = repeats;
 		}
