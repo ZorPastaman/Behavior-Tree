@@ -12,19 +12,14 @@ namespace Zor.BehaviorTree.Core.Decorators
 		{
 		}
 
-		protected override Status Execute()
+		protected override unsafe Status Execute()
 		{
 			Status childStatus = child.Tick();
 
-			switch (childStatus)
-			{
-				case Status.Success:
-					return Status.Failure;
-				case Status.Failure:
-					return Status.Success;
-				default:
-					return childStatus;
-			}
+			Status* results = stackalloc Status[] {childStatus, Status.Failure, Status.Success};
+			int index = ((int)(childStatus & Status.Success) >> 1) | ((int)(childStatus & Status.Failure) >> 2);
+
+			return results[index];
 		}
 	}
 }

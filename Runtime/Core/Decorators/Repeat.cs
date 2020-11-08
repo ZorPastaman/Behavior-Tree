@@ -1,5 +1,6 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine.Scripting;
 
@@ -16,19 +17,23 @@ namespace Zor.BehaviorTree.Core.Decorators
 			m_repeats = repeats;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected override void Begin()
 		{
 			base.Begin();
 			m_currentRepeats = 0u;
 		}
 
-		protected override Status Execute()
+		protected override unsafe Status Execute()
 		{
 			Status childStatus = child.Tick();
 
 			if (childStatus == Status.Success)
 			{
-				return ++m_currentRepeats >= m_repeats ? Status.Success : Status.Running;
+				Status* results = stackalloc Status[] {Status.Running, Status.Success};
+				bool finished = ++m_currentRepeats >= m_repeats;
+				byte index = *(byte*)&finished;
+				childStatus = results[index];
 			}
 
 			return childStatus;

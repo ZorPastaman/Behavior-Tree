@@ -1,5 +1,6 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine.Scripting;
 
@@ -14,6 +15,7 @@ namespace Zor.BehaviorTree.Core.Composites
 		{
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected override void Begin()
 		{
 			base.Begin();

@@ -24,6 +24,7 @@ namespace Zor.BehaviorTree.Core
 			get => m_blackboard;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public virtual void Initialize() {}
 
 		public Status Tick()
@@ -43,6 +44,7 @@ namespace Zor.BehaviorTree.Core
 			return m_status;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public virtual void Dispose()
 		{
 			Abort();
@@ -59,14 +61,21 @@ namespace Zor.BehaviorTree.Core
 			return m_status;
 		}
 
-		internal virtual void ApplyBlackboard(Blackboard blackboardToApply)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal virtual void ApplyBlackboard([NotNull] Blackboard blackboardToApply)
 		{
 			m_blackboard = blackboardToApply;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected virtual void Begin() {}
+
 		protected abstract Status Execute();
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected virtual void End() {}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected virtual void OnAbort() {}
 	}
 }

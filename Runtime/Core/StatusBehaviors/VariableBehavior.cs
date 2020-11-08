@@ -21,11 +21,13 @@ namespace Zor.BehaviorTree.Core.StatusBehaviors
 			m_variableName = new BlackboardPropertyName(variableName);
 		}
 
-		protected override Status Execute()
+		protected override unsafe Status Execute()
 		{
-			return blackboard.TryGetStructValue(m_variableName, out Status variableStatus)
-				? variableStatus
-				: Status.Error;
+			Status* results = stackalloc Status[] {Status.Error, Status.Error};
+			bool found = blackboard.TryGetStructValue(m_variableName, out results[1]);
+			byte index = *(byte*)&found;
+
+			return results[index];
 		}
 	}
 }

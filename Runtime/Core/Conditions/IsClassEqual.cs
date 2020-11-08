@@ -25,11 +25,15 @@ namespace Zor.BehaviorTree.Core.Conditions
 			m_propertyName = new BlackboardPropertyName(propertyName);
 		}
 
-		protected override Status Execute()
+		protected override unsafe Status Execute()
 		{
 			if (blackboard.TryGetClassValue(m_propertyName, out T currentValue))
 			{
-				return m_value.Equals(currentValue) ? Status.Success : Status.Failure;
+				Status* results = stackalloc Status[] {Status.Failure, Status.Success};
+				bool equals = m_value.Equals(currentValue);
+				byte index = *(byte*)&equals;
+
+				return results[index];
 			}
 
 			return Status.Error;

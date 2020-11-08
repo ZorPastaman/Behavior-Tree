@@ -26,22 +26,22 @@ namespace Zor.BehaviorTree.Core.Composites
 
 		public override void Dispose()
 		{
-			base.Dispose();
-
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				children[i].Dispose();
 			}
+
+			base.Dispose();
 		}
 
 		protected override void OnAbort()
 		{
-			base.OnAbort();
-
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				children[i].Abort();
 			}
+
+			base.OnAbort();
 		}
 
 		internal override void ApplyBlackboard(Blackboard blackboardToApply)

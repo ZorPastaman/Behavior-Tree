@@ -25,7 +25,7 @@ namespace Zor.BehaviorTree.Core.Conditions
 		{
 			Status* results = stackalloc Status[] {Status.Failure, Status.Success};
 			bool hasValue = blackboard.ContainsStructValue<T>(m_propertyName);
-			int index = *(int*)&hasValue;
+			byte index = *(byte*)&hasValue;
 
 			return results[index];
 		}
