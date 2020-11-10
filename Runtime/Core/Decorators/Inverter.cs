@@ -8,10 +8,6 @@ namespace Zor.BehaviorTree.Core.Decorators
 	[UsedImplicitly, Preserve]
 	public sealed class Inverter : Decorator
 	{
-		public Inverter([NotNull] Behavior child) : base(child)
-		{
-		}
-
 		protected override unsafe Status Execute()
 		{
 			Status childStatus = child.Tick();

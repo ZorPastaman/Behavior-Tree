@@ -17,13 +17,13 @@ namespace Zor.BehaviorTree.Core.Composites
 		private readonly Mode m_successMode;
 		private readonly Mode m_failureMode;
 
-		public Parallel([NotNull] Behavior[] children, Mode mode) : base(children)
+		public Parallel(Mode mode)
 		{
 			m_successMode = mode;
 			m_failureMode = mode;
 		}
 
-		public Parallel([NotNull] Behavior[] children, Mode successMode, Mode failureMode) : base(children)
+		public Parallel(Mode successMode, Mode failureMode)
 		{
 			m_successMode = successMode;
 			m_failureMode = failureMode;

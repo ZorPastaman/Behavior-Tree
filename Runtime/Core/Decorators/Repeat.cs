@@ -12,7 +12,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		private readonly uint m_repeats;
 		private uint m_currentRepeats;
 
-		public Repeat([NotNull] Behavior child, uint repeats) : base(child)
+		public Repeat(uint repeats)
 		{
 			m_repeats = repeats;
 		}

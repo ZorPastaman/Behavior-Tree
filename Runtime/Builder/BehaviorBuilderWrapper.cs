@@ -1,6 +1,7 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Zor.BehaviorTree.Core;
 
@@ -16,6 +17,7 @@ namespace Zor.BehaviorTree.Builder
 			m_behaviorBuilder = behaviorBuilder;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void AddChild([NotNull] BehaviorBuilderWrapper behaviorBuilderWrapper)
 		{
 			m_children.Add(behaviorBuilderWrapper);

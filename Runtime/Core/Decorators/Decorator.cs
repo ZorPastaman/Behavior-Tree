@@ -1,5 +1,6 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
+using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Zor.SimpleBlackboard.Core;
@@ -8,11 +9,28 @@ namespace Zor.BehaviorTree.Core.Decorators
 {
 	public abstract class Decorator : Behavior
 	{
-		[NotNull] protected readonly Behavior child;
+		[NotNull] protected Behavior child;
 
-		protected Decorator([NotNull] Behavior child)
+		public static T Create<T>([NotNull] Behavior child) where T : Decorator, new()
 		{
-			this.child = child;
+			return new T {child = child};
+		}
+
+		public static Decorator Create([NotNull] Type decoratorType, [NotNull] Behavior child)
+		{
+			var answer = (Decorator)Activator.CreateInstance(decoratorType);
+			answer.child = child;
+
+			return answer;
+		}
+
+		public static Decorator Create([NotNull] Type decoratorType, [NotNull] Behavior child,
+			params object[] parameters)
+		{
+			var answer = (Decorator)Activator.CreateInstance(decoratorType, parameters);
+			answer.child = child;
+
+			return answer;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

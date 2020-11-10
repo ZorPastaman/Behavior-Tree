@@ -12,6 +12,21 @@ namespace Zor.BehaviorTree.Core
 		private Blackboard m_blackboard;
 		private Status m_status = Status.Idle;
 
+		public static T Create<T>() where T : Behavior, new()
+		{
+			return new T();
+		}
+
+		public static Behavior Create([NotNull] Type behaviorType)
+		{
+			return (Behavior)Activator.CreateInstance(behaviorType);
+		}
+
+		public static Behavior Create([NotNull] Type behaviorType, params object[] parameters)
+		{
+			return (Behavior)Activator.CreateInstance(behaviorType, parameters);
+		}
+
 		public Status status
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]

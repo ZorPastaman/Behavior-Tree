@@ -11,10 +11,6 @@ namespace Zor.BehaviorTree.Core.Composites
 	{
 		private int m_currentChildIndex;
 
-		public ActiveSelector([NotNull] Behavior[] children) : base(children)
-		{
-		}
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected override void Begin()
 		{

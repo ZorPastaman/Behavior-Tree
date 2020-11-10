@@ -1,8 +1,10 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Zor.BehaviorTree.Core;
+using Zor.BehaviorTree.Core.Decorators;
 
 namespace Zor.BehaviorTree.Builder
 {
@@ -17,14 +19,10 @@ namespace Zor.BehaviorTree.Builder
 			m_customData = customData;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Behavior Build(Behavior[] children)
 		{
-			int customDataLength = m_customData.Length;
-			var args = new object[customDataLength + 1];
-			args[0] = children[0];
-			Array.Copy(m_customData, 0, args, 1, customDataLength);
-
-			return (Behavior)Activator.CreateInstance(m_nodeType, args);
+			return Decorator.Create(m_nodeType, children[0], m_customData);
 		}
 	}
 }
