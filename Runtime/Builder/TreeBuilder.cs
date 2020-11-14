@@ -14,7 +14,7 @@ namespace Zor.BehaviorTree.Builder
 	public sealed class TreeBuilder
 	{
 		private readonly Stack<BehaviorBuilderWrapper> m_behaviorBuilders = new Stack<BehaviorBuilderWrapper>();
-		private BehaviorBuilderWrapper m_root;
+		private BehaviorBuilderWrapper m_rootBehavior;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public TreeBuilder AddBehavior<T>() where T : Behavior
@@ -75,19 +75,19 @@ namespace Zor.BehaviorTree.Builder
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public TreeBuilder Finish()
 		{
-			m_root = m_behaviorBuilders.Pop();
+			m_rootBehavior = m_behaviorBuilders.Pop();
 			return this;
 		}
 
-		public Tree Build()
+		public TreeRoot Build()
 		{
 			return Build(new Blackboard());
 		}
 
-		public Tree Build([NotNull] Blackboard blackboard)
+		public TreeRoot Build([NotNull] Blackboard blackboard)
 		{
-			Behavior root = m_root.Build();
-			return new Tree(blackboard, root);
+			Behavior rootBehavior = m_rootBehavior.Build();
+			return new TreeRoot(blackboard, rootBehavior);
 		}
 
 		private void AddBehavior([NotNull] IBehaviorBuilder behaviorBuilder)

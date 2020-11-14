@@ -17,41 +17,41 @@ namespace Zor.BehaviorTree.Tests
 			builder.AddBehavior<Inverter>()
 				.AddBehavior<SuccessBehavior>().Finish()
 			.Finish();
-			Tree tree = builder.Build();
-			tree.Initialize();
-			Assert.AreEqual(Status.Failure, tree.Tick());
-			Assert.AreEqual(Status.Failure, tree.Tick());
-			tree.Dispose();
+			TreeRoot treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
 			builder.AddBehavior<Inverter>()
 				.AddBehavior<RunningBehavior>().Finish()
 			.Finish();
-			tree = builder.Build();
-			tree.Initialize();
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			tree.Dispose();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
 			builder.AddBehavior<Inverter>()
 				.AddBehavior<FailureBehavior>().Finish()
 			.Finish();
-			tree = builder.Build();
-			tree.Initialize();
-			Assert.AreEqual(Status.Success, tree.Tick());
-			Assert.AreEqual(Status.Success, tree.Tick());
-			tree.Dispose();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
 			builder.AddBehavior<Inverter>()
 				.AddBehavior<ErrorBehavior>().Finish()
 			.Finish();
-			tree = builder.Build();
-			tree.Initialize();
-			Assert.AreEqual(Status.Error, tree.Tick());
-			Assert.AreEqual(Status.Error, tree.Tick());
-			tree.Dispose();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			treeRoot.Dispose();
 		}
 
 		[Test]
@@ -61,57 +61,57 @@ namespace Zor.BehaviorTree.Tests
 			builder.AddBehavior<Repeat>(3u)
 				.AddBehavior<SuccessBehavior>().Finish()
 			.Finish();
-			Tree tree = builder.Build();
-			tree.Initialize();
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Success, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Success, tree.Tick());
-			tree.Dispose();
+			TreeRoot treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
 			builder.AddBehavior<Repeat>(3u)
 				.AddBehavior<RunningBehavior>().Finish()
 			.Finish();
-			tree = builder.Build();
-			tree.Initialize();
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			Assert.AreEqual(Status.Running, tree.Tick());
-			tree.Dispose();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
 			builder.AddBehavior<Repeat>(3u)
 				.AddBehavior<FailureBehavior>().Finish()
 			.Finish();
-			tree = builder.Build();
-			tree.Initialize();
-			Assert.AreEqual(Status.Failure, tree.Tick());
-			Assert.AreEqual(Status.Failure, tree.Tick());
-			Assert.AreEqual(Status.Failure, tree.Tick());
-			Assert.AreEqual(Status.Failure, tree.Tick());
-			Assert.AreEqual(Status.Failure, tree.Tick());
-			Assert.AreEqual(Status.Failure, tree.Tick());
-			tree.Dispose();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
 			builder.AddBehavior<Repeat>(3u)
 				.AddBehavior<ErrorBehavior>().Finish()
 			.Finish();
-			tree = builder.Build();
-			tree.Initialize();
-			Assert.AreEqual(Status.Error, tree.Tick());
-			Assert.AreEqual(Status.Error, tree.Tick());
-			Assert.AreEqual(Status.Error, tree.Tick());
-			Assert.AreEqual(Status.Error, tree.Tick());
-			Assert.AreEqual(Status.Error, tree.Tick());
-			Assert.AreEqual(Status.Error, tree.Tick());
-			tree.Dispose();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			treeRoot.Dispose();
 		}
 	}
 }

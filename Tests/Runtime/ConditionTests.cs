@@ -18,15 +18,15 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddBehavior<HasClassValue<string>>(propertyName).Finish();
-			Tree tree = treeBuilder.Build(blackboard);
-			tree.Initialize();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
 
-			Assert.AreEqual(Status.Failure, tree.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetClassValue(propertyName, value);
-			Assert.AreEqual(Status.Success, tree.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
-			tree.Dispose();
+			treeRoot.Dispose();
 		}
 
 		[Test]
@@ -37,15 +37,15 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddBehavior<HasStructValue<int>>(propertyName).Finish();
-			Tree tree = treeBuilder.Build(blackboard);
-			tree.Initialize();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
 
-			Assert.AreEqual(Status.Failure, tree.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetStructValue(propertyName, value);
-			Assert.AreEqual(Status.Success, tree.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
-			tree.Dispose();
+			treeRoot.Dispose();
 		}
 
 		[Test]
@@ -57,19 +57,19 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetClassValue(propertyName, value);
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddBehavior<IsClassEqual<string>>(value, propertyName).Finish();
-			Tree tree = treeBuilder.Build(blackboard);
-			tree.Initialize();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
 
-			Assert.AreEqual(Status.Success, tree.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			value = "valueChanged";
 			blackboard.SetClassValue(propertyName, value);
-			Assert.AreEqual(Status.Failure, tree.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.RemoveObject(propertyName);
-			Assert.AreEqual(Status.Error, tree.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
-			tree.Dispose();
+			treeRoot.Dispose();
 		}
 
 		[Test]
@@ -81,19 +81,19 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(propertyName, value);
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddBehavior<IsStructEqual<int>>(value, propertyName).Finish();
-			Tree tree = treeBuilder.Build(blackboard);
-			tree.Initialize();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
 
-			Assert.AreEqual(Status.Success, tree.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			value = 1;
 			blackboard.SetStructValue(propertyName, value);
-			Assert.AreEqual(Status.Failure, tree.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.RemoveObject(propertyName);
-			Assert.AreEqual(Status.Error, tree.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
-			tree.Dispose();
+			treeRoot.Dispose();
 		}
 	}
 }

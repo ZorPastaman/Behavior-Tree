@@ -1,5 +1,5 @@
 {
-    "name": "Zor.BehaviorTree.Test",
+    "name": "Zor.BehaviorTree.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",

@@ -7,16 +7,16 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core
 {
-	public sealed class Tree : IDisposable
+	public sealed class TreeRoot : IDisposable
 	{
 		[NotNull] private readonly Blackboard m_blackboard;
-		[NotNull] private readonly Behavior m_root;
+		[NotNull] private readonly Behavior m_rootBehavior;
 
-		public Tree([NotNull] Blackboard blackboard, [NotNull] Behavior root)
+		public TreeRoot([NotNull] Blackboard blackboard, [NotNull] Behavior rootBehavior)
 		{
 			m_blackboard = blackboard;
-			m_root = root;
-			m_root.ApplyBlackboard(m_blackboard);
+			m_rootBehavior = rootBehavior;
+			m_rootBehavior.ApplyBlackboard(m_blackboard);
 		}
 
 		[NotNull]
@@ -29,25 +29,25 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Initialize()
 		{
-			m_root.Initialize();
+			m_rootBehavior.Initialize();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Tick()
 		{
-			return m_root.Tick();
+			return m_rootBehavior.Tick();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Dispose()
 		{
-			m_root.Dispose();
+			m_rootBehavior.Dispose();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Abort()
 		{
-			return m_root.Abort();
+			return m_rootBehavior.Abort();
 		}
 	}
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Serialization;
 using Zor.SimpleBlackboard.Components;
-using Tree = Zor.BehaviorTree.Core.Tree;
 
 namespace Zor.BehaviorTree.Components
 {
@@ -17,28 +16,29 @@ namespace Zor.BehaviorTree.Components
 		[SerializeField] private BlackboardContainer m_BlackboardContainer;
 #pragma warning restore CS0649
 
-		private Tree m_tree;
+		private TreeRoot m_treeRoot;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Tick()
 		{
-			return m_tree.Tick();
+			return m_treeRoot.Tick();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Abort()
 		{
-			return m_tree.Abort();
+			return m_treeRoot.Abort();
 		}
 
 		private void Awake()
 		{
-			m_tree = m_SerializedBehaviorTree.CreateTree(m_BlackboardContainer.blackboard);
+			m_treeRoot = m_SerializedBehaviorTree.CreateTree(m_BlackboardContainer.blackboard);
+			m_treeRoot.Initialize();
 		}
 
 		private void OnDestroy()
 		{
-			m_tree?.Dispose();
+			m_treeRoot?.Dispose();
 		}
 	}
 }

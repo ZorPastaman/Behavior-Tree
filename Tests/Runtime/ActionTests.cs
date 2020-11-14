@@ -18,14 +18,14 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddBehavior<RemoveClassValue<string>>(propertyName).Finish();
-			Tree tree = treeBuilder.Build(blackboard);
-			tree.Initialize();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
 
 			blackboard.SetClassValue(propertyName, value);
-			Assert.AreEqual(Status.Success, tree.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsObjectValue<string>(propertyName));
 
-			tree.Dispose();
+			treeRoot.Dispose();
 		}
 
 		[Test]
@@ -36,14 +36,14 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddBehavior<RemoveStructValue<int>>(propertyName).Finish();
-			Tree tree = treeBuilder.Build(blackboard);
-			tree.Initialize();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
 
 			blackboard.SetStructValue(propertyName, value);
-			Assert.AreEqual(Status.Success, tree.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsObjectValue<int>(propertyName));
 
-			tree.Dispose();
+			treeRoot.Dispose();
 		}
 
 		[Test]
@@ -54,14 +54,14 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddBehavior<SetClassValue<string>>(value, propertyName).Finish();
-			Tree tree = treeBuilder.Build(blackboard);
-			tree.Initialize();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
 
-			Assert.AreEqual(Status.Success, tree.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetClassValue(propertyName, out string val));
 			Assert.AreEqual(value, val);
 
-			tree.Dispose();
+			treeRoot.Dispose();
 		}
 
 		[Test]
@@ -72,14 +72,14 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddBehavior<SetStructValue<int>>(value, propertyName).Finish();
-			Tree tree = treeBuilder.Build(blackboard);
-			tree.Initialize();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
 
-			Assert.AreEqual(Status.Success, tree.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(propertyName, out int val));
 			Assert.AreEqual(value, val);
 
-			tree.Dispose();
+			treeRoot.Dispose();
 		}
 	}
 }

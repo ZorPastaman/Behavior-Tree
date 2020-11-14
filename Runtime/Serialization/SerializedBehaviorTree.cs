@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
 using Zor.BehaviorTree.Builder;
+using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.StatusBehaviors;
 using Zor.SimpleBlackboard.Core;
-using Tree = Zor.BehaviorTree.Core.Tree;
 
 namespace Zor.BehaviorTree.Serialization
 {
@@ -19,13 +19,13 @@ namespace Zor.BehaviorTree.Serialization
 	{
 		private TreeBuilder m_treeBuilder;
 
-		public Tree CreateTree()
+		public TreeRoot CreateTree()
 		{
 			return CreateTree(new Blackboard());
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Tree CreateTree([NotNull] Blackboard blackboard)
+		public TreeRoot CreateTree([NotNull] Blackboard blackboard)
 		{
 			return m_treeBuilder.Build(blackboard);
 		}
