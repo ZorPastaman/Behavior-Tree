@@ -13,7 +13,7 @@ namespace Zor.BehaviorTree.Components
 	{
 #pragma warning disable CS0649
 		[SerializeField] private SerializedBehaviorTree m_SerializedBehaviorTree;
-		[SerializeField] private BlackboardContainer m_BlackboardContainer;
+		[SerializeField] private SimpleBlackboardContainer m_BlackboardContainer;
 #pragma warning restore CS0649
 
 		private TreeRoot m_treeRoot;
