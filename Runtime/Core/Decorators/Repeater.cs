@@ -7,12 +7,12 @@ using UnityEngine.Scripting;
 namespace Zor.BehaviorTree.Core.Decorators
 {
 	[UsedImplicitly, Preserve]
-	public sealed class Repeat : Decorator
+	public sealed class Repeater : Decorator
 	{
 		private readonly uint m_repeats;
 		private uint m_currentRepeats;
 
-		public Repeat(uint repeats)
+		public Repeater(uint repeats)
 		{
 			m_repeats = repeats;
 		}

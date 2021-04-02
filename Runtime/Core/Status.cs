@@ -4,7 +4,7 @@ using System;
 
 namespace Zor.BehaviorTree.Core
 {
-	[Flags]
+	[Serializable, Flags]
 	public enum Status : byte
 	{
 		Idle = 1 << 0,

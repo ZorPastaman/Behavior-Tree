@@ -58,7 +58,7 @@ namespace Zor.BehaviorTree.Tests
 		public static void RepeatTests()
 		{
 			var builder = new TreeBuilder();
-			builder.AddBehavior<Repeat>(3u)
+			builder.AddBehavior<Repeater>(3u)
 				.AddBehavior<SuccessBehavior>().Finish()
 			.Finish();
 			TreeRoot treeRoot = builder.Build();
@@ -72,7 +72,7 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Repeat>(3u)
+			builder.AddBehavior<Repeater>(3u)
 				.AddBehavior<RunningBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
@@ -86,7 +86,7 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Repeat>(3u)
+			builder.AddBehavior<Repeater>(3u)
 				.AddBehavior<FailureBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
@@ -100,7 +100,7 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Repeat>(3u)
+			builder.AddBehavior<Repeater>(3u)
 				.AddBehavior<ErrorBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
