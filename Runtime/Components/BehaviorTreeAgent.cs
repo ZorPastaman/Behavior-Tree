@@ -12,7 +12,7 @@ namespace Zor.BehaviorTree.Components
 	public sealed class BehaviorTreeAgent : MonoBehaviour
 	{
 #pragma warning disable CS0649
-		[SerializeField] private SerializedBehaviorTree m_SerializedBehaviorTree;
+		[SerializeField] private SerializedBehaviorTree_Base m_SerializedBehaviorTree;
 		[SerializeField] private SimpleBlackboardContainer m_BlackboardContainer;
 #pragma warning restore CS0649
 

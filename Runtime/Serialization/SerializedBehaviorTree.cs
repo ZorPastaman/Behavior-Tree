@@ -2,12 +2,12 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
 using UnityEngine;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
-using Zor.BehaviorTree.Core.Decorators;
-using Zor.BehaviorTree.Core.StatusBehaviors;
+using Zor.BehaviorTree.Serialization.SerializedBehaviors;
+using Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators;
+using Zor.BehaviorTree.Serialization.SerializedBehaviors.StatusBehaviors;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Serialization
@@ -17,19 +17,14 @@ namespace Zor.BehaviorTree.Serialization
 		fileName = "SerializedBehaviorTree",
 		order = 448
 	)]
-	public sealed class SerializedBehaviorTree : ScriptableObject
+	public sealed class SerializedBehaviorTree : SerializedBehaviorTree_Base
 	{
-		[SerializeField] private BehaviorSerializedData[] m_BehaviorSerializedData;
+		[SerializeField] private SerializedBehaviorsData[] m_SerializedBehaviorData;
 
 		private TreeBuilder m_treeBuilder;
 
-		public TreeRoot CreateTree()
-		{
-			return CreateTree(new Blackboard());
-		}
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public TreeRoot CreateTree([NotNull] Blackboard blackboard)
+		public override TreeRoot CreateTree(Blackboard blackboard)
 		{
 			return m_treeBuilder.Build(blackboard);
 		}
@@ -38,7 +33,7 @@ namespace Zor.BehaviorTree.Serialization
 		{
 			m_treeBuilder = new TreeBuilder();
 
-			if (m_BehaviorSerializedData != null && m_BehaviorSerializedData.Length > 0)
+			if (m_SerializedBehaviorData != null && m_SerializedBehaviorData.Length > 0)
 			{
 				Deserialize(0);
 			}
@@ -46,62 +41,60 @@ namespace Zor.BehaviorTree.Serialization
 
 		private void Deserialize(int index)
 		{
-			BehaviorSerializedData data = m_BehaviorSerializedData[index];
+			SerializedBehaviorsData data = m_SerializedBehaviorData[index];
+			(Type type, object[] customData) = data.serializedBehavior.GetSerializedData();
 
-			var type = Type.GetType(data.TypeName);
-			if (type == null)
-			{
-				return;
-			}
-
-			object[] customData = data.CustomData;
-
-			if (customData == null)
-			{
-				m_treeBuilder.AddBehavior(type);
-			}
-			else
+			if (customData != null)
 			{
 				m_treeBuilder.AddBehavior(type, customData);
 			}
-
-			int[] childrenIndices = data.ChildrenIndices;
-			if (childrenIndices != null)
+			else
 			{
-				for (int i = 0, count = childrenIndices.Length; i < count; ++i)
-				{
-					Deserialize(childrenIndices[i]);
-				}
+				m_treeBuilder.AddBehavior(type);
+			}
+
+			int[] children = data.childrenIndices;
+
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				Deserialize(children[i]);
 			}
 
 			m_treeBuilder.Finish();
 		}
 
+#if UNITY_EDITOR
 		[ContextMenu("Test")]
 		private void Test()
 		{
-			m_BehaviorSerializedData = new BehaviorSerializedData[3];
+			m_SerializedBehaviorData = new SerializedBehaviorsData[3];
 
-			m_BehaviorSerializedData[0] = new BehaviorSerializedData
+			m_SerializedBehaviorData[0] = new SerializedBehaviorsData
 			{
-				TypeName = typeof(Repeater).AssemblyQualifiedName,
-				CustomData = new object[] {3u},
-				ChildrenIndices = new[] {1}
-			};
-			m_BehaviorSerializedData[1] = new BehaviorSerializedData
-			{
-				TypeName = typeof(Inverter).AssemblyQualifiedName,
-				CustomData = null,
-				ChildrenIndices = new[] {2}
-			};
-			m_BehaviorSerializedData[2] = new BehaviorSerializedData
-			{
-				TypeName = typeof(SuccessBehavior).AssemblyQualifiedName,
-				CustomData = null,
-				ChildrenIndices = null
+				serializedBehavior = CreateSerializedBehavior<RepeaterSerializedBehavior>(),
+				childrenIndices = new[] {1}
 			};
 
-			OnEnable();
+			m_SerializedBehaviorData[1] = new SerializedBehaviorsData
+			{
+				serializedBehavior = CreateSerializedBehavior<InverterSerializedBehavior>(),
+				childrenIndices = new[] {2}
+			};
+
+			m_SerializedBehaviorData[2] = new SerializedBehaviorsData
+			{
+				serializedBehavior = CreateSerializedBehavior<SuccessSerializedBehavior>(),
+				childrenIndices = new int[0]
+			};
 		}
+
+		private SerializedBehavior CreateSerializedBehavior<T>() where T : SerializedBehavior
+		{
+			var serializedBehavior = CreateInstance<T>();
+			serializedBehavior.name = typeof(T).Name;
+			UnityEditor.AssetDatabase.AddObjectToAsset(serializedBehavior, this);
+			return serializedBehavior;
+		}
+#endif
 	}
 }
