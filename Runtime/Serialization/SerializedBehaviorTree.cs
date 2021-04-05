@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using UnityEngine;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
@@ -23,7 +24,7 @@ namespace Zor.BehaviorTree.Serialization
 
 		private TreeBuilder m_treeBuilder;
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override TreeRoot CreateTree(Blackboard blackboard)
 		{
 			return m_treeBuilder.Build(blackboard);
@@ -88,7 +89,7 @@ namespace Zor.BehaviorTree.Serialization
 			};
 		}
 
-		private SerializedBehavior CreateSerializedBehavior<T>() where T : SerializedBehavior
+		private SerializedBehavior_Base CreateSerializedBehavior<T>() where T : SerializedBehavior_Base
 		{
 			var serializedBehavior = CreateInstance<T>();
 			serializedBehavior.name = typeof(T).Name;

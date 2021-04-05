@@ -8,7 +8,7 @@ namespace Zor.BehaviorTree.Serialization
 	[Serializable]
 	public struct SerializedBehaviorsData
 	{
-		public SerializedBehavior serializedBehavior;
+		public SerializedBehavior_Base serializedBehavior;
 		public int[] childrenIndices;
 	}
 }

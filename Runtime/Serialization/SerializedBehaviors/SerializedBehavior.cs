@@ -1,12 +1,18 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
-using UnityEngine;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
+using Zor.BehaviorTree.Core;
 
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors
 {
-	public abstract class SerializedBehavior : ScriptableObject
+	public abstract class SerializedBehavior<T> : SerializedBehavior_Base where T : Behavior
 	{
-		public abstract (Type, object[]) GetSerializedData();
+		public sealed override Type serializedType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(T);
+		}
 	}
 }
