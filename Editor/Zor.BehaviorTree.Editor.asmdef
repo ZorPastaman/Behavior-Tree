@@ -1,0 +1,17 @@
+{
+    "name": "Zor.BehaviorTree.Editor",
+    "references": [
+        "GUID:fc46b8cac5ff37146ab1c263a8f743ed"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

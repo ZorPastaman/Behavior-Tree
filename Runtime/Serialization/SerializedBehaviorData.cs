@@ -6,9 +6,10 @@ using Zor.BehaviorTree.Serialization.SerializedBehaviors;
 namespace Zor.BehaviorTree.Serialization
 {
 	[Serializable]
-	public struct SerializedBehaviorsData
+	public struct SerializedBehaviorData
 	{
 		public SerializedBehavior_Base serializedBehavior;
 		public int[] childrenIndices;
+		public NodeGraphInfo nodeGraphInfo;
 	}
 }

@@ -7,6 +7,7 @@ using UnityEngine;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors;
+using Zor.BehaviorTree.Serialization.SerializedBehaviors.Composite;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors.StatusBehaviors;
 using Zor.SimpleBlackboard.Core;
@@ -20,7 +21,9 @@ namespace Zor.BehaviorTree.Serialization
 	)]
 	public sealed class SerializedBehaviorTree : SerializedBehaviorTree_Base
 	{
-		[SerializeField] private SerializedBehaviorsData[] m_SerializedBehaviorData;
+		[SerializeField] private SerializedBehaviorData[] m_SerializedBehaviorData;
+		[SerializeField] private int m_RootNode = -1;
+		[SerializeField] private NodeGraphInfo m_RootGraphInfo;
 
 		private TreeBuilder m_treeBuilder;
 
@@ -34,15 +37,15 @@ namespace Zor.BehaviorTree.Serialization
 		{
 			m_treeBuilder = new TreeBuilder();
 
-			if (m_SerializedBehaviorData != null && m_SerializedBehaviorData.Length > 0)
+			if (m_RootNode >= 0)
 			{
-				Deserialize(0);
+				Deserialize(m_RootNode);
 			}
 		}
 
 		private void Deserialize(int index)
 		{
-			SerializedBehaviorsData data = m_SerializedBehaviorData[index];
+			SerializedBehaviorData data = m_SerializedBehaviorData[index];
 			(Type type, object[] customData) = data.serializedBehavior.GetSerializedData();
 
 			if (customData != null)
@@ -68,25 +71,39 @@ namespace Zor.BehaviorTree.Serialization
 		[ContextMenu("Test")]
 		private void Test()
 		{
-			m_SerializedBehaviorData = new SerializedBehaviorsData[3];
+			m_SerializedBehaviorData = new SerializedBehaviorData[5];
 
-			m_SerializedBehaviorData[0] = new SerializedBehaviorsData
+			m_SerializedBehaviorData[0] = new SerializedBehaviorData
 			{
 				serializedBehavior = CreateSerializedBehavior<RepeaterSerializedBehavior>(),
-				childrenIndices = new[] {1}
+				childrenIndices = new[] {3}
 			};
 
-			m_SerializedBehaviorData[1] = new SerializedBehaviorsData
+			m_SerializedBehaviorData[1] = new SerializedBehaviorData
 			{
 				serializedBehavior = CreateSerializedBehavior<InverterSerializedBehavior>(),
 				childrenIndices = new[] {2}
 			};
 
-			m_SerializedBehaviorData[2] = new SerializedBehaviorsData
+			m_SerializedBehaviorData[2] = new SerializedBehaviorData
 			{
 				serializedBehavior = CreateSerializedBehavior<SuccessSerializedBehavior>(),
 				childrenIndices = new int[0]
 			};
+
+			m_SerializedBehaviorData[3] = new SerializedBehaviorData
+			{
+				serializedBehavior = CreateSerializedBehavior<SuccessSerializedBehavior>(),
+				childrenIndices = new int[0]
+			};
+
+			m_SerializedBehaviorData[4] = new SerializedBehaviorData
+			{
+				serializedBehavior = CreateSerializedBehavior<SelectorSerializedBehavior>(),
+				childrenIndices = new[] {0, 1}
+			};
+
+			m_RootNode = 4;
 		}
 
 		private SerializedBehavior_Base CreateSerializedBehavior<T>() where T : SerializedBehavior_Base
