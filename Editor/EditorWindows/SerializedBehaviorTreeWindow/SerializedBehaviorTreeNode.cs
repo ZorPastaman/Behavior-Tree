@@ -6,7 +6,6 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 using Zor.BehaviorTree.Core.Composites;
-using Zor.BehaviorTree.Core.Decorators;
 using Zor.BehaviorTree.Helpers;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors;
 
@@ -31,11 +30,8 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 			if (type.IsSubclassOf(typeof(Composite)))
 			{
-				AddCompositeOutput();
-			}
-			else if (type.IsSubclassOf(typeof(Decorator)))
-			{
-				AddDecoratorOutput();
+				var addButton = new Button {text = "+"};
+				titleButtonContainer.Add(addButton);
 			}
 
 			UIElementsHelper.CreatePropertyElements(new SerializedObject(m_dependedSerializedBehavior),
@@ -47,16 +43,19 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 		public void SetOutputCapacity(int capacity)
 		{
-			int difference = outputContainer.childCount - capacity;
-
-			for (int i = 0, count = -difference; i < count; ++i)
+			if (outputContainer.childCount > capacity)
 			{
-				outputContainer.RemoveAt(outputContainer.childCount - 1);
+				for (int i = 0, count = outputContainer.childCount - capacity; i < count; ++i)
+				{
+					outputContainer.RemoveAt(outputContainer.childCount - 1);
+				}
 			}
-
-			for (int i = 0; i < difference; ++i)
+			else if (outputContainer.childCount < capacity)
 			{
-				AddOutputPort();
+				for (int i = 0, count = capacity - outputContainer.childCount; i < count; ++i)
+				{
+					AddOutputPort();
+				}
 			}
 		}
 
@@ -66,22 +65,6 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			var outputPort = (Port)outputContainer[index];
 			var inputPort = (Port)child.inputContainer[0];
 			return outputPort.ConnectTo(inputPort);
-		}
-
-		private void AddCompositeOutput()
-		{
-			for (int i = 0; i < 2; ++i)
-			{
-				AddOutputPort();
-			}
-
-			var addButton = new Button(AddOutputPort) {text = "+"};
-			titleButtonContainer.Add(addButton);
-		}
-
-		private void AddDecoratorOutput()
-		{
-			AddOutputPort();
 		}
 
 		private void AddOutputPort()

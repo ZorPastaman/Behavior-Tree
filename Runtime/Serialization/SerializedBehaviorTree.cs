@@ -61,7 +61,14 @@ namespace Zor.BehaviorTree.Serialization
 
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
-				Deserialize(children[i]);
+				int child = children[i];
+
+				if (child < 0)
+				{
+					continue;
+				}
+
+				Deserialize(child);
 			}
 
 			m_treeBuilder.Finish();
