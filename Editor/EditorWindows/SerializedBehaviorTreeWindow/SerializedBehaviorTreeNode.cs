@@ -14,10 +14,13 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 	public sealed class SerializedBehaviorTreeNode : Node
 	{
 		[NotNull] private readonly SerializedBehavior_Base m_dependedSerializedBehavior;
+		[NotNull] private readonly SerializedBehaviorTreeGraph m_treeGraph;
 
-		public SerializedBehaviorTreeNode([NotNull] SerializedBehavior_Base dependedSerializedBehavior)
+		public SerializedBehaviorTreeNode([NotNull] SerializedBehavior_Base dependedSerializedBehavior,
+			[NotNull] SerializedBehaviorTreeGraph treeGraph)
 		{
 			m_dependedSerializedBehavior = dependedSerializedBehavior;
+			m_treeGraph = treeGraph;
 
 			Type type = m_dependedSerializedBehavior.serializedType;
 
@@ -30,7 +33,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 			if (type.IsSubclassOf(typeof(Composite)))
 			{
-				var addButton = new Button {text = "+"};
+				var addButton = new Button(AddNewOutputPort) {text = "+"};
 				titleButtonContainer.Add(addButton);
 			}
 
@@ -73,6 +76,22 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 				typeof(BehaviorConnection));
 			childPort.portName = "Child";
 			outputContainer.Add(childPort);
+
+			var removeButton = new Button(() => RemovePort(childPort)) {text = "X"};
+			childPort.Add(removeButton);
+		}
+
+		private void AddNewOutputPort()
+		{
+			AddOutputPort();
+			m_treeGraph.OnPortAdded(this);
+		}
+
+		private void RemovePort([NotNull] Port port)
+		{
+			int index = outputContainer.IndexOf(port);
+			outputContainer.RemoveAt(index);
+			m_treeGraph.OnPortRemoved(this, index);
 		}
 	}
 }

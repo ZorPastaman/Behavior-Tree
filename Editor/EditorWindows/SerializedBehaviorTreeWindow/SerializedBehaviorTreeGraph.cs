@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -7,12 +8,15 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zor.BehaviorTree.Core.Composites;
+using Zor.BehaviorTree.Core.Decorators;
 using Zor.BehaviorTree.Serialization;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors;
+using Object = UnityEngine.Object;
 
 namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 {
-	public sealed class SerializedBehaviorTreeGraph : GraphView
+	public sealed class SerializedBehaviorTreeGraph : GraphView, IDisposable
 	{
 		private static readonly Vector2 s_defaultSize = new Vector2(200f, 200f);
 
@@ -20,9 +24,16 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 		[NotNull] private readonly RootNode m_entry;
 		[NotNull] private readonly List<SerializedBehaviorTreeNode> m_nodes = new List<SerializedBehaviorTreeNode>();
 
-		public SerializedBehaviorTreeGraph([NotNull] SerializedBehaviorTree serializedBehaviorTree)
+		private EditorWindow m_editorWindow;
+		private SearchWindowProvider m_searchWindowProvider;
+
+		public SerializedBehaviorTreeGraph([NotNull] SerializedBehaviorTree serializedBehaviorTree,
+			[NotNull] EditorWindow editorWindow)
 		{
 			m_serializedBehaviorTree = serializedBehaviorTree;
+			m_editorWindow = editorWindow;
+			m_searchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
+			m_searchWindowProvider.Initialize(this);
 
 			SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
@@ -34,6 +45,10 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			Insert(0, background);
 			background.StretchToParentSize();
 
+			var minimap = new MiniMap {anchored = true};
+			minimap.SetPosition(new Rect(10f, 10f, 200f, 200f));
+			Add(minimap);
+
 			var serializedObject = new SerializedObject(serializedBehaviorTree);
 
 			m_entry = CreateEntryPoint(serializedObject);
@@ -42,6 +57,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			Parse(serializedObject);
 
 			graphViewChanged += OnGraphViewChanged;
+			nodeCreationRequest += OnCreateNode;
 		}
 
 		public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -57,6 +73,97 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			});
 
 			return answer;
+		}
+
+		public void OnPortAdded([NotNull] SerializedBehaviorTreeNode node)
+		{
+			var serializedBehaviorTree = new SerializedObject(m_serializedBehaviorTree);
+			SerializedProperty serializedBehaviors = serializedBehaviorTree.FindProperty("m_SerializedBehaviorData");
+
+			for (int i = 0, count = serializedBehaviors.arraySize; i < count; ++i)
+			{
+				SerializedProperty serializedBehavior = serializedBehaviors.GetArrayElementAtIndex(i);
+
+				if (serializedBehavior.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
+					node.dependedSerializedBehavior)
+				{
+					SerializedProperty childrenIndices = serializedBehavior.FindPropertyRelative("childrenIndices");
+					++childrenIndices.arraySize;
+					childrenIndices.GetArrayElementAtIndex(childrenIndices.arraySize - 1).intValue = -1;
+				}
+			}
+
+			serializedBehaviorTree.ApplyModifiedProperties();
+		}
+
+		public void OnPortRemoved([NotNull] SerializedBehaviorTreeNode node, int index)
+		{
+			var serializedBehaviorTree = new SerializedObject(m_serializedBehaviorTree);
+			SerializedProperty serializedBehaviors = serializedBehaviorTree.FindProperty("m_SerializedBehaviorData");
+
+			for (int i = 0, count = serializedBehaviors.arraySize; i < count; ++i)
+			{
+				SerializedProperty serializedBehavior = serializedBehaviors.GetArrayElementAtIndex(i);
+
+				if (serializedBehavior.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
+					node.dependedSerializedBehavior)
+				{
+					SerializedProperty childrenIndices = serializedBehavior.FindPropertyRelative("childrenIndices");
+					childrenIndices.DeleteArrayElementAtIndex(index);
+				}
+			}
+
+			serializedBehaviorTree.ApplyModifiedProperties();
+		}
+
+		public void CreateNewBehavior([NotNull] Type behaviorType, Vector2 position)
+		{
+			var behavior = (SerializedBehavior_Base)ScriptableObject.CreateInstance(behaviorType);
+			behavior.name = behaviorType.Name;
+			AssetDatabase.AddObjectToAsset(behavior, m_serializedBehaviorTree);
+			var node = new SerializedBehaviorTreeNode(behavior, this);
+			AddElement(node);
+			m_nodes.Add(node);
+
+			var serializedTree = new SerializedObject(m_serializedBehaviorTree);
+			SerializedProperty serializedDatas = serializedTree.FindProperty("m_SerializedBehaviorData");
+			int index = serializedDatas.arraySize++;
+			SerializedProperty serializedData = serializedDatas.GetArrayElementAtIndex(index);
+			serializedData.FindPropertyRelative("serializedBehavior").objectReferenceValue = behavior;
+			serializedData.FindPropertyRelative("nodeGraphInfo").FindPropertyRelative("position").vector2Value =
+				position;
+			position -= m_editorWindow.position.position;
+			node.SetPosition(new Rect(position, s_defaultSize));
+
+			SerializedProperty children = serializedData.FindPropertyRelative("childrenIndices");
+			if (behavior.serializedType.IsSubclassOf(typeof(Composite)))
+			{
+				node.SetOutputCapacity(2);
+				children.arraySize = 2;
+				children.GetArrayElementAtIndex(0).intValue = -1;
+				children.GetArrayElementAtIndex(1).intValue = -1;
+			}
+			else if (behavior.serializedType.IsSubclassOf(typeof(Decorator)))
+			{
+				node.SetOutputCapacity(1);
+				children.arraySize = 1;
+				children.GetArrayElementAtIndex(0).intValue = -1;
+			}
+			else
+			{
+				node.SetOutputCapacity(0);
+				children.arraySize = 0;
+			}
+
+			node.RefreshExpandedState();
+			node.RefreshPorts();
+
+			serializedTree.ApplyModifiedProperties();
+		}
+
+		public void Dispose()
+		{
+			Object.DestroyImmediate(m_searchWindowProvider);
 		}
 
 		[NotNull]
@@ -204,7 +311,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 					}
 				}
 
-				Object.DestroyImmediate(datas.GetArrayElementAtIndex(nodeToRemoveIndex).FindPropertyRelative("serializedBehavior").objectReferenceValue, true);
+				Undo.DestroyObjectImmediate(datas.GetArrayElementAtIndex(nodeToRemoveIndex).FindPropertyRelative("serializedBehavior").objectReferenceValue);
 
 				int datasSize = datas.arraySize;
 				do
@@ -217,6 +324,8 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 				{
 					--rootNode.intValue;
 				}
+
+				m_nodes.Remove(nodeToRemove);
 			}
 
 			List<Edge> edgesToCreate = graphViewChange.edgesToCreate ?? new List<Edge>(0);
@@ -301,10 +410,10 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 		}
 
 		[NotNull]
-		private static SerializedBehaviorTreeNode CreateNode([NotNull] SerializedBehavior_Base serializedBehavior,
+		private SerializedBehaviorTreeNode CreateNode([NotNull] SerializedBehavior_Base serializedBehavior,
 			Vector2 position)
 		{
-			var node = new SerializedBehaviorTreeNode(serializedBehavior);
+			var node = new SerializedBehaviorTreeNode(serializedBehavior, this);
 			node.SetPosition(new Rect(position, s_defaultSize));
 
 			node.RefreshExpandedState();
@@ -327,6 +436,11 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			}
 
 			return null;
+		}
+
+		private void OnCreateNode(NodeCreationContext context)
+		{
+			SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), m_searchWindowProvider);
 		}
 	}
 }
