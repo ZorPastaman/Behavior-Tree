@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Decorators;
-using Zor.BehaviorTree.Core.StatusBehaviors;
+using Zor.BehaviorTree.Core.Leaves.StatusBehaviors;
 
 namespace Zor.BehaviorTree.Tests
 {
@@ -14,8 +14,8 @@ namespace Zor.BehaviorTree.Tests
 		public static void InverterTest()
 		{
 			var builder = new TreeBuilder();
-			builder.AddBehavior<Inverter>()
-				.AddBehavior<SuccessBehavior>().Finish()
+			builder.AddDecorator<Inverter>()
+				.AddLeaf<SuccessBehavior>().Finish()
 			.Finish();
 			TreeRoot treeRoot = builder.Build();
 			treeRoot.Initialize();
@@ -24,8 +24,8 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Inverter>()
-				.AddBehavior<RunningBehavior>().Finish()
+			builder.AddDecorator<Inverter>()
+				.AddLeaf<RunningBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
@@ -34,8 +34,8 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Inverter>()
-				.AddBehavior<FailureBehavior>().Finish()
+			builder.AddDecorator<Inverter>()
+				.AddLeaf<FailureBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
@@ -44,8 +44,8 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Inverter>()
-				.AddBehavior<ErrorBehavior>().Finish()
+			builder.AddDecorator<Inverter>()
+				.AddLeaf<ErrorBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
@@ -58,8 +58,8 @@ namespace Zor.BehaviorTree.Tests
 		public static void RepeatTests()
 		{
 			var builder = new TreeBuilder();
-			builder.AddBehavior<Repeater>(3u)
-				.AddBehavior<SuccessBehavior>().Finish()
+			builder.AddDecorator<Repeater, uint>(3u)
+				.AddLeaf<SuccessBehavior>().Finish()
 			.Finish();
 			TreeRoot treeRoot = builder.Build();
 			treeRoot.Initialize();
@@ -72,8 +72,8 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Repeater>(3u)
-				.AddBehavior<RunningBehavior>().Finish()
+			builder.AddDecorator<Repeater, uint>(3u)
+				.AddLeaf<RunningBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
@@ -86,8 +86,8 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Repeater>(3u)
-				.AddBehavior<FailureBehavior>().Finish()
+			builder.AddDecorator<Repeater, uint>(3u)
+				.AddLeaf<FailureBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
@@ -100,8 +100,8 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
-			builder.AddBehavior<Repeater>(3u)
-				.AddBehavior<ErrorBehavior>().Finish()
+			builder.AddDecorator<Repeater, uint>(3u)
+				.AddLeaf<ErrorBehavior>().Finish()
 			.Finish();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();

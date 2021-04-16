@@ -1,6 +1,7 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Zor.SimpleBlackboard.Core;
@@ -11,21 +12,6 @@ namespace Zor.BehaviorTree.Core
 	{
 		private Blackboard m_blackboard;
 		private Status m_status = Status.Idle;
-
-		public static T Create<T>() where T : Behavior, new()
-		{
-			return new T();
-		}
-
-		public static Behavior Create([NotNull] Type behaviorType)
-		{
-			return (Behavior)Activator.CreateInstance(behaviorType);
-		}
-
-		public static Behavior Create([NotNull] Type behaviorType, params object[] parameters)
-		{
-			return (Behavior)Activator.CreateInstance(behaviorType, parameters);
-		}
 
 		public Status status
 		{
@@ -92,5 +78,48 @@ namespace Zor.BehaviorTree.Core
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected virtual void OnAbort() {}
+
+		protected static void CreateSetup([NotNull] Behavior behavior, [NotNull] object[] parameters)
+		{
+			int parametersCount = parameters.Length;
+			var parameterTypes = new Type[parametersCount];
+
+			for (int i = 0; i < parametersCount; ++i)
+			{
+				parameterTypes[i] = parameters[i].GetType();
+			}
+
+			Type baseSetupableType;
+
+			switch (parametersCount)
+			{
+				case 1:
+					baseSetupableType = typeof(ISetupable<>);
+					break;
+				case 2:
+					baseSetupableType = typeof(ISetupable<,>);
+					break;
+				case 3:
+					baseSetupableType = typeof(ISetupable<,,>);
+					break;
+				case 4:
+					baseSetupableType = typeof(ISetupable<,,,>);
+					break;
+				case 5:
+					baseSetupableType = typeof(ISetupable<,,,,>);
+					break;
+				case 6:
+					baseSetupableType = typeof(ISetupable<,,,,,>);
+					break;
+				case 7:
+					baseSetupableType = typeof(ISetupable<,,,,,,>);
+					break;
+				default:
+					return;
+			}
+
+			Type setupableType = baseSetupableType.MakeGenericType(parameterTypes);
+			setupableType.InvokeMember("Setup", BindingFlags.InvokeMethod, null, behavior, parameters);
+		}
 	}
 }

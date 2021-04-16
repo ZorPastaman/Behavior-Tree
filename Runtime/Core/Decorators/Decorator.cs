@@ -11,28 +11,6 @@ namespace Zor.BehaviorTree.Core.Decorators
 	{
 		[NotNull] protected Behavior child;
 
-		public static T Create<T>([NotNull] Behavior child) where T : Decorator, new()
-		{
-			return new T {child = child};
-		}
-
-		public static Decorator Create([NotNull] Type decoratorType, [NotNull] Behavior child)
-		{
-			var answer = (Decorator)Activator.CreateInstance(decoratorType);
-			answer.child = child;
-
-			return answer;
-		}
-
-		public static Decorator Create([NotNull] Type decoratorType, [NotNull] Behavior child,
-			params object[] parameters)
-		{
-			var answer = (Decorator)Activator.CreateInstance(decoratorType, parameters);
-			answer.child = child;
-
-			return answer;
-		}
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void Initialize()
 		{
@@ -59,6 +37,109 @@ namespace Zor.BehaviorTree.Core.Decorators
 		{
 			base.ApplyBlackboard(blackboardToApply);
 			child.ApplyBlackboard(blackboardToApply);
+		}
+
+		public static TDecorator Create<TDecorator>([NotNull] Behavior child)
+			where TDecorator : Decorator, INotSetupable, new()
+		{
+			var decorator = new TDecorator {child = child};
+			return decorator;
+		}
+
+		public static TDecorator Create<TDecorator, TArg>([NotNull] Behavior child, TArg arg)
+			where TDecorator : Decorator, ISetupable<TArg>, new()
+		{
+			var decorator = new TDecorator();
+			decorator.Setup(arg);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static TDecorator Create<TDecorator, TArg0, TArg1>([NotNull] Behavior child, TArg0 arg0, TArg1 arg1)
+			where TDecorator : Decorator, ISetupable<TArg0, TArg1>, new()
+		{
+			var decorator = new TDecorator();
+			decorator.Setup(arg0, arg1);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2>([NotNull] Behavior child,
+			TArg0 arg0, TArg1 arg1, TArg2 arg2)
+			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2>, new()
+		{
+			var decorator = new TDecorator();
+			decorator.Setup(arg0, arg1, arg2);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3>([NotNull] Behavior child,
+			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3)
+			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
+		{
+			var decorator = new TDecorator();
+			decorator.Setup(arg0, arg1, arg2, arg3);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4>([NotNull] Behavior child,
+			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
+			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
+		{
+			var decorator = new TDecorator();
+			decorator.Setup(arg0, arg1, arg2, arg3, arg4);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>([NotNull] Behavior child,
+			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
+			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
+		{
+			var decorator = new TDecorator();
+			decorator.Setup(arg0, arg1, arg2, arg3, arg4, arg5);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
+			[NotNull] Behavior child,
+			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, new()
+		{
+			var decorator = new TDecorator();
+			decorator.Setup(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
+			[NotNull] Behavior child,
+			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
+			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, new()
+		{
+			var decorator = new TDecorator();
+			decorator.Setup(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static Decorator Create([NotNull] Type decoratorType, [NotNull] Behavior child)
+		{
+			var decorator = (Decorator)Activator.CreateInstance(decoratorType);
+			decorator.child = child;
+			return decorator;
+		}
+
+		public static Decorator Create([NotNull] Type decoratorType, [NotNull] Behavior child,
+			[NotNull] params object[] parameters)
+		{
+			var decorator = (Decorator)Activator.CreateInstance(decoratorType);
+			CreateSetup(decorator, parameters);
+			decorator.child = child;
+			return decorator;
 		}
 	}
 }

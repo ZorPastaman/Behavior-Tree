@@ -2,28 +2,25 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
-using UnityEngine.Scripting;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
-	[UsedImplicitly, Preserve]
-	public sealed class Parallel : Composite
+	public sealed class Parallel : Composite, ISetupable<Parallel.Mode>, ISetupable<Parallel.Mode, Parallel.Mode>
 	{
 		private int m_success;
 		private int m_failures;
 		private bool m_initialTick;
 
-		private readonly Mode m_successMode;
-		private readonly Mode m_failureMode;
+		private Mode m_successMode;
+		private Mode m_failureMode;
 
-		public Parallel(Mode mode)
+		public void Setup(Mode mode)
 		{
 			m_successMode = mode;
 			m_failureMode = mode;
 		}
 
-		public Parallel(Mode successMode, Mode failureMode)
+		public void Setup(Mode successMode, Mode failureMode)
 		{
 			m_successMode = successMode;
 			m_failureMode = failureMode;

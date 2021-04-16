@@ -1,13 +1,10 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
-using UnityEngine.Scripting;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
-	[UsedImplicitly, Preserve]
-	public sealed class Selector : Composite
+	public sealed class Selector : Composite, INotSetupable
 	{
 		private int m_currentChildIndex;
 
