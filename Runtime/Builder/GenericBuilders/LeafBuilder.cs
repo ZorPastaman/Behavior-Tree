@@ -6,16 +6,16 @@ using Zor.BehaviorTree.Core.Leaves;
 
 namespace Zor.BehaviorTree.Builder.GenericBuilders
 {
-	internal sealed class LeafBuilder<TLeaf> : IBehaviorBuilder where TLeaf : Leaf, INotSetupable, new()
+	internal sealed class LeafBuilder<TLeaf> : LeafBuilder where TLeaf : Leaf, INotSetupable, new()
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf>();
 		}
 	}
 
-	internal sealed class LeafBuilder<TLeaf, TArg> : IBehaviorBuilder where TLeaf : Leaf, ISetupable<TArg>, new()
+	internal sealed class LeafBuilder<TLeaf, TArg> : LeafBuilder where TLeaf : Leaf, ISetupable<TArg>, new()
 	{
 		private readonly TArg m_arg;
 
@@ -25,13 +25,13 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg>(m_arg);
 		}
 	}
 
-	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1> : IBehaviorBuilder
+	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1> : LeafBuilder
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -44,13 +44,13 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1>(m_arg0, m_arg1);
 		}
 	}
 
-	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2> : IBehaviorBuilder
+	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2> : LeafBuilder
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -65,13 +65,13 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2>(m_arg0, m_arg1, m_arg2);
 		}
 	}
 
-	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3> : IBehaviorBuilder
+	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3> : LeafBuilder
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -88,13 +88,13 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3>(m_arg0, m_arg1, m_arg2, m_arg3);
 		}
 	}
 
-	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4> : IBehaviorBuilder
+	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4> : LeafBuilder
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -113,14 +113,14 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4>(
 				m_arg0, m_arg1, m_arg2, m_arg3, m_arg4);
 		}
 	}
 
-	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5> : IBehaviorBuilder
+	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5> : LeafBuilder
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -141,14 +141,14 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
 				m_arg0, m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
 		}
 	}
 
-	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> : IBehaviorBuilder
+	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> : LeafBuilder
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -171,7 +171,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 				m_arg0, m_arg1, m_arg2, m_arg3, m_arg4, m_arg5, m_arg6);
@@ -179,7 +179,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 	}
 
 	internal sealed class LeafBuilder<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> :
-		IBehaviorBuilder
+		LeafBuilder
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -205,7 +205,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 				m_arg0, m_arg1, m_arg2, m_arg3, m_arg4, m_arg5, m_arg6, m_arg7);

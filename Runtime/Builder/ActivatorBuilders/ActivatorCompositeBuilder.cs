@@ -8,17 +8,17 @@ using Zor.BehaviorTree.Core.Composites;
 
 namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 {
-	internal sealed class CompositeBuilder : IBehaviorBuilder
+	internal sealed class ActivatorCompositeBuilder : CompositeBuilder
 	{
 		[NotNull] private readonly Type m_nodeType;
 
-		public CompositeBuilder([NotNull] Type nodeType)
+		public ActivatorCompositeBuilder([NotNull] Type nodeType)
 		{
 			m_nodeType = nodeType;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create(m_nodeType, children);
 		}

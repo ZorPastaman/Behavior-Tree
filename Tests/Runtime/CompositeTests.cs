@@ -45,12 +45,12 @@ namespace Zor.BehaviorTree.Tests
 
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddComposite<ActiveSelector>()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Finish()
-			.Finish();
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Complete()
+			.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			object root = rootField.GetValue(treeRoot);
 			var children = (Behavior[])childrenField.GetValue(root);
@@ -156,12 +156,12 @@ namespace Zor.BehaviorTree.Tests
 
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddComposite<Parallel, Parallel.Mode>(Parallel.Mode.All)
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Finish()
-			.Finish();
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Complete()
+			.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			object root = rootField.GetValue(treeRoot);
 			var children = (Behavior[])childrenField.GetValue(root);
@@ -231,12 +231,12 @@ namespace Zor.BehaviorTree.Tests
 
 			treeBuilder = new TreeBuilder();
 			treeBuilder.AddComposite<Parallel, Parallel.Mode>(Parallel.Mode.Any)
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Finish()
-			.Finish();
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Complete()
+			.Complete();
 			treeRoot = treeBuilder.Build(blackboard);
 			root = rootField.GetValue(treeRoot);
 			children = (Behavior[])childrenField.GetValue(root);
@@ -300,12 +300,12 @@ namespace Zor.BehaviorTree.Tests
 
 			treeBuilder = new TreeBuilder();
 			treeBuilder.AddComposite<Parallel, Parallel.Mode, Parallel.Mode>(Parallel.Mode.All, Parallel.Mode.Any)
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Finish()
-			.Finish();
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Complete()
+			.Complete();
 			treeRoot = treeBuilder.Build(blackboard);
 			root = rootField.GetValue(treeRoot);
 			children = (Behavior[])childrenField.GetValue(root);
@@ -363,12 +363,12 @@ namespace Zor.BehaviorTree.Tests
 
 			treeBuilder = new TreeBuilder();
 			treeBuilder.AddComposite<Parallel, Parallel.Mode, Parallel.Mode>(Parallel.Mode.Any, Parallel.Mode.All)
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Finish()
-			.Finish();
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Complete()
+			.Complete();
 			treeRoot = treeBuilder.Build(blackboard);
 			root = rootField.GetValue(treeRoot);
 			children = (Behavior[])childrenField.GetValue(root);
@@ -426,12 +426,12 @@ namespace Zor.BehaviorTree.Tests
 
 			treeBuilder = new TreeBuilder();
 			treeBuilder.AddComposite<Parallel, Parallel.Mode>(Parallel.Mode.All)
-				.AddLeaf<SetStructValue<int>, int, BlackboardPropertyName>(100, propertyNames[0]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Finish()
-			.Finish();
+				.AddLeaf<SetStructValue<int>, int, BlackboardPropertyName>(100, propertyNames[0]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Complete()
+			.Complete();
 			treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -475,12 +475,12 @@ namespace Zor.BehaviorTree.Tests
 
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddComposite<Selector>()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Finish()
-			.Finish();
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Complete()
+			.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			object root = rootField.GetValue(treeRoot);
 			treeRoot.Initialize();
@@ -542,12 +542,12 @@ namespace Zor.BehaviorTree.Tests
 
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddComposite<Sequence>()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Finish()
-				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Finish()
-			.Finish();
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[0]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[1]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[2]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[3]).Complete()
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(propertyNames[4]).Complete()
+			.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			object root = rootField.GetValue(treeRoot);
 			treeRoot.Initialize();

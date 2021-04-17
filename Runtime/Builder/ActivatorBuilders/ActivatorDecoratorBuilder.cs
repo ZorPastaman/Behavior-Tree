@@ -8,19 +8,19 @@ using Zor.BehaviorTree.Core.Decorators;
 
 namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 {
-	internal sealed class DecoratorBuilder : IBehaviorBuilder
+	internal sealed class ActivatorDecoratorBuilder : DecoratorBuilder
 	{
 		[NotNull] private readonly Type m_nodeType;
 
-		public DecoratorBuilder([NotNull] Type nodeType)
+		public ActivatorDecoratorBuilder([NotNull] Type nodeType)
 		{
 			m_nodeType = nodeType;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Decorator Build(Behavior child)
 		{
-			return Decorator.Create(m_nodeType, children[0]);
+			return Decorator.Create(m_nodeType, child);
 		}
 	}
 }

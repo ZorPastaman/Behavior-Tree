@@ -104,7 +104,7 @@ namespace Zor.BehaviorTree.Core.Composites
 			base.End();
 		}
 
-		[Serializable, Flags]
+		[Flags]
 		public enum Mode : byte
 		{
 			Any = 1 << 0,

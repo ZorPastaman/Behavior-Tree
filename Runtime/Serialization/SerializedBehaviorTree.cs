@@ -71,7 +71,7 @@ namespace Zor.BehaviorTree.Serialization
 				Deserialize(child);
 			}
 
-			m_treeBuilder.Finish();
+			m_treeBuilder.Complete();
 		}
 
 #if UNITY_EDITOR

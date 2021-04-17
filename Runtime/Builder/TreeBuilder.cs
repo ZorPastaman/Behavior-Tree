@@ -16,8 +16,8 @@ namespace Zor.BehaviorTree.Builder
 {
 	public sealed class TreeBuilder
 	{
-		private readonly Stack<BehaviorBuilderWrapper> m_behaviorBuilders = new Stack<BehaviorBuilderWrapper>();
-		private BehaviorBuilderWrapper m_rootLeaf;
+		private readonly List<BehaviorBuilder> m_behaviorBuilders = new List<BehaviorBuilder>();
+		private readonly Stack<int> m_currentBuilderIndices = new Stack<int>();
 
 		public TreeBuilder AddLeaf<TLeaf>() where TLeaf : Leaf, INotSetupable, new()
 		{
@@ -95,7 +95,8 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
-		public TreeBuilder AddDecorator<TDecorator, TArg>(TArg arg) where TDecorator : Decorator, ISetupable<TArg>, new()
+		public TreeBuilder AddDecorator<TDecorator, TArg>(TArg arg)
+			where TDecorator : Decorator, ISetupable<TArg>, new()
 		{
 			AddBehaviorBuilder(new DecoratorBuilder<TDecorator, TArg>(arg));
 			return this;
@@ -165,7 +166,8 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
-		public TreeBuilder AddComposite<TComposite, TArg>(TArg arg) where TComposite : Composite, ISetupable<TArg>, new()
+		public TreeBuilder AddComposite<TComposite, TArg>(TArg arg)
+			where TComposite : Composite, ISetupable<TArg>, new()
 		{
 			AddBehaviorBuilder(new CompositeBuilder<TComposite, TArg>(arg));
 			return this;
@@ -231,19 +233,19 @@ namespace Zor.BehaviorTree.Builder
 
 		public TreeBuilder AddBehavior([NotNull] Type nodeType)
 		{
-			IBehaviorBuilder behaviorBuilder;
+			BehaviorBuilder behaviorBuilder;
 
-			if (nodeType.IsSubclassOf(typeof(Composite)))
+			if (nodeType.IsSubclassOf(typeof(Leaf)))
 			{
-				behaviorBuilder = new CompositeBuilder(nodeType);
+				behaviorBuilder = new ActivatorLeafBuilder(nodeType);
 			}
 			else if (nodeType.IsSubclassOf(typeof(Decorator)))
 			{
-				behaviorBuilder = new DecoratorBuilder(nodeType);
+				behaviorBuilder = new ActivatorDecoratorBuilder(nodeType);
 			}
-			else if (nodeType.IsSubclassOf(typeof(Leaf)))
+			else if (nodeType.IsSubclassOf(typeof(Composite)))
 			{
-				behaviorBuilder = new LeafBuilder(nodeType);
+				behaviorBuilder = new ActivatorCompositeBuilder(nodeType);
 			}
 			else
 			{
@@ -257,19 +259,19 @@ namespace Zor.BehaviorTree.Builder
 
 		public TreeBuilder AddBehavior([NotNull] Type nodeType, params object[] customData)
 		{
-			IBehaviorBuilder behaviorBuilder;
+			BehaviorBuilder behaviorBuilder;
 
-			if (nodeType.IsSubclassOf(typeof(Composite)))
+			if (nodeType.IsSubclassOf(typeof(Leaf)))
 			{
-				behaviorBuilder = new CustomCompositeBuilder(nodeType, customData);
+				behaviorBuilder = new CustomActivatorLeafBuilder(nodeType, customData);
 			}
 			else if (nodeType.IsSubclassOf(typeof(Decorator)))
 			{
-				behaviorBuilder = new CustomDecoratorBuilder(nodeType, customData);
+				behaviorBuilder = new CustomActivatorDecoratorBuilder(nodeType, customData);
 			}
-			else if (nodeType.IsSubclassOf(typeof(Leaf)))
+			else if (nodeType.IsSubclassOf(typeof(Composite)))
 			{
-				behaviorBuilder = new CustomLeafBuilder(nodeType, customData);
+				behaviorBuilder = new CustomActivatorCompositeBuilder(nodeType, customData);
 			}
 			else
 			{
@@ -282,9 +284,9 @@ namespace Zor.BehaviorTree.Builder
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public TreeBuilder Finish()
+		public TreeBuilder Complete()
 		{
-			m_rootLeaf = m_behaviorBuilders.Pop();
+			m_currentBuilderIndices.Pop();
 			return this;
 		}
 
@@ -295,20 +297,77 @@ namespace Zor.BehaviorTree.Builder
 
 		public TreeRoot Build([NotNull] Blackboard blackboard)
 		{
-			Behavior rootLeaf = m_rootLeaf.Build();
-			return new TreeRoot(blackboard, rootLeaf);
+			Behavior rootBehavior = BuildBehavior(0);
+			return new TreeRoot(blackboard, rootBehavior);
 		}
 
-		private void AddBehaviorBuilder([NotNull] IBehaviorBuilder behaviorBuilder)
+		private void AddBehaviorBuilder([NotNull] BehaviorBuilder behaviorBuilder)
 		{
-			var behaviorBuilderWrapper = new BehaviorBuilderWrapper(behaviorBuilder);
+			int index = m_behaviorBuilders.Count;
 
-			if (m_behaviorBuilders.Count > 0)
+			if (index > 0)
 			{
-				m_behaviorBuilders.Peek().AddChild(behaviorBuilderWrapper);
+				BehaviorBuilder currentBuilder = m_behaviorBuilders[m_currentBuilderIndices.Peek()];
+
+				switch (currentBuilder)
+				{
+					case CompositeBuilder compositeBuilder:
+						compositeBuilder.AddChildIndex(index);
+						break;
+					case DecoratorBuilder decoratorBuilder:
+						decoratorBuilder.childIndex = index;
+						break;
+				}
 			}
 
-			m_behaviorBuilders.Push(behaviorBuilderWrapper);
+			m_behaviorBuilders.Add(behaviorBuilder);
+			m_currentBuilderIndices.Push(index);
+		}
+
+		[NotNull, Pure]
+		private Behavior BuildBehavior(int index)
+		{
+			BehaviorBuilder behaviorBuilder = m_behaviorBuilders[index];
+
+			switch (behaviorBuilder)
+			{
+				case LeafBuilder leafBuilder:
+					return BuildLeaf(leafBuilder);
+				case DecoratorBuilder decoratorBuilder:
+					return BuildDecorator(decoratorBuilder);
+				case CompositeBuilder compositeBuilder:
+					return BuildComposite(compositeBuilder);
+				default:
+					throw new Exception();
+			}
+		}
+
+		[NotNull, MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		private static Leaf BuildLeaf([NotNull] LeafBuilder leafBuilder)
+		{
+			return leafBuilder.Build();
+		}
+
+		[NotNull, MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		private Decorator BuildDecorator([NotNull] DecoratorBuilder decoratorBuilder)
+		{
+			Behavior child = BuildBehavior(decoratorBuilder.childIndex);
+			return decoratorBuilder.Build(child);
+		}
+
+		[NotNull, Pure]
+		private Behavior BuildComposite([NotNull] CompositeBuilder compositeBuilder)
+		{
+			int childCount = compositeBuilder.childCount;
+			var behaviors = new Behavior[childCount];
+
+			for (int i = 0; i < childCount; ++i)
+			{
+				int childIndex = compositeBuilder.GetChildIndex(i);
+				behaviors[i] = BuildBehavior(childIndex);
+			}
+
+			return compositeBuilder.Build(behaviors);
 		}
 	}
 }

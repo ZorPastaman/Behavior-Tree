@@ -17,7 +17,7 @@ namespace Zor.BehaviorTree.Tests
 			const string value = "value";
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<RemoveClassValue<string>, BlackboardPropertyName>(propertyName).Finish();
+			treeBuilder.AddLeaf<RemoveClassValue<string>, BlackboardPropertyName>(propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -35,7 +35,7 @@ namespace Zor.BehaviorTree.Tests
 			const int value = 3;
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<RemoveStructValue<int>, BlackboardPropertyName>(propertyName).Finish();
+			treeBuilder.AddLeaf<RemoveStructValue<int>, BlackboardPropertyName>(propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -54,7 +54,7 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddLeaf<SetClassValue<string>, string, BlackboardPropertyName>(value, propertyName)
-				.Finish();
+				.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -72,7 +72,7 @@ namespace Zor.BehaviorTree.Tests
 			const int value = -2;
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<SetStructValue<int>, int, BlackboardPropertyName>(value, propertyName).Finish();
+			treeBuilder.AddLeaf<SetStructValue<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 

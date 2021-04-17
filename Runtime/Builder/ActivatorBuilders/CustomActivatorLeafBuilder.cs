@@ -3,26 +3,25 @@
 using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
-using Zor.BehaviorTree.Core;
-using Zor.BehaviorTree.Core.Composites;
+using Zor.BehaviorTree.Core.Leaves;
 
 namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 {
-	internal sealed class CustomCompositeBuilder : IBehaviorBuilder
+	internal sealed class CustomActivatorLeafBuilder : LeafBuilder
 	{
 		[NotNull] private readonly Type m_nodeType;
 		[NotNull] private readonly object[] m_customData;
 
-		public CustomCompositeBuilder([NotNull] Type nodeType, [NotNull] object[] customData)
+		public CustomActivatorLeafBuilder([NotNull] Type nodeType, [NotNull] object[] customData)
 		{
 			m_nodeType = nodeType;
 			m_customData = customData;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Leaf Build()
 		{
-			return Composite.Create(m_nodeType, children, m_customData);
+			return Leaf.Create(m_nodeType, m_customData);
 		}
 	}
 }

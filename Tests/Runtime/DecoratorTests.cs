@@ -15,8 +15,8 @@ namespace Zor.BehaviorTree.Tests
 		{
 			var builder = new TreeBuilder();
 			builder.AddDecorator<Inverter>()
-				.AddLeaf<SuccessBehavior>().Finish()
-			.Finish();
+				.AddLeaf<SuccessBehavior>().Complete()
+			.Complete();
 			TreeRoot treeRoot = builder.Build();
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
@@ -25,8 +25,8 @@ namespace Zor.BehaviorTree.Tests
 
 			builder = new TreeBuilder();
 			builder.AddDecorator<Inverter>()
-				.AddLeaf<RunningBehavior>().Finish()
-			.Finish();
+				.AddLeaf<RunningBehavior>().Complete()
+			.Complete();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Running, treeRoot.Tick());
@@ -35,8 +35,8 @@ namespace Zor.BehaviorTree.Tests
 
 			builder = new TreeBuilder();
 			builder.AddDecorator<Inverter>()
-				.AddLeaf<FailureBehavior>().Finish()
-			.Finish();
+				.AddLeaf<FailureBehavior>().Complete()
+			.Complete();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
@@ -45,8 +45,8 @@ namespace Zor.BehaviorTree.Tests
 
 			builder = new TreeBuilder();
 			builder.AddDecorator<Inverter>()
-				.AddLeaf<ErrorBehavior>().Finish()
-			.Finish();
+				.AddLeaf<ErrorBehavior>().Complete()
+			.Complete();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
@@ -59,8 +59,8 @@ namespace Zor.BehaviorTree.Tests
 		{
 			var builder = new TreeBuilder();
 			builder.AddDecorator<Repeater, uint>(3u)
-				.AddLeaf<SuccessBehavior>().Finish()
-			.Finish();
+				.AddLeaf<SuccessBehavior>().Complete()
+			.Complete();
 			TreeRoot treeRoot = builder.Build();
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Running, treeRoot.Tick());
@@ -73,8 +73,8 @@ namespace Zor.BehaviorTree.Tests
 
 			builder = new TreeBuilder();
 			builder.AddDecorator<Repeater, uint>(3u)
-				.AddLeaf<RunningBehavior>().Finish()
-			.Finish();
+				.AddLeaf<RunningBehavior>().Complete()
+			.Complete();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Running, treeRoot.Tick());
@@ -87,8 +87,8 @@ namespace Zor.BehaviorTree.Tests
 
 			builder = new TreeBuilder();
 			builder.AddDecorator<Repeater, uint>(3u)
-				.AddLeaf<FailureBehavior>().Finish()
-			.Finish();
+				.AddLeaf<FailureBehavior>().Complete()
+			.Complete();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
@@ -101,8 +101,8 @@ namespace Zor.BehaviorTree.Tests
 
 			builder = new TreeBuilder();
 			builder.AddDecorator<Repeater, uint>(3u)
-				.AddLeaf<ErrorBehavior>().Finish()
-			.Finish();
+				.AddLeaf<ErrorBehavior>().Complete()
+			.Complete();
 			treeRoot = builder.Build();
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Error, treeRoot.Tick());

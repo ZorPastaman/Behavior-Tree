@@ -6,17 +6,17 @@ using Zor.BehaviorTree.Core.Composites;
 
 namespace Zor.BehaviorTree.Builder.GenericBuilders
 {
-	internal sealed class CompositeBuilder<TComposite> : IBehaviorBuilder
+	internal sealed class CompositeBuilder<TComposite> : CompositeBuilder
 		where TComposite : Composite, INotSetupable, new()
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite>(children);
 		}
 	}
 
-	internal sealed class CompositeBuilder<TComposite, TArg> : IBehaviorBuilder
+	internal sealed class CompositeBuilder<TComposite, TArg> : CompositeBuilder
 		where TComposite : Composite, ISetupable<TArg>, new()
 	{
 		private readonly TArg m_arg;
@@ -27,13 +27,13 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg>(children, m_arg);
 		}
 	}
 
-	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1> : IBehaviorBuilder
+	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1> : CompositeBuilder
 		where TComposite : Composite, ISetupable<TArg0, TArg1>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -46,13 +46,13 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1>(children, m_arg0, m_arg1);
 		}
 	}
 
-	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2> : IBehaviorBuilder
+	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2> : CompositeBuilder
 		where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -67,13 +67,13 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2>(children, m_arg0, m_arg1, m_arg2);
 		}
 	}
 
-	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3> : IBehaviorBuilder
+	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3> : CompositeBuilder
 		where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -90,14 +90,14 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3>(children,
 				m_arg0, m_arg1, m_arg2, m_arg3);
 		}
 	}
 
-	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4> : IBehaviorBuilder
+	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4> : CompositeBuilder
 		where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -116,14 +116,14 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4>(children,
 				m_arg0, m_arg1, m_arg2, m_arg3, m_arg4);
 		}
 	}
 
-	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5> : IBehaviorBuilder
+	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5> : CompositeBuilder
 		where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -144,14 +144,14 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(children,
 				m_arg0, m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
 		}
 	}
 
-	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> : IBehaviorBuilder
+	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> : CompositeBuilder
 		where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -174,7 +174,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(children,
 				m_arg0, m_arg1, m_arg2, m_arg3, m_arg4, m_arg5, m_arg6);
@@ -182,7 +182,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 	}
 
 	internal sealed class CompositeBuilder<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> :
-		IBehaviorBuilder
+		CompositeBuilder
 		where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, new()
 	{
 		private readonly TArg0 m_arg0;
@@ -208,7 +208,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(children,
 				m_arg0, m_arg1, m_arg2, m_arg3, m_arg4, m_arg5, m_arg6, m_arg7);

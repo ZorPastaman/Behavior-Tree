@@ -8,21 +8,21 @@ using Zor.BehaviorTree.Core.Decorators;
 
 namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 {
-	internal sealed class CustomDecoratorBuilder : IBehaviorBuilder
+	internal sealed class CustomActivatorDecoratorBuilder : DecoratorBuilder
 	{
 		[NotNull] private readonly Type m_nodeType;
 		[NotNull] private readonly object[] m_customData;
 
-		public CustomDecoratorBuilder([NotNull] Type nodeType, [NotNull] object[] customData)
+		public CustomActivatorDecoratorBuilder([NotNull] Type nodeType, [NotNull] object[] customData)
 		{
 			m_nodeType = nodeType;
 			m_customData = customData;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Behavior Build(Behavior[] children)
+		public override Decorator Build(Behavior child)
 		{
-			return Decorator.Create(m_nodeType, children[0], m_customData);
+			return Decorator.Create(m_nodeType, child, m_customData);
 		}
 	}
 }
