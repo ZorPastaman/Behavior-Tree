@@ -10,7 +10,7 @@ namespace Zor.BehaviorTree.Core.Composites
 	{
 		[NotNull] protected Behavior[] children;
 
-		public override void Initialize()
+		internal sealed override void Initialize()
 		{
 			base.Initialize();
 
@@ -20,7 +20,7 @@ namespace Zor.BehaviorTree.Core.Composites
 			}
 		}
 
-		public override void Dispose()
+		internal sealed override void Dispose()
 		{
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
@@ -30,24 +30,24 @@ namespace Zor.BehaviorTree.Core.Composites
 			base.Dispose();
 		}
 
-		protected override void OnAbort()
+		internal sealed override void SetBlackboard(Blackboard blackboardToSet)
+		{
+			base.SetBlackboard(blackboardToSet);
+
+			for (int i = 0, count = children.Length; i < count; ++i)
+			{
+				children[i].SetBlackboard(blackboardToSet);
+			}
+		}
+
+		protected private sealed override void OnAbortInternal()
 		{
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				children[i].Abort();
 			}
 
-			base.OnAbort();
-		}
-
-		internal override void ApplyBlackboard(Blackboard blackboardToApply)
-		{
-			base.ApplyBlackboard(blackboardToApply);
-
-			for (int i = 0, count = children.Length; i < count; ++i)
-			{
-				children[i].ApplyBlackboard(blackboardToApply);
-			}
+			base.OnAbortInternal();
 		}
 		
 		public static TComposite Create<TComposite>([NotNull] Behavior[] children)

@@ -12,31 +12,31 @@ namespace Zor.BehaviorTree.Core.Decorators
 		[NotNull] protected Behavior child;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public override void Initialize()
+		internal sealed override void Initialize()
 		{
 			base.Initialize();
 			child.Initialize();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public override void Dispose()
+		internal sealed override void Dispose()
 		{
 			child.Dispose();
 			base.Dispose();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected override void OnAbort()
+		internal sealed override void SetBlackboard(Blackboard blackboardToSet)
 		{
-			child.Abort();
-			base.OnAbort();
+			base.SetBlackboard(blackboardToSet);
+			child.SetBlackboard(blackboardToSet);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal override void ApplyBlackboard(Blackboard blackboardToApply)
+		protected private sealed override void OnAbortInternal()
 		{
-			base.ApplyBlackboard(blackboardToApply);
-			child.ApplyBlackboard(blackboardToApply);
+			child.Abort();
+			base.OnAbortInternal();
 		}
 
 		public static TDecorator Create<TDecorator>([NotNull] Behavior child)

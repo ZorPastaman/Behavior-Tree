@@ -16,7 +16,7 @@ namespace Zor.BehaviorTree.Core
 		{
 			m_blackboard = blackboard;
 			m_rootBehavior = rootBehavior;
-			m_rootBehavior.ApplyBlackboard(m_blackboard);
+			m_rootBehavior.SetBlackboard(m_blackboard);
 		}
 
 		[NotNull]
@@ -41,6 +41,7 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Dispose()
 		{
+			m_rootBehavior.Abort();
 			m_rootBehavior.Dispose();
 		}
 

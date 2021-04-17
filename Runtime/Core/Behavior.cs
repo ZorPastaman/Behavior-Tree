@@ -8,7 +8,7 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core
 {
-	public abstract class Behavior : IDisposable
+	public abstract class Behavior
 	{
 		private Blackboard m_blackboard;
 		private Status m_status = Status.Idle;
@@ -24,9 +24,6 @@ namespace Zor.BehaviorTree.Core
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get => m_blackboard;
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public virtual void Initialize() {}
 
 		public Status Tick()
 		{
@@ -45,16 +42,11 @@ namespace Zor.BehaviorTree.Core
 			return m_status;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public virtual void Dispose()
-		{
-			Abort();
-		}
-
 		public Status Abort()
 		{
 			if (m_status == Status.Running)
 			{
+				OnAbortInternal();
 				OnAbort();
 				m_status = Status.Abort;
 			}
@@ -63,10 +55,25 @@ namespace Zor.BehaviorTree.Core
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal virtual void ApplyBlackboard([NotNull] Blackboard blackboardToApply)
+		internal virtual void Initialize()
 		{
-			m_blackboard = blackboardToApply;
+			OnInitialize();
 		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal virtual void Dispose()
+		{
+			OnDispose();
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal virtual void SetBlackboard([NotNull] Blackboard blackboardToSet)
+		{
+			m_blackboard = blackboardToSet;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected virtual void OnInitialize() {}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected virtual void Begin() {}
@@ -79,7 +86,13 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected virtual void OnAbort() {}
 
-		protected static void CreateSetup([NotNull] Behavior behavior, [NotNull] object[] parameters)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected virtual void OnDispose() {}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected private virtual void OnAbortInternal() {}
+
+		protected private static void CreateSetup([NotNull] Behavior behavior, [NotNull] object[] parameters)
 		{
 			int parametersCount = parameters.Length;
 			var parameterTypes = new Type[parametersCount];
