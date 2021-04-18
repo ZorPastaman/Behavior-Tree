@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Composite-Tree
 
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Composites;
 
@@ -9,7 +10,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 	internal sealed class CompositeBuilder<TComposite> : CompositeBuilder
 		where TComposite : Composite, INotSetupable, new()
 	{
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite>(children);
@@ -26,7 +27,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg = arg;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg>(children, m_arg);
@@ -45,7 +46,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg1 = arg1;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1>(children, m_arg0, m_arg1);
@@ -66,7 +67,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg2 = arg2;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2>(children, m_arg0, m_arg1, m_arg2);
@@ -89,7 +90,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg3 = arg3;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3>(children,
@@ -115,7 +116,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg4 = arg4;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4>(children,
@@ -143,7 +144,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg5 = arg5;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(children,
@@ -173,7 +174,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg6 = arg6;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(children,
@@ -207,7 +208,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg7 = arg7;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(children,

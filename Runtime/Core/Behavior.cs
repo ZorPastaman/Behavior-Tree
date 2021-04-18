@@ -92,14 +92,19 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected private virtual void OnAbortInternal() {}
 
-		protected private static void CreateSetup([NotNull] Behavior behavior, [NotNull] object[] parameters)
+		protected private static void CreateSetup([NotNull] Behavior behavior,
+			[NotNull, ItemCanBeNull] object[] parameters)
 		{
+			Type behaviorType = behavior.GetType();
+			Type[] interfaceTypes = behaviorType.GetInterfaces();
+
 			int parametersCount = parameters.Length;
 			var parameterTypes = new Type[parametersCount];
 
 			for (int i = 0; i < parametersCount; ++i)
 			{
-				parameterTypes[i] = parameters[i].GetType();
+				object parameter = parameters[i];
+				parameterTypes[i] = parameter?.GetType();
 			}
 
 			Type baseSetupableType;
@@ -127,12 +132,43 @@ namespace Zor.BehaviorTree.Core
 				case 7:
 					baseSetupableType = typeof(ISetupable<,,,,,,>);
 					break;
+				case 8:
+					baseSetupableType = typeof(ISetupable<,,,,,,,>);
+					break;
 				default:
-					return;
+					throw new Exception();
 			}
 
-			Type setupableType = baseSetupableType.MakeGenericType(parameterTypes);
-			setupableType.InvokeMember("Setup", BindingFlags.InvokeMethod, null, behavior, parameters);
+			for (int i = 0, iCount = interfaceTypes.Length; i < iCount; ++i)
+			{
+				Type interfaceType = interfaceTypes[i];
+
+				// TODO Support derivation
+				if (!interfaceType.IsGenericType || interfaceType.GetGenericTypeDefinition() != baseSetupableType)
+				{
+					continue;
+				}
+
+				Type[] interfaceParameters = interfaceType.GetGenericArguments();
+				bool goodInterface = true;
+
+				for (int j = 0, jCount = interfaceParameters.Length; j < jCount & goodInterface; ++j)
+				{
+					goodInterface = parameterTypes[j] == null
+						? interfaceParameters[j].IsClass
+						: interfaceParameters[j].IsAssignableFrom(parameterTypes[j]);
+				}
+
+				if (!goodInterface)
+				{
+					continue;
+				}
+
+				interfaceType.InvokeMember("Setup", BindingFlags.InvokeMethod, null, behavior, parameters);
+				return;
+			}
+
+			throw new Exception();
 		}
 	}
 }

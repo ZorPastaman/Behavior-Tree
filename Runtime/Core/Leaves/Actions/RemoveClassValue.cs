@@ -1,6 +1,7 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
@@ -11,12 +12,14 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 	{
 		private BlackboardPropertyName m_propertyName;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(BlackboardPropertyName propertyName)
 		{
 			m_propertyName = propertyName;
 		}
 
-		public void Setup(string propertyName)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Setup([NotNull] string propertyName)
 		{
 			m_propertyName = new BlackboardPropertyName(propertyName);
 		}

@@ -10,6 +10,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 
 		private uint m_currentRepeats;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(uint repeats)
 		{
 			m_repeats = repeats;
@@ -31,7 +32,8 @@ namespace Zor.BehaviorTree.Core.Decorators
 				Status* results = stackalloc Status[] {Status.Running, Status.Success};
 				bool finished = ++m_currentRepeats >= m_repeats;
 				byte index = *(byte*)&finished;
-				childStatus = results[index];
+
+				return results[index];
 			}
 
 			return childStatus;

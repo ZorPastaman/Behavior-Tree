@@ -17,7 +17,7 @@ namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 			m_nodeType = nodeType;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Composite Build(Behavior[] children)
 		{
 			return Composite.Create(m_nodeType, children);

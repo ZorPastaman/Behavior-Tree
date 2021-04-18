@@ -13,12 +13,14 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 		private T m_value;
 		private BlackboardPropertyName m_propertyName;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(T value, BlackboardPropertyName propertyName)
 		{
 			m_value = value;
 			m_propertyName = propertyName;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(T value, [NotNull] string propertyName)
 		{
 			m_value = value;

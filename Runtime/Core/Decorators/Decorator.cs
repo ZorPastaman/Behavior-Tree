@@ -9,7 +9,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 {
 	public abstract class Decorator : Behavior
 	{
-		[NotNull] protected Behavior child;
+		protected Behavior child;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal sealed override void Initialize()
@@ -39,6 +39,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			base.OnAbortInternal();
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator>([NotNull] Behavior child)
 			where TDecorator : Decorator, INotSetupable, new()
 		{
@@ -46,6 +47,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator, TArg>([NotNull] Behavior child, TArg arg)
 			where TDecorator : Decorator, ISetupable<TArg>, new()
 		{
@@ -55,6 +57,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator, TArg0, TArg1>([NotNull] Behavior child, TArg0 arg0, TArg1 arg1)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1>, new()
 		{
@@ -64,6 +67,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2>([NotNull] Behavior child,
 			TArg0 arg0, TArg1 arg1, TArg2 arg2)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2>, new()
@@ -74,6 +78,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3>([NotNull] Behavior child,
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
@@ -84,6 +89,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4>([NotNull] Behavior child,
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
@@ -94,6 +100,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>([NotNull] Behavior child,
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
@@ -104,6 +111,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 			[NotNull] Behavior child,
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
@@ -115,6 +123,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static TDecorator Create<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 			[NotNull] Behavior child,
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
@@ -126,6 +135,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static Decorator Create([NotNull] Type decoratorType, [NotNull] Behavior child)
 		{
 			var decorator = (Decorator)Activator.CreateInstance(decoratorType);
@@ -133,8 +143,9 @@ namespace Zor.BehaviorTree.Core.Decorators
 			return decorator;
 		}
 
+		[NotNull, Pure]
 		public static Decorator Create([NotNull] Type decoratorType, [NotNull] Behavior child,
-			[NotNull] params object[] parameters)
+			[NotNull, ItemCanBeNull] params object[] parameters)
 		{
 			var decorator = (Decorator)Activator.CreateInstance(decoratorType);
 			CreateSetup(decorator, parameters);

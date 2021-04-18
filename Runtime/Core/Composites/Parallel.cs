@@ -14,12 +14,14 @@ namespace Zor.BehaviorTree.Core.Composites
 		private Mode m_successMode;
 		private Mode m_failureMode;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(Mode mode)
 		{
 			m_successMode = mode;
 			m_failureMode = mode;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(Mode successMode, Mode failureMode)
 		{
 			m_successMode = successMode;

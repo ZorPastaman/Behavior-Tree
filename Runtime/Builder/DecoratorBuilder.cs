@@ -19,7 +19,7 @@ namespace Zor.BehaviorTree.Builder
 			set => m_childIndex = value;
 		}
 
-		[NotNull]
+		[NotNull, Pure]
 		public abstract Decorator Build([NotNull] Behavior child);
 	}
 }

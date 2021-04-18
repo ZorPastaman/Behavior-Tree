@@ -30,7 +30,7 @@ namespace Zor.BehaviorTree.Builder
 			m_children.Add(index);
 		}
 
-		[NotNull]
-		public abstract Composite Build([NotNull] Behavior[] children);
+		[NotNull, Pure]
+		public abstract Composite Build([NotNull, ItemNotNull] Behavior[] children);
 	}
 }

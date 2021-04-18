@@ -19,18 +19,21 @@ namespace Zor.BehaviorTree.Builder
 		private readonly List<BehaviorBuilder> m_behaviorBuilders = new List<BehaviorBuilder>();
 		private readonly Stack<int> m_currentBuilderIndices = new Stack<int>();
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf>() where TLeaf : Leaf, INotSetupable, new()
 		{
 			AddBehaviorBuilder(new LeafBuilder<TLeaf>());
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg>(TArg arg) where TLeaf : Leaf, ISetupable<TArg>, new()
 		{
 			AddBehaviorBuilder(new LeafBuilder<TLeaf, TArg>(arg));
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1>, new()
 		{
@@ -38,6 +41,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2>(TArg0 arg0, TArg1 arg1, TArg2 arg2)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2>, new()
 		{
@@ -45,6 +49,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
@@ -53,6 +58,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
@@ -62,6 +68,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
@@ -71,6 +78,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, new()
@@ -80,6 +88,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, new()
@@ -88,13 +97,15 @@ namespace Zor.BehaviorTree.Builder
 				arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7));
 			return this;
 		}
-		
+
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator>() where TDecorator : Decorator, INotSetupable, new()
 		{
 			AddBehaviorBuilder(new DecoratorBuilder<TDecorator>());
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg>(TArg arg)
 			where TDecorator : Decorator, ISetupable<TArg>, new()
 		{
@@ -102,6 +113,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1>, new()
 		{
@@ -109,6 +121,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2>(TArg0 arg0, TArg1 arg1, TArg2 arg2)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2>, new()
 		{
@@ -116,6 +129,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
@@ -124,6 +138,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
@@ -133,6 +148,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
@@ -142,6 +158,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, new()
@@ -151,6 +168,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, new()
@@ -159,13 +177,15 @@ namespace Zor.BehaviorTree.Builder
 				arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7));
 			return this;
 		}
-		
+
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite>() where TComposite : Composite, INotSetupable, new()
 		{
 			AddBehaviorBuilder(new CompositeBuilder<TComposite>());
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg>(TArg arg)
 			where TComposite : Composite, ISetupable<TArg>, new()
 		{
@@ -173,6 +193,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 			where TComposite : Composite, ISetupable<TArg0, TArg1>, new()
 		{
@@ -180,6 +201,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2>(TArg0 arg0, TArg1 arg1, TArg2 arg2)
 			where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2>, new()
 		{
@@ -187,6 +209,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3)
 			where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
@@ -195,6 +218,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
 			where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
@@ -204,6 +228,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
 			where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
@@ -213,6 +238,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
 			where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, new()
@@ -222,6 +248,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
 			where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, new()
@@ -231,6 +258,7 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		[NotNull]
 		public TreeBuilder AddBehavior([NotNull] Type nodeType)
 		{
 			BehaviorBuilder behaviorBuilder;
@@ -249,7 +277,7 @@ namespace Zor.BehaviorTree.Builder
 			}
 			else
 			{
-				return this;
+				throw new Exception();
 			}
 
 			AddBehaviorBuilder(behaviorBuilder);
@@ -257,7 +285,8 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
-		public TreeBuilder AddBehavior([NotNull] Type nodeType, params object[] customData)
+		[NotNull]
+		public TreeBuilder AddBehavior([NotNull] Type nodeType, [NotNull, ItemCanBeNull] params object[] customData)
 		{
 			BehaviorBuilder behaviorBuilder;
 
@@ -275,7 +304,7 @@ namespace Zor.BehaviorTree.Builder
 			}
 			else
 			{
-				return this;
+				throw new Exception();
 			}
 
 			AddBehaviorBuilder(behaviorBuilder);
@@ -283,18 +312,20 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull]
 		public TreeBuilder Complete()
 		{
 			m_currentBuilderIndices.Pop();
 			return this;
 		}
 
+		[NotNull, Pure]
 		public TreeRoot Build()
 		{
 			return Build(new Blackboard());
 		}
 
+		[NotNull, Pure]
 		public TreeRoot Build([NotNull] Blackboard blackboard)
 		{
 			Behavior rootBehavior = BuildBehavior(0);
@@ -342,13 +373,13 @@ namespace Zor.BehaviorTree.Builder
 			}
 		}
 
-		[NotNull, MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
 		private static Leaf BuildLeaf([NotNull] LeafBuilder leafBuilder)
 		{
 			return leafBuilder.Build();
 		}
 
-		[NotNull, MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
 		private Decorator BuildDecorator([NotNull] DecoratorBuilder decoratorBuilder)
 		{
 			Behavior child = BuildBehavior(decoratorBuilder.childIndex);

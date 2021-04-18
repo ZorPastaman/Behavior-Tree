@@ -39,16 +39,16 @@ namespace Zor.BehaviorTree.Core
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Status Abort()
+		{
+			return m_rootBehavior.Abort();
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Dispose()
 		{
 			m_rootBehavior.Abort();
 			m_rootBehavior.Dispose();
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Status Abort()
-		{
-			return m_rootBehavior.Abort();
 		}
 	}
 }

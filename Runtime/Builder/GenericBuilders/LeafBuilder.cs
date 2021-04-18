@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Leaves;
 
@@ -8,7 +9,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 {
 	internal sealed class LeafBuilder<TLeaf> : LeafBuilder where TLeaf : Leaf, INotSetupable, new()
 	{
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf>();
@@ -24,7 +25,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg = arg;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg>(m_arg);
@@ -43,7 +44,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg1 = arg1;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1>(m_arg0, m_arg1);
@@ -64,7 +65,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg2 = arg2;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2>(m_arg0, m_arg1, m_arg2);
@@ -87,7 +88,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg3 = arg3;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3>(m_arg0, m_arg1, m_arg2, m_arg3);
@@ -112,7 +113,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg4 = arg4;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4>(
@@ -140,7 +141,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg5 = arg5;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
@@ -170,7 +171,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg6 = arg6;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
@@ -204,7 +205,7 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg7 = arg7;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(

@@ -19,7 +19,7 @@ namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 			m_customData = customData;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Decorator Build(Behavior child)
 		{
 			return Decorator.Create(m_nodeType, child, m_customData);

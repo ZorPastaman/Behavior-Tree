@@ -16,7 +16,7 @@ namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 			m_nodeType = nodeType;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
 			return Leaf.Create(m_nodeType);

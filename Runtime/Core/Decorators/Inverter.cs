@@ -7,7 +7,6 @@ namespace Zor.BehaviorTree.Core.Decorators
 		protected override unsafe Status Execute()
 		{
 			Status childStatus = child.Tick();
-
 			Status* results = stackalloc Status[] {childStatus, Status.Failure, Status.Success};
 			int index = ((int)(childStatus & Status.Success) >> 1) | ((int)(childStatus & Status.Failure) >> 2);
 

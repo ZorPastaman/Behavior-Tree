@@ -7,7 +7,7 @@ namespace Zor.BehaviorTree.Builder
 {
 	internal abstract class LeafBuilder : BehaviorBuilder
 	{
-		[NotNull]
+		[NotNull, Pure]
 		public abstract Leaf Build();
 	}
 }

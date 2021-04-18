@@ -10,16 +10,18 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 		ISetupable<T, BlackboardPropertyName>, ISetupable<T, string>
 		where T : class
 	{
-		[CanBeNull] private T m_value;
+		private T m_value;
 		private BlackboardPropertyName m_propertyName;
 
-		public void Setup(T value, BlackboardPropertyName propertyName)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Setup([CanBeNull] T value, BlackboardPropertyName propertyName)
 		{
 			m_value = value;
 			m_propertyName = propertyName;
 		}
 
-		public void Setup(T value, string propertyName)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Setup([CanBeNull] T value, [NotNull] string propertyName)
 		{
 			m_value = value;
 			m_propertyName = new BlackboardPropertyName(propertyName);
