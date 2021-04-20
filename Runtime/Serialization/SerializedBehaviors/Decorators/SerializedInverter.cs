@@ -4,7 +4,7 @@ using Zor.BehaviorTree.Core.Decorators;
 
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 {
-	public sealed class InverterSerializedBehavior : SerializedBehavior<Inverter>
+	public sealed class SerializedInverter : SerializedDecorator<Inverter>
 	{
 	}
 }

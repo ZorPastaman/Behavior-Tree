@@ -9,7 +9,7 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors
 {
 	public abstract class SerializedBehavior<T> : SerializedBehavior_Base where T : Behavior
 	{
-		public sealed override Type serializedType
+		public sealed override Type serializedBehaviorType
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get => typeof(T);

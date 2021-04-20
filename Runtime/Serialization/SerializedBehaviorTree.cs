@@ -7,9 +7,9 @@ using UnityEngine;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors;
-using Zor.BehaviorTree.Serialization.SerializedBehaviors.Composite;
+using Zor.BehaviorTree.Serialization.SerializedBehaviors.Composites;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators;
-using Zor.BehaviorTree.Serialization.SerializedBehaviors.StatusBehaviors;
+using Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves.StatusBehaviors;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Serialization
@@ -82,31 +82,31 @@ namespace Zor.BehaviorTree.Serialization
 
 			m_SerializedBehaviorData[0] = new SerializedBehaviorData
 			{
-				serializedBehavior = CreateSerializedBehavior<RepeaterSerializedBehavior>(),
+				serializedBehavior = CreateSerializedBehavior<SerializedRepeater>(),
 				childrenIndices = new[] {3}
 			};
 
 			m_SerializedBehaviorData[1] = new SerializedBehaviorData
 			{
-				serializedBehavior = CreateSerializedBehavior<InverterSerializedBehavior>(),
+				serializedBehavior = CreateSerializedBehavior<SerializedInverter>(),
 				childrenIndices = new[] {2}
 			};
 
 			m_SerializedBehaviorData[2] = new SerializedBehaviorData
 			{
-				serializedBehavior = CreateSerializedBehavior<SuccessSerializedBehavior>(),
+				serializedBehavior = CreateSerializedBehavior<SerializedSuccessBehavior>(),
 				childrenIndices = new int[0]
 			};
 
 			m_SerializedBehaviorData[3] = new SerializedBehaviorData
 			{
-				serializedBehavior = CreateSerializedBehavior<SuccessSerializedBehavior>(),
+				serializedBehavior = CreateSerializedBehavior<SerializedSuccessBehavior>(),
 				childrenIndices = new int[0]
 			};
 
 			m_SerializedBehaviorData[4] = new SerializedBehaviorData
 			{
-				serializedBehavior = CreateSerializedBehavior<SelectorSerializedBehavior>(),
+				serializedBehavior = CreateSerializedBehavior<SerializedSelector>(),
 				childrenIndices = new[] {0, 1}
 			};
 

@@ -22,7 +22,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			m_dependedSerializedBehavior = dependedSerializedBehavior;
 			m_treeGraph = treeGraph;
 
-			Type type = m_dependedSerializedBehavior.serializedType;
+			Type type = m_dependedSerializedBehavior.serializedBehaviorType;
 
 			title = type.Name;
 

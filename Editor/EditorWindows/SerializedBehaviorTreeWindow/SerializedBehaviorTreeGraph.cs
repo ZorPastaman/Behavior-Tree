@@ -136,14 +136,14 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			node.SetPosition(new Rect(position, s_defaultSize));
 
 			SerializedProperty children = serializedData.FindPropertyRelative("childrenIndices");
-			if (behavior.serializedType.IsSubclassOf(typeof(Composite)))
+			if (behavior.serializedBehaviorType.IsSubclassOf(typeof(Composite)))
 			{
 				node.SetOutputCapacity(2);
 				children.arraySize = 2;
 				children.GetArrayElementAtIndex(0).intValue = -1;
 				children.GetArrayElementAtIndex(1).intValue = -1;
 			}
-			else if (behavior.serializedType.IsSubclassOf(typeof(Decorator)))
+			else if (behavior.serializedBehaviorType.IsSubclassOf(typeof(Decorator)))
 			{
 				node.SetOutputCapacity(1);
 				children.arraySize = 1;

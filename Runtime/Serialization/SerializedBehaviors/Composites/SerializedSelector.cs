@@ -2,9 +2,9 @@
 
 using Zor.BehaviorTree.Core.Composites;
 
-namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Composite
+namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Composites
 {
-	public sealed class SelectorSerializedBehavior : SerializedBehavior<Selector>
+	public sealed class SerializedSelector : SerializedComposite<Selector>
 	{
 	}
 }

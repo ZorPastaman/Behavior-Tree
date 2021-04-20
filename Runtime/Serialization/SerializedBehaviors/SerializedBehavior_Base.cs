@@ -4,13 +4,14 @@ using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
+using Zor.BehaviorTree.Builder;
 
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors
 {
 	public abstract class SerializedBehavior_Base : ScriptableObject
 	{
 		[NotNull]
-		public abstract Type serializedType { get; }
+		public abstract Type serializedBehaviorType { get; }
 
 		[CanBeNull]
 		public virtual object[] serializedCustomData
@@ -19,10 +20,12 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors
 			get => null;
 		}
 
-		[Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public (Type, object[]) GetSerializedData()
 		{
-			return (serializedType, serializedCustomData);
+			return (serializedBehaviorType, serializedCustomData);
 		}
+
+		public abstract void AddBehavior([NotNull] TreeBuilder treeBuilder);
 	}
 }
