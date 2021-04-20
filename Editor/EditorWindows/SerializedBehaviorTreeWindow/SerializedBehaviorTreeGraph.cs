@@ -130,9 +130,10 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			int index = serializedDatas.arraySize++;
 			SerializedProperty serializedData = serializedDatas.GetArrayElementAtIndex(index);
 			serializedData.FindPropertyRelative("serializedBehavior").objectReferenceValue = behavior;
+			position -= m_editorWindow.position.position;
+			position = contentViewContainer.WorldToLocal(position);
 			serializedData.FindPropertyRelative("nodeGraphInfo").FindPropertyRelative("position").vector2Value =
 				position;
-			position -= m_editorWindow.position.position;
 			node.SetPosition(new Rect(position, s_defaultSize));
 
 			SerializedProperty children = serializedData.FindPropertyRelative("childrenIndices");

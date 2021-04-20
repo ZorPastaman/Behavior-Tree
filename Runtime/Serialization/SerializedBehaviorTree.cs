@@ -23,7 +23,10 @@ namespace Zor.BehaviorTree.Serialization
 	{
 		[SerializeField] private SerializedBehaviorData[] m_SerializedBehaviorData;
 		[SerializeField] private int m_RootNode = -1;
-		[SerializeField] private NodeGraphInfo m_RootGraphInfo;
+		[SerializeField] private NodeGraphInfo m_RootGraphInfo = new NodeGraphInfo
+		{
+			position = new Vector2(100f, 450f)
+		};
 
 		private TreeBuilder m_treeBuilder;
 
