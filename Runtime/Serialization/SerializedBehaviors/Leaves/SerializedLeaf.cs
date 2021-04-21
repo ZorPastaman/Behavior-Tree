@@ -23,7 +23,8 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
-	public abstract class SerializedLeaf<TLeaf, TArg> : SerializedBehavior<TLeaf> where TLeaf : Leaf, ISetupable<TArg>, new()
+	public abstract class SerializedLeaf<TLeaf, TArg> : SerializedBehavior<TLeaf>
+		where TLeaf : Leaf, ISetupable<TArg>, new()
 	{
 		[SerializeField] private TArg m_Arg;
 

@@ -50,29 +50,16 @@ namespace Zor.BehaviorTree.Serialization
 		private void Deserialize(int index)
 		{
 			SerializedBehaviorData data = m_SerializedBehaviorData[index];
-			(Type type, object[] customData) = data.serializedBehavior.GetSerializedData();
-
-			if (customData != null)
-			{
-				m_treeBuilder.AddBehavior(type, customData);
-			}
-			else
-			{
-				m_treeBuilder.AddBehavior(type);
-			}
+			data.serializedBehavior.AddBehavior(m_treeBuilder);
 
 			int[] children = data.childrenIndices;
-
 			for (int i = 0, count = children.Length; i < count; ++i)
 			{
 				int child = children[i];
-
-				if (child < 0)
+				if (child >= 0)
 				{
-					continue;
+					Deserialize(child);
 				}
-
-				Deserialize(child);
 			}
 
 			m_treeBuilder.Complete();
