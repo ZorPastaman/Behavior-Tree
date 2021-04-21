@@ -6,11 +6,12 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
+using Zor.BehaviorTree.Core.Composites;
+using Zor.BehaviorTree.Core.Decorators;
+using Zor.BehaviorTree.Core.Leaves;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors;
-using Zor.BehaviorTree.Serialization.SerializedBehaviors.Composites;
-using Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators;
-using Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves.StatusBehaviors;
 using Zor.SimpleBlackboard.Core;
+using Object = UnityEngine.Object;
 
 namespace Zor.BehaviorTree.Serialization
 {
@@ -78,50 +79,281 @@ namespace Zor.BehaviorTree.Serialization
 		}
 
 #if UNITY_EDITOR
-		[ContextMenu("Test")]
-		private void Test()
+		public event Action OnAssetChanged;
+
+		private void OnValidate()
 		{
-			m_SerializedBehaviorData = new SerializedBehaviorData[5];
-
-			m_SerializedBehaviorData[0] = new SerializedBehaviorData
-			{
-				serializedBehavior = CreateSerializedBehavior<SerializedRepeater>(),
-				childrenIndices = new[] {3}
-			};
-
-			m_SerializedBehaviorData[1] = new SerializedBehaviorData
-			{
-				serializedBehavior = CreateSerializedBehavior<SerializedInverter>(),
-				childrenIndices = new[] {2}
-			};
-
-			m_SerializedBehaviorData[2] = new SerializedBehaviorData
-			{
-				serializedBehavior = CreateSerializedBehavior<SerializedSuccessBehavior>(),
-				childrenIndices = new int[0]
-			};
-
-			m_SerializedBehaviorData[3] = new SerializedBehaviorData
-			{
-				serializedBehavior = CreateSerializedBehavior<SerializedSuccessBehavior>(),
-				childrenIndices = new int[0]
-			};
-
-			m_SerializedBehaviorData[4] = new SerializedBehaviorData
-			{
-				serializedBehavior = CreateSerializedBehavior<SerializedSelector>(),
-				childrenIndices = new[] {0, 1}
-			};
-
-			m_RootNode = 4;
+			ValidateNulls();
+			ValidateCopies();
+			ValidateChildrenCounts();
+			ValidateChildren();
+			ValidateSubAssets();
+			ValidateDependedAssets();
+			OnAssetChanged?.Invoke();
 		}
 
-		private SerializedBehavior_Base CreateSerializedBehavior<T>() where T : SerializedBehavior_Base
+		private void ValidateNulls()
 		{
-			var serializedBehavior = CreateInstance<T>();
-			serializedBehavior.name = typeof(T).Name;
-			UnityEditor.AssetDatabase.AddObjectToAsset(serializedBehavior, this);
-			return serializedBehavior;
+			for (int i = 0; i < m_SerializedBehaviorData.Length; ++i)
+			{
+				SerializedBehaviorData serializedBehaviorData = m_SerializedBehaviorData[i];
+				SerializedBehavior_Base serializedBehavior = serializedBehaviorData.serializedBehavior;
+
+				if (serializedBehavior == null)
+				{
+					RemoveBehavior(i);
+					--i;
+				}
+			}
+		}
+
+		private void ValidateCopies()
+		{
+			for (int i = 0; i < m_SerializedBehaviorData.Length; ++i)
+			{
+				SerializedBehaviorData serializedBehaviorData = m_SerializedBehaviorData[i];
+				SerializedBehavior_Base serializedBehavior = serializedBehaviorData.serializedBehavior;
+
+				bool copy = false;
+
+				for (int behaviorIndex = 0; behaviorIndex < i & !copy; ++behaviorIndex)
+				{
+					copy = serializedBehavior == m_SerializedBehaviorData[behaviorIndex].serializedBehavior;
+				}
+
+				if (copy)
+				{
+					RemoveBehavior(i);
+					--i;
+				}
+			}
+		}
+
+		private void ValidateChildrenCounts()
+		{
+			for (int i = 0, count = m_SerializedBehaviorData.Length; i < count; ++i)
+			{
+				SerializedBehaviorData serializedBehaviorData = m_SerializedBehaviorData[i];
+				int[] children = serializedBehaviorData.childrenIndices;
+				Type serializedType = serializedBehaviorData.serializedBehavior.serializedBehaviorType;
+
+				if (serializedType.IsSubclassOf(typeof(Leaf)))
+				{
+					if (children.Length > 0)
+					{
+						serializedBehaviorData.childrenIndices = new int[0];
+					}
+				}
+				else if (serializedType.IsSubclassOf(typeof(Decorator)))
+				{
+					if (children.Length > 1)
+					{
+						int child = children[0];
+						serializedBehaviorData.childrenIndices = new[] {child};
+					}
+					else if (children.Length < 1)
+					{
+						serializedBehaviorData.childrenIndices = new[] {-1};
+					}
+				}
+				else if (serializedType.IsSubclassOf(typeof(Composite)))
+				{
+					if (children.Length < 2)
+					{
+						int[] newChildren = {-1, -1};
+
+						if (children.Length == 1)
+						{
+							newChildren[0] = children[0];
+						}
+
+						serializedBehaviorData.childrenIndices = newChildren;
+					}
+				}
+
+				m_SerializedBehaviorData[i] = serializedBehaviorData;
+			}
+		}
+
+		private void ValidateChildren()
+		{
+			// Self and out of bounds validation
+			for (int i = 0, count = m_SerializedBehaviorData.Length; i < count; ++i)
+			{
+				SerializedBehaviorData serializedBehaviorData = m_SerializedBehaviorData[i];
+				int[] children = serializedBehaviorData.childrenIndices;
+
+				for (int childIndex = 0, childCount = children.Length; childIndex < childCount; ++childIndex)
+				{
+					int child = children[childIndex];
+
+					if (child == i || child >= count)
+					{
+						children[childIndex] = -1;
+					}
+				}
+			}
+
+			// Multiple links to the same node validation
+			for (int i = 0, count = m_SerializedBehaviorData.Length; i < count; ++i)
+			{
+				int parentIndex = -1;
+				int parentPort = -1;
+
+				for (int nodeIndex = 0; nodeIndex < count & parentIndex < 0; ++nodeIndex)
+				{
+					int[] children = m_SerializedBehaviorData[nodeIndex].childrenIndices;
+
+					for (int childIndex = 0, childCount = children.Length;
+						childIndex < childCount & parentIndex < 0;
+						++childIndex)
+					{
+						if (children[childIndex] == i)
+						{
+							parentIndex = nodeIndex;
+							parentPort = childIndex;
+						}
+					}
+				}
+
+				if (parentIndex < 0)
+				{
+					continue;
+				}
+
+				int[] parentChildren = m_SerializedBehaviorData[parentIndex].childrenIndices;
+
+				for (int parentPortIndex = parentPort + 1, parentPortCount = parentChildren.Length;
+					parentPortIndex < parentPortCount;
+					++parentPortIndex)
+				{
+					if (parentChildren[parentPortIndex] == i)
+					{
+						parentChildren[parentPortIndex] = -1;
+					}
+				}
+
+				for (int nodeIndex = parentIndex + 1; nodeIndex < count; ++nodeIndex)
+				{
+					int[] children = m_SerializedBehaviorData[nodeIndex].childrenIndices;
+
+					for (int childIndex = 0, childCount = children.Length; childIndex < childCount; ++childIndex)
+					{
+						if (children[childIndex] == i)
+						{
+							children[childIndex] = -1;
+						}
+					}
+				}
+			}
+
+			// Root out of bounds validation
+			if (m_RootNode >= m_SerializedBehaviorData.Length)
+			{
+				m_RootNode = -1;
+			}
+
+			if (m_RootNode < 0)
+			{
+				return;
+			}
+
+			// Multiple links with root validation
+			for (int i = 0, count = m_SerializedBehaviorData.Length; i < count; ++i)
+			{
+				int[] children = m_SerializedBehaviorData[i].childrenIndices;
+
+				for (int childIndex = 0, childCount = children.Length; childIndex < childCount; ++childIndex)
+				{
+					if (children[childIndex] == m_RootNode)
+					{
+						children[childIndex] = -1;
+					}
+				}
+			}
+		}
+
+		private void ValidateSubAssets()
+		{
+			string thisAssetPath = UnityEditor.AssetDatabase.GetAssetPath(this);
+			Object[] subAssets = UnityEditor.AssetDatabase.LoadAllAssetRepresentationsAtPath(thisAssetPath);
+
+			for (int i = 0, count = subAssets.Length; i < count; ++i)
+			{
+				Object subAsset = subAssets[i];
+
+				bool needed = false;
+
+				for (int childIndex = 0, childCount = m_SerializedBehaviorData.Length;
+					childIndex < childCount & !needed;
+					++childIndex)
+				{
+					needed = m_SerializedBehaviorData[childIndex].serializedBehavior == subAsset;
+				}
+
+				if (!needed)
+				{
+					UnityEditor.AssetDatabase.RemoveObjectFromAsset(subAsset);
+				}
+			}
+		}
+
+		private void ValidateDependedAssets()
+		{
+			for (int i = 0; i < m_SerializedBehaviorData.Length; ++i)
+			{
+				SerializedBehavior_Base serializedBehavior = m_SerializedBehaviorData[i].serializedBehavior;
+				string path = UnityEditor.AssetDatabase.GetAssetPath(serializedBehavior);
+
+				if (UnityEditor.AssetDatabase.LoadMainAssetAtPath(path) == this)
+				{
+					continue;
+				}
+
+				RemoveBehavior(i);
+				--i;
+			}
+		}
+
+		private void RemoveBehavior(int index)
+		{
+			int lastIndex = m_SerializedBehaviorData.Length - 1;
+			if (index < lastIndex)
+			{
+				Array.Copy(m_SerializedBehaviorData, index + 1, m_SerializedBehaviorData, index, lastIndex - index);
+			}
+
+			Array.Resize(ref m_SerializedBehaviorData, lastIndex);
+
+			for (int behaviorIndex = 0, behaviorCount = m_SerializedBehaviorData.Length;
+				behaviorIndex < behaviorCount;
+				++behaviorIndex)
+			{
+				int[] children = m_SerializedBehaviorData[behaviorIndex].childrenIndices;
+
+				for (int childIndex = 0, childCount = children.Length;
+					childIndex < childCount;
+					++childIndex)
+				{
+					if (children[childIndex] == index)
+					{
+						children[childIndex] = -1;
+					}
+					else if (children[childIndex] > index)
+					{
+						--children[childIndex];
+					}
+				}
+			}
+
+			if (m_RootNode == index)
+			{
+				m_RootNode = -1;
+			}
+			else if (m_RootNode > index)
+			{
+				--m_RootNode;
+			}
 		}
 #endif
 	}

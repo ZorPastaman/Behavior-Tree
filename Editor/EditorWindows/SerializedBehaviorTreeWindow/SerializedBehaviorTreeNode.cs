@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -15,6 +16,9 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 	{
 		[NotNull] private readonly SerializedBehavior_Base m_dependedSerializedBehavior;
 		[NotNull] private readonly SerializedBehaviorTreeGraph m_treeGraph;
+		private readonly bool m_isComposite;
+
+		[NotNull] private readonly List<Edge> m_outputEdges = new List<Edge>();
 
 		public SerializedBehaviorTreeNode([NotNull] SerializedBehavior_Base dependedSerializedBehavior,
 			[NotNull] SerializedBehaviorTreeGraph treeGraph)
@@ -23,17 +27,17 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			m_treeGraph = treeGraph;
 
 			Type type = m_dependedSerializedBehavior.serializedBehaviorType;
-
 			title = type.Name;
+			m_isComposite = type.IsSubclassOf(typeof(Composite));
 
 			Port input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single,
 				typeof(BehaviorConnection));
 			input.portName = "Parent";
 			inputContainer.Add(input);
 
-			if (type.IsSubclassOf(typeof(Composite)))
+			if (m_isComposite)
 			{
-				var addButton = new Button(AddNewOutputPort) {text = "+"};
+				var addButton = new Button(AddOutputPortAndNotify) {text = "+"};
 				titleButtonContainer.Add(addButton);
 			}
 
@@ -44,22 +48,37 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 		[NotNull]
 		public SerializedBehavior_Base dependedSerializedBehavior => m_dependedSerializedBehavior;
 
-		public void SetOutputCapacity(int capacity)
+		public int outputEdgeCount => m_outputEdges.Count;
+
+		public void SetOutputCapacity([NotNull] List<Edge> removedEdges, int capacity)
 		{
-			if (outputContainer.childCount > capacity)
+			if (m_outputEdges.Count > capacity)
 			{
-				for (int i = 0, count = outputContainer.childCount - capacity; i < count; ++i)
+				for (int i = 0, count = m_outputEdges.Count - capacity; i < count; ++i)
 				{
-					outputContainer.RemoveAt(outputContainer.childCount - 1);
+					int index = m_outputEdges.Count - 1;
+					Edge edgeToRemove = RemoveOutputPort(index);
+
+					if (edgeToRemove != null)
+					{
+						removedEdges.Add(edgeToRemove);
+					}
 				}
 			}
-			else if (outputContainer.childCount < capacity)
+			else if (m_outputEdges.Count < capacity)
 			{
-				for (int i = 0, count = capacity - outputContainer.childCount; i < count; ++i)
+				for (int i = 0, count = capacity - m_outputEdges.Count; i < count; ++i)
 				{
 					AddOutputPort();
 				}
 			}
+		}
+
+		[CanBeNull]
+		public SerializedBehaviorTreeNode GetChild(int index)
+		{
+			Edge edge = m_outputEdges[index];
+			return edge?.input.node as SerializedBehaviorTreeNode;
 		}
 
 		[NotNull]
@@ -67,7 +86,25 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 		{
 			var outputPort = (Port)outputContainer[index];
 			var inputPort = (Port)child.inputContainer[0];
-			return outputPort.ConnectTo(inputPort);
+			Edge newEdge = outputPort.ConnectTo(inputPort);
+			m_outputEdges[index] = newEdge;
+
+			return newEdge;
+		}
+
+		[CanBeNull]
+		public Edge RemoveChild(int index)
+		{
+			Edge edge = m_outputEdges[index];
+
+			if (edge != null)
+			{
+				((Port)outputContainer[index]).Disconnect(edge);
+			}
+
+			m_outputEdges[index] = null;
+
+			return edge;
 		}
 
 		private void AddOutputPort()
@@ -77,21 +114,42 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			childPort.portName = "Child";
 			outputContainer.Add(childPort);
 
-			var removeButton = new Button(() => RemovePort(childPort)) {text = "X"};
-			childPort.Add(removeButton);
+			if (m_isComposite)
+			{
+				var removeButton = new Button(() =>
+				{
+					if (m_outputEdges.Count > 2)
+					{
+						RemoveOutputPortAndNotify(childPort);
+					}
+				}) {text = "Del"};
+				childPort.Add(removeButton);
+			}
+
+			m_outputEdges.Add(null);
 		}
 
-		private void AddNewOutputPort()
+		[CanBeNull]
+		private Edge RemoveOutputPort(int index)
+		{
+			Edge removedEdge = m_outputEdges[index];
+			outputContainer.RemoveAt(index);
+			m_outputEdges.RemoveAt(index);
+
+			return removedEdge;
+		}
+
+		private void AddOutputPortAndNotify()
 		{
 			AddOutputPort();
 			m_treeGraph.OnPortAdded(this);
 		}
 
-		private void RemovePort([NotNull] Port port)
+		private void RemoveOutputPortAndNotify([NotNull] Port port)
 		{
 			int index = outputContainer.IndexOf(port);
-			outputContainer.RemoveAt(index);
-			m_treeGraph.OnPortRemoved(this, index);
+			Edge edge = RemoveOutputPort(index);
+			m_treeGraph.OnPortRemoved(this, edge, index);
 		}
 	}
 }
