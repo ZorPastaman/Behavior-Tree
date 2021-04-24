@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -27,7 +29,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			m_treeGraph = treeGraph;
 
 			Type type = m_dependedSerializedBehavior.serializedBehaviorType;
-			title = type.Name;
+			title = GetTitle(type);
 			m_isComposite = type.IsSubclassOf(typeof(Composite));
 
 			Port input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single,
@@ -165,6 +167,42 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			int index = outputContainer.IndexOf(port);
 			Edge edge = RemoveOutputPort(index);
 			m_treeGraph.OnPortRemoved(this, edge, index);
+		}
+
+		[NotNull]
+		private static string GetTitle([NotNull] Type type)
+		{
+			if (!type.IsGenericType)
+			{
+				return type.Name;
+			}
+
+			string genericName = type.Name;
+			genericName = genericName.Substring(0, genericName.IndexOf("`", StringComparison.Ordinal));
+			var stringBuilder = new StringBuilder(GetTitleWithSpaces(genericName));
+			stringBuilder.Append(" <");
+
+			Type[] genericParameters = type.GetGenericArguments();
+
+			for (int i = 0, count = genericParameters.Length; i < count; ++i)
+			{
+				stringBuilder.Append(GetTitleWithSpaces(genericParameters[i].Name));
+
+				if (i < count - 1)
+				{
+					stringBuilder.Append(", ");
+				}
+			}
+
+			stringBuilder.Append('>');
+
+			return stringBuilder.ToString();
+		}
+
+		[NotNull]
+		private static string GetTitleWithSpaces([NotNull] string typeName)
+		{
+			return Regex.Replace(typeName, @"((?<=\p{Ll})\p{Lu})|((?!\A)\p{Lu}(?>\p{Ll}))", " $0");
 		}
 	}
 }
