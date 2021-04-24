@@ -35,6 +35,11 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			return m_outputEdge;
 		}
 
+		public void SetChild([NotNull] Edge edge)
+		{
+			m_outputEdge = edge;
+		}
+
 		[CanBeNull]
 		public Edge Disconnect()
 		{

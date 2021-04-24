@@ -269,6 +269,11 @@ namespace Zor.BehaviorTree.Serialization
 			{
 				Object subAsset = subAssets[i];
 
+				if (subAsset == null)
+				{
+					continue;
+				}
+
 				bool needed = false;
 
 				for (int childIndex = 0, childCount = m_SerializedBehaviorData.Length;
@@ -291,8 +296,9 @@ namespace Zor.BehaviorTree.Serialization
 			{
 				SerializedBehavior_Base serializedBehavior = m_SerializedBehaviorData[i].serializedBehavior;
 				string path = UnityEditor.AssetDatabase.GetAssetPath(serializedBehavior);
+				Object mainAsset = UnityEditor.AssetDatabase.LoadMainAssetAtPath(path);
 
-				if (UnityEditor.AssetDatabase.LoadMainAssetAtPath(path) == this)
+				if (mainAsset == null || mainAsset == this)
 				{
 					continue;
 				}

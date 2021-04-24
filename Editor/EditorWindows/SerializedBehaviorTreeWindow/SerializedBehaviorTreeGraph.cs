@@ -8,8 +8,6 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.BehaviorTree.Core.Composites;
-using Zor.BehaviorTree.Core.Decorators;
 using Zor.BehaviorTree.Serialization;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors;
 using Object = UnityEngine.Object;
@@ -31,6 +29,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 		private static readonly Vector2 s_defaultSize = new Vector2(200f, 200f);
 
 		[NotNull] private readonly SerializedBehaviorTree m_serializedBehaviorTree;
+		[NotNull] private readonly SerializedObject m_serializedBehaviorTreeObject;
 		[NotNull] private readonly RootNode m_rootNode;
 		[NotNull, ItemNotNull] private readonly List<SerializedBehaviorTreeNode> m_nodes =
 			new List<SerializedBehaviorTreeNode>();
@@ -42,6 +41,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			[NotNull] EditorWindow editorWindow)
 		{
 			m_serializedBehaviorTree = serializedBehaviorTree;
+			m_serializedBehaviorTreeObject = new SerializedObject(serializedBehaviorTree);
 			m_editorWindow = editorWindow;
 			m_searchWindowProvider = ScriptableObject.CreateInstance<SearchWindowProvider>();
 			m_searchWindowProvider.Initialize(this);
@@ -87,43 +87,32 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 		public void OnPortAdded([NotNull] SerializedBehaviorTreeNode node)
 		{
-			var serializedBehaviorTree = new SerializedObject(m_serializedBehaviorTree);
-			SerializedProperty serializedBehaviors = serializedBehaviorTree.FindProperty("m_SerializedBehaviorData");
+			SerializedProperty serializedBehaviorData = GetPropertyData(node);
+			SerializedProperty childrenIndices = serializedBehaviorData
+				.FindPropertyRelative(ChildrenIndicesPropertyName);
+			int last = childrenIndices.arraySize++;
+			childrenIndices.GetArrayElementAtIndex(last).intValue = -1;
 
-			for (int i = 0, count = serializedBehaviors.arraySize; i < count; ++i)
-			{
-				SerializedProperty serializedBehavior = serializedBehaviors.GetArrayElementAtIndex(i);
-
-				if (serializedBehavior.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
-					node.dependedSerializedBehavior)
-				{
-					SerializedProperty childrenIndices = serializedBehavior.FindPropertyRelative("childrenIndices");
-					++childrenIndices.arraySize;
-					childrenIndices.GetArrayElementAtIndex(childrenIndices.arraySize - 1).intValue = -1;
-				}
-			}
-
-			serializedBehaviorTree.ApplyModifiedProperties();
+			m_serializedBehaviorTreeObject.ApplyModifiedProperties();
 		}
 
 		public void OnPortRemoved([NotNull] SerializedBehaviorTreeNode node, [CanBeNull] Edge edge, int index)
 		{
-			var serializedBehaviorTree = new SerializedObject(m_serializedBehaviorTree);
-			SerializedProperty serializedBehaviors = serializedBehaviorTree.FindProperty("m_SerializedBehaviorData");
-
-			for (int i = 0, count = serializedBehaviors.arraySize; i < count; ++i)
+			if (edge != null)
 			{
-				SerializedProperty serializedBehavior = serializedBehaviors.GetArrayElementAtIndex(i);
-
-				if (serializedBehavior.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
-					node.dependedSerializedBehavior)
-				{
-					SerializedProperty childrenIndices = serializedBehavior.FindPropertyRelative("childrenIndices");
-					childrenIndices.DeleteArrayElementAtIndex(index);
-				}
+				RemoveElement(edge);
 			}
 
-			serializedBehaviorTree.ApplyModifiedProperties();
+			SerializedProperty serializedBehaviorData = GetPropertyData(node);
+			SerializedProperty children = serializedBehaviorData.FindPropertyRelative(ChildrenIndicesPropertyName);
+			int childrenCount = children.arraySize;
+
+			do
+			{
+				children.DeleteArrayElementAtIndex(index);
+			} while (children.arraySize == childrenCount);
+
+			m_serializedBehaviorTreeObject.ApplyModifiedProperties();
 		}
 
 		public void CreateNewBehavior([NotNull] Type behaviorType, Vector2 position)
@@ -135,41 +124,21 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			AddElement(node);
 			m_nodes.Add(node);
 
-			var serializedTree = new SerializedObject(m_serializedBehaviorTree);
-			SerializedProperty serializedDatas = serializedTree.FindProperty("m_SerializedBehaviorData");
+			SerializedProperty serializedDatas = m_serializedBehaviorTreeObject
+				.FindProperty(SerializedBehaviorDataPropertyName);
 			int index = serializedDatas.arraySize++;
 			SerializedProperty serializedData = serializedDatas.GetArrayElementAtIndex(index);
-			serializedData.FindPropertyRelative("serializedBehavior").objectReferenceValue = behavior;
+			serializedData.FindPropertyRelative(SerializedBehaviorPropertyName).objectReferenceValue = behavior;
 			position -= m_editorWindow.position.position;
 			position = contentViewContainer.WorldToLocal(position);
-			serializedData.FindPropertyRelative("nodeGraphInfo").FindPropertyRelative("position").vector2Value =
-				position;
+			serializedData.FindPropertyRelative(NodeGraphInfoPropertyName)
+					.FindPropertyRelative(PositionPropertyName).vector2Value = position;
 			node.SetPosition(new Rect(position, s_defaultSize));
-
-			SerializedProperty children = serializedData.FindPropertyRelative("childrenIndices");
-			if (behavior.serializedBehaviorType.IsSubclassOf(typeof(Composite)))
-			{
-				node.SetOutputCapacity(new List<Edge>(),2);
-				children.arraySize = 2;
-				children.GetArrayElementAtIndex(0).intValue = -1;
-				children.GetArrayElementAtIndex(1).intValue = -1;
-			}
-			else if (behavior.serializedBehaviorType.IsSubclassOf(typeof(Decorator)))
-			{
-				node.SetOutputCapacity(new List<Edge>(), 1);
-				children.arraySize = 1;
-				children.GetArrayElementAtIndex(0).intValue = -1;
-			}
-			else
-			{
-				node.SetOutputCapacity(new List<Edge>(), 0);
-				children.arraySize = 0;
-			}
 
 			node.RefreshExpandedState();
 			node.RefreshPorts();
 
-			serializedTree.ApplyModifiedProperties();
+			m_serializedBehaviorTreeObject.ApplyModifiedProperties();
 		}
 
 		public void Dispose()
@@ -392,8 +361,28 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 		private GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
 		{
-			var serializedBehaviorTree = new SerializedObject(m_serializedBehaviorTree);
-			List<GraphElement> elementsToRemove = graphViewChange.elementsToRemove ?? new List<GraphElement>(0);
+			if (graphViewChange.elementsToRemove != null)
+			{
+				RemoveElements(graphViewChange.elementsToRemove);
+			}
+
+			if (graphViewChange.edgesToCreate != null)
+			{
+				CreateEdges(graphViewChange.edgesToCreate);
+			}
+
+			if (graphViewChange.movedElements != null)
+			{
+				MoveElements(graphViewChange.movedElements, graphViewChange.moveDelta);
+			}
+
+			m_serializedBehaviorTreeObject.ApplyModifiedProperties();
+
+			return graphViewChange;
+		}
+
+		private void RemoveElements([NotNull] List<GraphElement> elementsToRemove)
+		{
 			elementsToRemove.Remove(m_rootNode);
 
 			for (int i = 0, count = elementsToRemove.Count; i < count; ++i)
@@ -401,51 +390,40 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 				RemoveElement(elementsToRemove[i]);
 			}
 
-			Edge[] edgesToRemove = elementsToRemove.OfType<Edge>().ToArray();
-			for (int i = 0, count = edgesToRemove.Length; i < count; ++i)
+			RemoveEdges(elementsToRemove.OfType<Edge>());
+			RemoveNodes(elementsToRemove.OfType<SerializedBehaviorTreeNode>());
+		}
+
+		private void RemoveEdges([NotNull] IEnumerable<Edge> edgesToRemove)
+		{
+			foreach (Edge edgeToRemove in edgesToRemove)
 			{
-				Edge edgeToRemove = edgesToRemove[i];
 				Node edgeNode = edgeToRemove.output.node;
-				int edgeIndex = edgeNode.outputContainer.IndexOf(edgeToRemove.output);
 
 				switch (edgeNode)
 				{
 					case SerializedBehaviorTreeNode treeNode:
-						SerializedProperty datas = serializedBehaviorTree.FindProperty("m_SerializedBehaviorData");
-						for (int dataIndex = 0, dataCount = datas.arraySize; dataIndex < dataCount; ++dataIndex)
-						{
-							SerializedProperty data = datas.GetArrayElementAtIndex(dataIndex);
-							if (data.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
-								treeNode.dependedSerializedBehavior)
-							{
-								data.FindPropertyRelative("childrenIndices").GetArrayElementAtIndex(edgeIndex).intValue = -1;
-								break;
-							}
-						}
+						SerializedProperty serializedBehaviorData = GetPropertyData(treeNode);
+						int edgeIndex = treeNode.IndexOfEdge(edgeToRemove);
+						serializedBehaviorData.FindPropertyRelative(ChildrenIndicesPropertyName)
+							.GetArrayElementAtIndex(edgeIndex).intValue = -1;
+						treeNode.RemoveChild(edgeIndex);
 						break;
 					case RootNode _:
-						serializedBehaviorTree.FindProperty("m_RootNode").intValue = -1;
+						m_serializedBehaviorTreeObject.FindProperty(RootNodePropertyName).intValue = -1;
+						m_rootNode.Disconnect();
 						break;
 				}
 			}
+		}
 
-			SerializedBehaviorTreeNode[] nodesToRemove = elementsToRemove.OfType<SerializedBehaviorTreeNode>().ToArray();
+		private void RemoveNodes([NotNull] IEnumerable<SerializedBehaviorTreeNode> nodes)
+		{
+			SerializedProperty datas = m_serializedBehaviorTreeObject.FindProperty(SerializedBehaviorDataPropertyName);
 
-			for (int i = 0, count = nodesToRemove.Length; i < count; ++i)
+			foreach (SerializedBehaviorTreeNode node in nodes)
 			{
-				SerializedBehaviorTreeNode nodeToRemove = nodesToRemove[i];
-				SerializedProperty datas = serializedBehaviorTree.FindProperty("m_SerializedBehaviorData");
-				int nodeToRemoveIndex = -1;
-				for (int dataIndex = 0, dataCount = datas.arraySize; dataIndex < dataCount; ++dataIndex)
-				{
-					SerializedProperty data = datas.GetArrayElementAtIndex(dataIndex);
-					if (data.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
-						nodeToRemove.dependedSerializedBehavior)
-					{
-						nodeToRemoveIndex = dataIndex;
-						break;
-					}
-				}
+				int nodeToRemoveIndex = GetPropertyDataIndex(node);
 
 				if (nodeToRemoveIndex < 0)
 				{
@@ -455,8 +433,11 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 				for (int dataIndex = 0, dataCount = datas.arraySize; dataIndex < dataCount; ++dataIndex)
 				{
 					SerializedProperty children = datas.GetArrayElementAtIndex(dataIndex)
-						.FindPropertyRelative("childrenIndices");
-					for (int childIndex = 0, childrenCount = children.arraySize; childIndex < childrenCount; ++childIndex)
+						.FindPropertyRelative(ChildrenIndicesPropertyName);
+
+					for (int childIndex = 0, childrenCount = children.arraySize;
+						childIndex < childrenCount;
+						++childIndex)
 					{
 						SerializedProperty child = children.GetArrayElementAtIndex(childIndex);
 
@@ -467,7 +448,8 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 					}
 				}
 
-				Undo.DestroyObjectImmediate(datas.GetArrayElementAtIndex(nodeToRemoveIndex).FindPropertyRelative("serializedBehavior").objectReferenceValue);
+				Undo.DestroyObjectImmediate(datas.GetArrayElementAtIndex(nodeToRemoveIndex)
+					.FindPropertyRelative(SerializedBehaviorPropertyName).objectReferenceValue);
 
 				int datasSize = datas.arraySize;
 				do
@@ -475,62 +457,44 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 					datas.DeleteArrayElementAtIndex(nodeToRemoveIndex);
 				} while (datas.arraySize == datasSize);
 
-				SerializedProperty rootNode = serializedBehaviorTree.FindProperty("m_RootNode");
+				SerializedProperty rootNode = m_serializedBehaviorTreeObject.FindProperty(RootNodePropertyName);
 				if (rootNode.intValue > nodeToRemoveIndex)
 				{
 					--rootNode.intValue;
 				}
 
-				m_nodes.Remove(nodeToRemove);
+				m_nodes.Remove(node);
 			}
+		}
 
-			List<Edge> edgesToCreate = graphViewChange.edgesToCreate ?? new List<Edge>(0);
+		private void CreateEdges([NotNull] List<Edge> edgesToCreate)
+		{
 			for (int i = 0, count = edgesToCreate.Count; i < count; ++i)
 			{
 				Edge edgeToCreate = edgesToCreate[i];
-				Node edgeNode = edgeToCreate.output.node;
-				SerializedBehaviorTreeNode childNode = (SerializedBehaviorTreeNode)edgeToCreate.input.node;
-				int edgeIndex = edgeNode.outputContainer.IndexOf(edgeToCreate.output);
-				int childIndex = -1;
+				var childNode = (SerializedBehaviorTreeNode)edgeToCreate.input.node;
+				int childNodeIndex = GetPropertyDataIndex(childNode);
+				Node parentNode = edgeToCreate.output.node;
 
-				SerializedProperty datas = serializedBehaviorTree.FindProperty("m_SerializedBehaviorData");
-				for (int dataIndex = 0, dataCount = datas.arraySize; dataIndex < dataCount; ++dataIndex)
-				{
-					SerializedProperty data = datas.GetArrayElementAtIndex(dataIndex);
-					if (data.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
-						childNode.dependedSerializedBehavior)
-					{
-						childIndex = dataIndex;
-						break;
-					}
-				}
-
-				if (childIndex < 0)
-				{
-					continue;
-				}
-
-				switch (edgeNode)
+				switch (parentNode)
 				{
 					case SerializedBehaviorTreeNode treeNode:
-						for (int dataIndex = 0, dataCount = datas.arraySize; dataIndex < dataCount; ++dataIndex)
-						{
-							SerializedProperty data = datas.GetArrayElementAtIndex(dataIndex);
-							if (data.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
-								treeNode.dependedSerializedBehavior)
-							{
-								data.FindPropertyRelative("childrenIndices").GetArrayElementAtIndex(edgeIndex).intValue = childIndex;
-								break;
-							}
-						}
+						int parentIndex = treeNode.GetPortIndex(edgeToCreate.output);
+						SerializedProperty serializedBehaviorData = GetPropertyData(treeNode);
+						serializedBehaviorData.FindPropertyRelative(ChildrenIndicesPropertyName)
+							.GetArrayElementAtIndex(parentIndex).intValue = childNodeIndex;
+						treeNode.SetChild(edgeToCreate, parentIndex);
 						break;
 					case RootNode _:
-						serializedBehaviorTree.FindProperty("m_RootNode").intValue = childIndex;
+						m_serializedBehaviorTreeObject.FindProperty(RootNodePropertyName).intValue = childNodeIndex;
+						m_rootNode.SetChild(edgeToCreate);
 						break;
 				}
 			}
+		}
 
-			List<GraphElement> movedElements = graphViewChange.movedElements ?? new List<GraphElement>(0);
+		private void MoveElements(List<GraphElement> movedElements, Vector2 moveDelta)
+		{
 			for (int i = 0, count = movedElements.Count; i < count; ++i)
 			{
 				GraphElement movedElement = movedElements[i];
@@ -538,44 +502,21 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 				switch (movedElement)
 				{
 					case SerializedBehaviorTreeNode treeNode:
-						SerializedProperty datas = serializedBehaviorTree.FindProperty("m_SerializedBehaviorData");
-						for (int dataIndex = 0, dataCount = datas.arraySize; dataIndex < dataCount; ++dataIndex)
-						{
-							SerializedProperty data = datas.GetArrayElementAtIndex(dataIndex);
-							if (data.FindPropertyRelative("serializedBehavior").objectReferenceValue ==
-								treeNode.dependedSerializedBehavior)
-							{
-								data.FindPropertyRelative("nodeGraphInfo").FindPropertyRelative("position").vector2Value
-									+= graphViewChange.moveDelta;
-								break;
-							}
-						}
+						SerializedProperty serializedBehaviorData = GetPropertyData(treeNode);
+						serializedBehaviorData.FindPropertyRelative(NodeGraphInfoPropertyName)
+							.FindPropertyRelative(PositionPropertyName).vector2Value += moveDelta;
 						break;
 					case RootNode _:
-						serializedBehaviorTree.FindProperty("m_RootGraphInfo").FindPropertyRelative("position")
-							.vector2Value += graphViewChange.moveDelta;
+						m_serializedBehaviorTreeObject.FindProperty(RootGraphInfoPropertyName)
+							.FindPropertyRelative(PositionPropertyName).vector2Value += moveDelta;
 						break;
 				}
 			}
-
-			serializedBehaviorTree.ApplyModifiedProperties();
-			AssetDatabase.SaveAssets();
-			AssetDatabase.Refresh();
-
-			return graphViewChange;
 		}
 
-		[NotNull]
-		private SerializedBehaviorTreeNode CreateNode([NotNull] SerializedBehavior_Base serializedBehavior,
-			Vector2 position)
+		private void OnCreateNode(NodeCreationContext context)
 		{
-			var node = new SerializedBehaviorTreeNode(serializedBehavior, this);
-			node.SetPosition(new Rect(position, s_defaultSize));
-
-			node.RefreshExpandedState();
-			node.RefreshPorts();
-
-			return node;
+			SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), m_searchWindowProvider);
 		}
 
 		[CanBeNull]
@@ -594,9 +535,32 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			return null;
 		}
 
-		private void OnCreateNode(NodeCreationContext context)
+		[CanBeNull]
+		private SerializedProperty GetPropertyData([NotNull] SerializedBehaviorTreeNode node)
 		{
-			SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), m_searchWindowProvider);
+			int index = GetPropertyDataIndex(node);
+			return index < 0 ? null : m_serializedBehaviorTreeObject.FindProperty(SerializedBehaviorDataPropertyName)
+				.GetArrayElementAtIndex(index);
+		}
+
+		private int GetPropertyDataIndex([NotNull] SerializedBehaviorTreeNode node)
+		{
+			SerializedProperty serializedData = m_serializedBehaviorTreeObject
+				.FindProperty(SerializedBehaviorDataPropertyName);
+
+			for (int i = 0, count = serializedData.arraySize; i < count; ++i)
+			{
+				SerializedProperty serializedBehaviorData = serializedData.GetArrayElementAtIndex(i);
+				Object serializedBehavior = serializedBehaviorData.FindPropertyRelative(SerializedBehaviorPropertyName)
+					.objectReferenceValue;
+
+				if (serializedBehavior == node.dependedSerializedBehavior)
+				{
+					return i;
+				}
+			}
+
+			return -1;
 		}
 	}
 }

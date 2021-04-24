@@ -92,6 +92,11 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			return newEdge;
 		}
 
+		public void SetChild([NotNull] Edge edge, int index)
+		{
+			m_outputEdges[index] = edge;
+		}
+
 		[CanBeNull]
 		public Edge RemoveChild(int index)
 		{
@@ -105,6 +110,16 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			m_outputEdges[index] = null;
 
 			return edge;
+		}
+
+		public int IndexOfEdge([NotNull] Edge edge)
+		{
+			return m_outputEdges.IndexOf(edge);
+		}
+
+		public int GetPortIndex([NotNull] Port port)
+		{
+			return outputContainer.IndexOf(port);
 		}
 
 		private void AddOutputPort()
