@@ -87,6 +87,10 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 		public void OnPortAdded([NotNull] SerializedBehaviorTreeNode node)
 		{
+			Undo.SetCurrentGroupName("Behavior Tree changed");
+			int undoGroup = Undo.GetCurrentGroup();
+			Undo.RegisterCompleteObjectUndo(m_serializedBehaviorTree, "Changed Behavior Tree");
+
 			SerializedProperty serializedBehaviorData = GetPropertyData(node);
 			SerializedProperty childrenIndices = serializedBehaviorData
 				.FindPropertyRelative(ChildrenIndicesPropertyName);
@@ -94,12 +98,19 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			childrenIndices.GetArrayElementAtIndex(last).intValue = -1;
 
 			m_serializedBehaviorTreeObject.ApplyModifiedProperties();
+
+			Undo.CollapseUndoOperations(undoGroup);
 		}
 
 		public void OnPortRemoved([NotNull] SerializedBehaviorTreeNode node, [CanBeNull] Edge edge, int index)
 		{
+			Undo.SetCurrentGroupName("Behavior Tree changed");
+			int undoGroup = Undo.GetCurrentGroup();
+			Undo.RegisterCompleteObjectUndo(m_serializedBehaviorTree, "Changed Behavior Tree");
+
 			if (edge != null)
 			{
+				((SerializedBehaviorTreeNode)edge.input.node).DisconnectParent();
 				RemoveElement(edge);
 			}
 
@@ -113,10 +124,16 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			} while (children.arraySize == childrenCount);
 
 			m_serializedBehaviorTreeObject.ApplyModifiedProperties();
+
+			Undo.CollapseUndoOperations(undoGroup);
 		}
 
 		public void CreateNewBehavior([NotNull] Type behaviorType, Vector2 position)
 		{
+			Undo.SetCurrentGroupName("Behavior Tree changed");
+			int undoGroup = Undo.GetCurrentGroup();
+			Undo.RegisterCompleteObjectUndo(m_serializedBehaviorTree, "Changed Behavior Tree");
+
 			var behavior = (SerializedBehavior_Base)ScriptableObject.CreateInstance(behaviorType);
 			behavior.name = behaviorType.Name;
 			AssetDatabase.AddObjectToAsset(behavior, m_serializedBehaviorTree);
@@ -139,6 +156,8 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			node.RefreshPorts();
 
 			m_serializedBehaviorTreeObject.ApplyModifiedProperties();
+
+			Undo.CollapseUndoOperations(undoGroup);
 		}
 
 		public void Dispose()
@@ -149,15 +168,15 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 		private void Update()
 		{
-			var serializedBehaviorTree = new SerializedObject(m_serializedBehaviorTree);
+			m_serializedBehaviorTreeObject.Update();
 			SerializedProperty serializedBehaviorDataArray =
-				serializedBehaviorTree.FindProperty(SerializedBehaviorDataPropertyName);
+				m_serializedBehaviorTreeObject.FindProperty(SerializedBehaviorDataPropertyName);
 
 			UpdateDeletedBehaviors(serializedBehaviorDataArray);
 			UpdateCreatedBehaviors(serializedBehaviorDataArray);
 			UpdatePositions(serializedBehaviorDataArray);
 			UpdateChildren(serializedBehaviorDataArray);
-			UpdateRoot(serializedBehaviorTree);
+			UpdateRoot();
 			RefreshNodes();
 		}
 
@@ -226,6 +245,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 				if (edge != null)
 				{
+					((SerializedBehaviorTreeNode)edge.input.node).DisconnectParent();
 					RemoveElement(edge);
 				}
 			}
@@ -266,7 +286,9 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 				for (int edgeIndex = 0, edgeCount = removedEdges.Count; edgeIndex < edgeCount; ++edgeIndex)
 				{
-					RemoveElement(removedEdges[edgeIndex]);
+					Edge removedEdge = removedEdges[edgeIndex];
+					((SerializedBehaviorTreeNode)removedEdge.input.node).DisconnectParent();
+					RemoveElement(removedEdge);
 				}
 
 				removedEdges.Clear();
@@ -280,6 +302,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 						if (node.GetChild(childIndex) != null)
 						{
 							Edge edge = node.RemoveChild(childIndex);
+							((SerializedBehaviorTreeNode)edge.input.node).DisconnectParent();
 							RemoveElement(edge);
 						}
 
@@ -299,6 +322,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 					if (previousEdge != null)
 					{
+						((SerializedBehaviorTreeNode)previousEdge.input.node).DisconnectParent();
 						RemoveElement(previousEdge);
 					}
 
@@ -307,10 +331,10 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			}
 		}
 
-		private void UpdateRoot([NotNull] SerializedObject serializedTree)
+		private void UpdateRoot()
 		{
-			int rootNode = serializedTree.FindProperty(RootNodePropertyName).intValue;
-			Vector2 position = serializedTree.FindProperty(RootGraphInfoPropertyName)
+			int rootNode = m_serializedBehaviorTreeObject.FindProperty(RootNodePropertyName).intValue;
+			Vector2 position = m_serializedBehaviorTreeObject.FindProperty(RootGraphInfoPropertyName)
 				.FindPropertyRelative(PositionPropertyName).vector2Value;
 
 			if (rootNode < 0)
@@ -319,12 +343,13 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 				if (edge != null)
 				{
+					((SerializedBehaviorTreeNode)edge.input.node).DisconnectParent();
 					RemoveElement(edge);
 				}
 			}
 			else
 			{
-				var rootBehavior = (SerializedBehavior_Base)serializedTree
+				var rootBehavior = (SerializedBehavior_Base)m_serializedBehaviorTreeObject
 					.FindProperty(SerializedBehaviorDataPropertyName)
 					.GetArrayElementAtIndex(rootNode).FindPropertyRelative(SerializedBehaviorPropertyName)
 					.objectReferenceValue;
@@ -336,6 +361,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 					if (edge != null)
 					{
+						((SerializedBehaviorTreeNode)edge.input.node).DisconnectParent();
 						RemoveElement(edge);
 					}
 
@@ -361,6 +387,12 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 		private GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
 		{
+			m_serializedBehaviorTreeObject.Update();
+
+			Undo.SetCurrentGroupName("Behavior Tree changed");
+			int undoGroup = Undo.GetCurrentGroup();
+			Undo.RegisterCompleteObjectUndo(m_serializedBehaviorTree, "Changed Behavior Tree");
+
 			if (graphViewChange.elementsToRemove != null)
 			{
 				RemoveElements(graphViewChange.elementsToRemove);
@@ -377,6 +409,8 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			}
 
 			m_serializedBehaviorTreeObject.ApplyModifiedProperties();
+
+			Undo.CollapseUndoOperations(undoGroup);
 
 			return graphViewChange;
 		}

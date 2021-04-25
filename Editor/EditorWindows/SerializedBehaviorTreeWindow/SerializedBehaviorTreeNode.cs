@@ -124,6 +124,11 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			return outputContainer.IndexOf(port);
 		}
 
+		public void DisconnectParent()
+		{
+			((Port)inputContainer[0]).DisconnectAll();
+		}
+
 		private void AddOutputPort()
 		{
 			Port childPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single,
