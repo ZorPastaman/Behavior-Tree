@@ -2,6 +2,8 @@
 
 using JetBrains.Annotations;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 {
@@ -17,6 +19,13 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 				typeof(BehaviorConnection));
 			output.portName = "First";
 			outputContainer.Add(output);
+
+			var color = new Color(1f, 0.65f, 0f, 1f);
+			IStyle mainStyle = mainContainer.style;
+			mainStyle.borderTopColor = mainStyle.borderBottomColor =
+				mainStyle.borderLeftColor = mainStyle.borderRightColor = color;
+			color.a = elementTypeColor.a;
+			elementTypeColor = color;
 		}
 
 		[CanBeNull]
