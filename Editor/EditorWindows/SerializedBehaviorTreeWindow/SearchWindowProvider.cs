@@ -12,6 +12,7 @@ using Zor.BehaviorTree.Core.Leaves;
 using Zor.BehaviorTree.Core.Leaves.Conditions;
 using Zor.BehaviorTree.Core.Leaves.StatusBehaviors;
 using Zor.BehaviorTree.EditorTools;
+using Zor.BehaviorTree.Helpers;
 using Action = Zor.BehaviorTree.Core.Leaves.Actions.Action;
 
 namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
@@ -107,7 +108,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 				SerializedBehaviorsCollection.TryGetSerializedBehaviorType(behaviorType,
 					out Type serializedBehaviorType);
-				tree.Add(new SearchTreeEntry(new GUIContent(behaviorType.Name))
+				tree.Add(new SearchTreeEntry(new GUIContent(TypeHelper.GetUIName(behaviorType)))
 				{
 					level = level,
 					userData = serializedBehaviorType
