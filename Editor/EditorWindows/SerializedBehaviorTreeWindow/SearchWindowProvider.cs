@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 using JetBrains.Annotations;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -11,6 +11,7 @@ using Zor.BehaviorTree.Core.Decorators;
 using Zor.BehaviorTree.Core.Leaves;
 using Zor.BehaviorTree.Core.Leaves.Conditions;
 using Zor.BehaviorTree.Core.Leaves.StatusBehaviors;
+using Zor.BehaviorTree.DrawingAttributes;
 using Zor.BehaviorTree.EditorTools;
 using Zor.BehaviorTree.Helpers;
 using Action = Zor.BehaviorTree.Core.Leaves.Actions.Action;
@@ -37,6 +38,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			};
 
 			Type[] behaviorTypes = SerializedBehaviorsCollection.GetBehaviorTypes();
+			Array.Sort(behaviorTypes, s_behaviorTypeComparer);
 
 			var compositeTypes = new List<Type>();
 			var decoratorTypes = new List<Type>();
@@ -78,18 +80,24 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 				}
 			}
 
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Composites"), 1));
-			AddEntries(tree, compositeTypes, 2);
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Decorators"), 1));
-			AddEntries(tree, decoratorTypes, 2);
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Leaves"), 1));
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Actions"), 2));
-			AddEntries(tree, actionTypes, 3);
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Conditions"), 2));
-			AddEntries(tree, conditionTypes, 3);
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Status Behaviors"), 2));
-			AddEntries(tree, statusBehaviorTypes, 3);
-			AddEntries(tree, leafTypes, 3);
+			var compositesGroup = new SearchTreeGroupEntry(new GUIContent("Composites"), 1);
+			tree.Add(compositesGroup);
+			AddEntries(tree, compositeTypes, compositesGroup);
+			var decoratorsGroup = new SearchTreeGroupEntry(new GUIContent("Decorators"), 1);
+			tree.Add(decoratorsGroup);
+			AddEntries(tree, decoratorTypes, decoratorsGroup);
+			var leavesGroup = new SearchTreeGroupEntry(new GUIContent("Leaves"), 1);
+			tree.Add(leavesGroup);
+			var actionsGroup = new SearchTreeGroupEntry(new GUIContent("Actions"), 2);
+			tree.Add(actionsGroup);
+			AddEntries(tree, actionTypes, actionsGroup);
+			var conditionsGroup = new SearchTreeGroupEntry(new GUIContent("Conditions"), 2);
+			tree.Add(conditionsGroup);
+			AddEntries(tree, conditionTypes, conditionsGroup);
+			var statusBehaviorsGroup = new SearchTreeGroupEntry(new GUIContent("Status Behaviors"), 2);
+			tree.Add(statusBehaviorsGroup);
+			AddEntries(tree, statusBehaviorTypes, statusBehaviorsGroup);
+			AddEntries(tree, leafTypes, leavesGroup);
 
 			return tree;
 		}
@@ -100,20 +108,80 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			return true;
 		}
 
-		private void AddEntries([NotNull] List<SearchTreeEntry> tree, [NotNull] List<Type> behaviorTypes, int level)
+		private static void AddEntries([NotNull] List<SearchTreeEntry> tree, [NotNull] List<Type> behaviorTypes,
+			[NotNull] SearchTreeGroupEntry mainGroupEntry)
 		{
 			for (int i = 0, count = behaviorTypes.Count; i < count; ++i)
 			{
 				Type behaviorType = behaviorTypes[i];
-
 				SerializedBehaviorsCollection.TryGetSerializedBehaviorType(behaviorType,
 					out Type serializedBehaviorType);
+				var groupNameAttribute = serializedBehaviorType.GetCustomAttribute<SearchGroup>();
+				SearchTreeGroupEntry groupEntry = groupNameAttribute == null
+					? mainGroupEntry
+					: GetOrCreateGroupEntryForPath(tree, mainGroupEntry, groupNameAttribute.groupPath);
+
 				tree.Add(new SearchTreeEntry(new GUIContent(TypeHelper.GetUIName(behaviorType)))
 				{
-					level = level,
-					userData = serializedBehaviorType
+					level = groupEntry.level + 1, userData = serializedBehaviorType
 				});
 			}
+		}
+
+		[NotNull]
+		private static SearchTreeGroupEntry GetOrCreateGroupEntryForPath([NotNull] List<SearchTreeEntry> tree,
+			[NotNull] SearchTreeGroupEntry baseEntry, [NotNull] string groupPath)
+		{
+			string[] groups = groupPath.Split('/');
+
+			for (int i = 0, count = groups.Length; i < count; ++i)
+			{
+				string group = groups[i];
+				baseEntry = GetOrAddGroupEntry(tree, baseEntry, group);
+			}
+
+			return baseEntry;
+		}
+
+		[NotNull]
+		private static SearchTreeGroupEntry GetOrAddGroupEntry([NotNull] List<SearchTreeEntry> tree,
+			[NotNull] SearchTreeGroupEntry baseEntry, [NotNull] string groupName)
+		{
+			int baseIndex = tree.IndexOf(baseEntry);
+			int finalIndex = baseIndex + 1;
+			int level = baseEntry.level + 1;
+
+			for (int count = tree.Count; finalIndex < count; ++finalIndex)
+			{
+				SearchTreeEntry treeEntry = tree[finalIndex];
+
+				if (treeEntry.level <= baseEntry.level)
+				{
+					break;
+				}
+
+				if (treeEntry is SearchTreeGroupEntry groupEntry &&
+					groupEntry.level == level && groupEntry.content.text == groupName)
+				{
+					return groupEntry;
+				}
+			}
+
+			int index = baseIndex + 1;
+
+			for (; index < finalIndex; ++index)
+			{
+				SearchTreeEntry element = tree[index];
+
+				if (element.level == level && string.CompareOrdinal(groupName, element.content.text) < 0)
+				{
+					break;
+				}
+			}
+
+			var entry = new SearchTreeGroupEntry(new GUIContent(groupName), level);
+			tree.Insert(index, entry);
+			return entry;
 		}
 	}
 }

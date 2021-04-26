@@ -6,6 +6,7 @@ using Zor.BehaviorTree.DrawingAttributes;
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves.Actions
 {
 	[NameOverride("Value", 0), NameOverride("Property Name", 1)]
+	[SearchGroup("Set Struct Value")]
 	public abstract class SerializedSetStructValue<T> : SerializedAction<SetStructValue<T>, T, string> where T : struct
 	{
 	}

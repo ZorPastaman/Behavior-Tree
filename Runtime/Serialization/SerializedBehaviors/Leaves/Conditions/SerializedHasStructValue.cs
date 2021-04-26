@@ -6,6 +6,7 @@ using Zor.BehaviorTree.DrawingAttributes;
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves.Conditions
 {
 	[NameOverride("Property Name", 0)]
+	[SearchGroup("Has Struct Value")]
 	public abstract class SerializedHasStructValue<T> : SerializedCondition<HasStructValue<T>, string> where T : struct
 	{
 	}
