@@ -1,14 +1,15 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
+using Zor.BehaviorTree.DrawingAttributes;
 
 namespace Zor.BehaviorTree.Core.Decorators
 {
 	public sealed class Repeater : Decorator, ISetupable<uint>
 	{
-		private uint m_repeats;
+		[BehaviorInfo] private uint m_repeats;
 
-		private uint m_currentRepeats;
+		[BehaviorInfo] private uint m_currentRepeats;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(uint repeats)

@@ -116,7 +116,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 				Type behaviorType = behaviorTypes[i];
 				SerializedBehaviorsCollection.TryGetSerializedBehaviorType(behaviorType,
 					out Type serializedBehaviorType);
-				var groupNameAttribute = serializedBehaviorType.GetCustomAttribute<SearchGroup>();
+				var groupNameAttribute = serializedBehaviorType.GetCustomAttribute<SearchGroupAttribute>();
 				SearchTreeGroupEntry groupEntry = groupNameAttribute == null
 					? mainGroupEntry
 					: GetOrCreateGroupEntryForPath(tree, mainGroupEntry, groupNameAttribute.groupPath);

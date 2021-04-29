@@ -31,6 +31,8 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 			background.StretchToParentSize();
 
 			this.AddManipulator(new ContentDragger());
+			this.AddManipulator(new SelectionDragger());
+			this.AddManipulator(new RectangleSelector());
 
 			var minimap = new MiniMap {anchored = true};
 			minimap.SetPosition(new Rect(10f, 10f, 200f, 200f));
@@ -104,7 +106,12 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 			rootNode.RefreshExpandedState();
 			rootNode.RefreshPorts();
 
-			graphViewChanged += change => default;
+			graphViewChanged += change =>
+			{
+				change.elementsToRemove?.Clear();
+				change.edgesToCreate?.Clear();
+				return change;
+			};
 			EditorApplication.update += Update;
 		}
 
@@ -146,7 +153,7 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 		{
 			for (int i = 0, count = m_nodes.Length; i < count; ++i)
 			{
-				m_nodes[i].UpdateStatus();
+				m_nodes[i].Update();
 			}
 		}
 	}

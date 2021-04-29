@@ -6,11 +6,11 @@ using JetBrains.Annotations;
 namespace Zor.BehaviorTree.DrawingAttributes
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public sealed class SearchGroup : Attribute
+	public sealed class SearchGroupAttribute : Attribute
 	{
 		[NotNull] public readonly string groupPath;
 
-		public SearchGroup([NotNull] string groupPath)
+		public SearchGroupAttribute([NotNull] string groupPath)
 		{
 			this.groupPath = groupPath;
 		}

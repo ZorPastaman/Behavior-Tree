@@ -2,7 +2,6 @@
 
 using System;
 using System.Text;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace Zor.BehaviorTree.Helpers
@@ -14,12 +13,12 @@ namespace Zor.BehaviorTree.Helpers
 		{
 			if (!type.IsGenericType)
 			{
-				return GetNameWithSpaces(type.Name);
+				return NameHelper.GetNameWithSpaces(type.Name);
 			}
 
 			string genericName = type.Name;
 			genericName = genericName.Substring(0, genericName.IndexOf("`", StringComparison.Ordinal));
-			var stringBuilder = new StringBuilder(GetNameWithSpaces(genericName));
+			var stringBuilder = new StringBuilder(NameHelper.GetNameWithSpaces(genericName));
 			stringBuilder.Append(" <");
 
 			Type[] genericParameters = type.GetGenericArguments();
@@ -37,12 +36,6 @@ namespace Zor.BehaviorTree.Helpers
 			stringBuilder.Append('>');
 
 			return stringBuilder.ToString();
-		}
-
-		[NotNull]
-		private static string GetNameWithSpaces([NotNull] string typeName)
-		{
-			return Regex.Replace(typeName, @"((?<=\p{Ll})\p{Lu})|((?!\A)\p{Lu}(?>\p{Ll}))", " $0");
 		}
 	}
 }
