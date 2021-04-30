@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zor.BehaviorTree.Core;
 
 namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 {
@@ -16,14 +17,18 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 		private const float DefaultSizeY = 150f;
 		private const float DefaultPlaceX = DefaultSizeX + 150f;
 		private const float DefaultPlaceY = DefaultSizeY + 50f;
-		private const float OffsetX = 100f;
-		private const float OffsetY = 150f;
+		private const float OffsetX = 30f;
+		private const float OffsetY = 50f;
+		private const float MinimalCentralY = 300f;
 		private static readonly Vector2 s_defaultSize = new Vector2(DefaultSizeX, DefaultSizeY);
 
+		[NotNull] public readonly TreeRoot treeRoot;
 		[NotNull] private readonly AgentBehaviorTreeNode[] m_nodes;
 
-		public AgentBehaviorTreeGraph([NotNull] List<BehaviorInfo> behaviorInfos)
+		public AgentBehaviorTreeGraph([NotNull] List<BehaviorInfo> behaviorInfos, [NotNull] TreeRoot treeRoot)
 		{
+			this.treeRoot = treeRoot;
+
 			SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
 			var background = new GridBackground();
@@ -79,6 +84,7 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 			}
 
 			float centralY = biggestLevelCount * DefaultPlaceY / 2f;
+			centralY = Mathf.Max(centralY, MinimalCentralY);
 
 			rootNode.SetPosition(new Rect(
 				new Vector2(OffsetX, centralY - DefaultPlaceY / 2f + OffsetY), s_defaultSize));

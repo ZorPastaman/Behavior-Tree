@@ -41,6 +41,7 @@ namespace Zor.BehaviorTree.EditorWindows
 
 		private Object m_selectedObject;
 		private BehaviorTreeAgent[] m_selectedAgents;
+		private int m_selectedIndex;
 
 		[MenuItem("Window/Behavior Tree/Serialized Behavior Tree", priority = 2021)]
 		private static void OpenWindow()
@@ -112,7 +113,7 @@ namespace Zor.BehaviorTree.EditorWindows
 			{
 				name = "Serialized Behavior Tree"
 			};
-			m_serializedGraph.StretchToParentSize();
+			m_serializedGraph.style.flexGrow = 1f;
 			rootVisualElement.Add(m_serializedGraph);
 
 			m_selectedObject = serializedBehaviorTree;
@@ -138,7 +139,8 @@ namespace Zor.BehaviorTree.EditorWindows
 					same = m_selectedAgents[i] == agents[i];
 				}
 
-				if (same)
+				if (same && m_agentGraph != null &&
+					s_treeRootField.GetValue(m_selectedAgents[m_selectedIndex]) == m_agentGraph.treeRoot)
 				{
 					return;
 				}
@@ -163,6 +165,7 @@ namespace Zor.BehaviorTree.EditorWindows
 					{
 						CreateAgentBehaviorTree((BehaviorTreeAgent)a.userData);
 						toolbarMenu.text = $"Behavior Tree Agent {index}";
+						m_selectedIndex = index;
 					},
 					a => DropdownMenuAction.Status.Normal,
 					agents[i]);
@@ -170,6 +173,7 @@ namespace Zor.BehaviorTree.EditorWindows
 
 			CreateAgentBehaviorTree(agents[0]);
 			toolbarMenu.text = "Behavior Tree Agent 0";
+			m_selectedIndex = 0;
 
 			m_selectedObject = gameObject;
 			m_selectedAgents = agents;
@@ -177,6 +181,12 @@ namespace Zor.BehaviorTree.EditorWindows
 
 		private void CreateAgentBehaviorTree([NotNull] BehaviorTreeAgent agent)
 		{
+			if (m_agentGraph != null)
+			{
+				rootVisualElement.Remove(m_agentGraph);
+				m_agentGraph = null;
+			}
+
 			if (!(s_treeRootField.GetValue(agent) is TreeRoot treeRoot))
 			{
 				return;
@@ -186,8 +196,8 @@ namespace Zor.BehaviorTree.EditorWindows
 			var behaviorInfos = new List<BehaviorInfo>();
 			AddBehavior(behaviorInfos, rootBehavior, 0);
 
-			m_agentGraph = new AgentBehaviorTreeGraph(behaviorInfos);
-			m_agentGraph.StretchToParentSize();
+			m_agentGraph = new AgentBehaviorTreeGraph(behaviorInfos, treeRoot);
+			m_agentGraph.style.flexGrow = 1f;
 			rootVisualElement.Add(m_agentGraph);
 		}
 
