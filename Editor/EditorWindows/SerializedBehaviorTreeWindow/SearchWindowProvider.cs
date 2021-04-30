@@ -21,7 +21,7 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 	public sealed class SearchWindowProvider : ScriptableObject, ISearchWindowProvider
 	{
 		private static readonly Comparison<Type> s_behaviorTypeComparer = (left, right) =>
-			string.CompareOrdinal(left.Name, right.Name);
+			string.CompareOrdinal(TypeHelper.GetUIName(left), TypeHelper.GetUIName(right));
 
 		private SerializedBehaviorTreeGraph m_graph;
 

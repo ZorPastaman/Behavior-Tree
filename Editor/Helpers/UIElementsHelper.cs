@@ -41,6 +41,14 @@ namespace Zor.BehaviorTree.Helpers
 						}
 					}
 
+					// Dirty hack 'cause an enum field equals -1 at the frame when its object is created.
+					if (iterator.propertyType == SerializedPropertyType.Enum &&
+						(iterator.enumValueIndex < 0 || iterator.enumValueIndex >= iterator.enumDisplayNames.Length))
+					{
+						iterator.enumValueIndex = 0;
+						serializedObject.ApplyModifiedProperties();
+					}
+
 					string label = nameOverride == null ? string.Empty : nameOverride.name;
 					var propertyField = new PropertyField(iterator, label) {name = iterator.propertyPath};
 					propertyField.Bind(serializedObject);

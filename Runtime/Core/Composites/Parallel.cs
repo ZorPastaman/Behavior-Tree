@@ -2,17 +2,18 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Zor.BehaviorTree.DrawingAttributes;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
 	public sealed class Parallel : Composite, ISetupable<Parallel.Mode>, ISetupable<Parallel.Mode, Parallel.Mode>
 	{
-		private int m_success;
+		private int m_successes;
 		private int m_failures;
 		private bool m_initialTick;
 
-		private Mode m_successMode;
-		private Mode m_failureMode;
+		[BehaviorInfo] private Mode m_successMode;
+		[BehaviorInfo] private Mode m_failureMode;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(Mode mode)
@@ -33,7 +34,7 @@ namespace Zor.BehaviorTree.Core.Composites
 		{
 			base.Begin();
 
-			m_success = 0;
+			m_successes = 0;
 			m_failures = 0;
 			m_initialTick = true;
 		}
@@ -60,7 +61,7 @@ namespace Zor.BehaviorTree.Core.Composites
 						return Status.Success;
 					}
 
-					++m_success;
+					++m_successes;
 				}
 				else if (childStatus == Status.Failure)
 				{
@@ -77,7 +78,7 @@ namespace Zor.BehaviorTree.Core.Composites
 				}
 			}
 
-			if (m_successMode == Mode.All & m_success >= childrenCount)
+			if (m_successMode == Mode.All & m_successes >= childrenCount)
 			{
 				return Status.Success;
 			}
@@ -87,7 +88,7 @@ namespace Zor.BehaviorTree.Core.Composites
 				return Status.Failure;
 			}
 
-			if (m_success > 0 & m_failures > 0)
+			if (m_successes > 0 & m_failures > 0)
 			{
 				return Status.Error;
 			}

@@ -2,12 +2,13 @@
 
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Zor.BehaviorTree.DrawingAttributes;
 
 namespace Zor.BehaviorTree.Core.Leaves.StatusBehaviors
 {
 	public sealed class SetStatusBehavior : StatusBehavior, ISetupable<Status>
 	{
-		private Status m_returnedStatus;
+		[BehaviorInfo] private Status m_returnedStatus;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(Status returnedStatus)

@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Zor.BehaviorTree.DrawingAttributes;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
@@ -11,8 +12,8 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		ISetupable<T, BlackboardPropertyName>, ISetupable<T, string>
 		where T : struct, IEquatable<T>
 	{
-		private T m_value;
-		private BlackboardPropertyName m_propertyName;
+		[BehaviorInfo] private T m_value;
+		[BehaviorInfo] private BlackboardPropertyName m_propertyName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(T value, BlackboardPropertyName propertyName)

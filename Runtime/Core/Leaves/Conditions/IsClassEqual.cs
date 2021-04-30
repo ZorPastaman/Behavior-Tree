@@ -1,18 +1,18 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
-using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Zor.BehaviorTree.DrawingAttributes;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
 	public sealed class IsClassEqual<T> : Condition,
 		ISetupable<T, BlackboardPropertyName>, ISetupable<T, string>
-		where T : class, IEquatable<T>
+		where T : class
 	{
-		private T m_value;
-		private BlackboardPropertyName m_propertyName;
+		[BehaviorInfo] private T m_value;
+		[BehaviorInfo] private BlackboardPropertyName m_propertyName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup([CanBeNull] T value, BlackboardPropertyName propertyName)

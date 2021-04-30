@@ -53,7 +53,9 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 				labelStyle.borderRightWidth = 10f;
 				root.Add(label);
 
-				Label infoView = m_infoViews[i] = new Label(infoField.GetValue(m_behavior).ToString());
+				object value = infoField.GetValue(m_behavior);
+				string valueString = value == null ? "null" : value.ToString();
+				Label infoView = m_infoViews[i] = new Label(valueString);
 				infoView.style.flexGrow = 1f;
 				infoView.style.unityTextAlign = TextAnchor.MiddleRight;
 				root.Add(infoView);
@@ -111,7 +113,9 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 
 			for (int i = 0, count = m_infoFields.Length; i < count; ++i)
 			{
-				m_infoViews[i].text = m_infoFields[i].GetValue(m_behavior).ToString();
+				object value = m_infoFields[i].GetValue(m_behavior);
+				string valueString = value == null ? "null" : value.ToString();
+				m_infoViews[i].text = valueString;
 			}
 		}
 

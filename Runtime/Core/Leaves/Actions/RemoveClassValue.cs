@@ -2,6 +2,7 @@
 
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Zor.BehaviorTree.DrawingAttributes;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
@@ -10,7 +11,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 		ISetupable<BlackboardPropertyName>, ISetupable<string>
 		where T : class
 	{
-		private BlackboardPropertyName m_propertyName;
+		[BehaviorInfo] private BlackboardPropertyName m_propertyName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(BlackboardPropertyName propertyName)

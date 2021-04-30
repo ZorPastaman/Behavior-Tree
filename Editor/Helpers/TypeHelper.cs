@@ -13,7 +13,8 @@ namespace Zor.BehaviorTree.Helpers
 		{
 			if (!type.IsGenericType)
 			{
-				return NameHelper.GetNameWithSpaces(type.Name);
+				// "object" name not to confuse it with UnityEngine.Object.
+				return type == typeof(object) ? "object" : NameHelper.GetNameWithSpaces(type.Name);
 			}
 
 			string genericName = type.Name;

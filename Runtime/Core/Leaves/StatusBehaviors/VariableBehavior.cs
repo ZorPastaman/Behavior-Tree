@@ -2,13 +2,14 @@
 
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Zor.BehaviorTree.DrawingAttributes;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.StatusBehaviors
 {
 	public sealed class VariableBehavior : StatusBehavior, ISetupable<BlackboardPropertyName>, ISetupable<string>
 	{
-		private BlackboardPropertyName m_variableName;
+		[BehaviorInfo] private BlackboardPropertyName m_variableName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(BlackboardPropertyName variableName)

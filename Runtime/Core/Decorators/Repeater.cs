@@ -28,16 +28,16 @@ namespace Zor.BehaviorTree.Core.Decorators
 		{
 			Status childStatus = child.Tick();
 
-			if (childStatus == Status.Success)
+			if (childStatus != Status.Success)
 			{
-				Status* results = stackalloc Status[] {Status.Running, Status.Success};
-				bool finished = ++m_currentRepeats >= m_repeats;
-				byte index = *(byte*)&finished;
-
-				return results[index];
+				return childStatus;
 			}
 
-			return childStatus;
+			Status* results = stackalloc Status[] {Status.Running, Status.Success};
+			bool finished = ++m_currentRepeats >= m_repeats;
+			byte index = *(byte*)&finished;
+
+			return results[index];
 		}
 	}
 }
