@@ -40,5 +40,11 @@ namespace Zor.BehaviorTree.Components
 		{
 			m_treeRoot?.Dispose();
 		}
+
+		[ContextMenu("Recreate Tree")]
+		private void RecreateTree()
+		{
+			Awake();
+		}
 	}
 }

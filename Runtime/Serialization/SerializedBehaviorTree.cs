@@ -34,17 +34,13 @@ namespace Zor.BehaviorTree.Serialization
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override TreeRoot CreateTree(Blackboard blackboard)
 		{
-			return m_treeBuilder.Build(blackboard);
-		}
-
-		private void OnEnable()
-		{
-			m_treeBuilder = new TreeBuilder();
-
-			if (m_RootNode >= 0)
+			if (m_treeBuilder == null)
 			{
+				m_treeBuilder = new TreeBuilder();
 				Deserialize(m_RootNode);
 			}
+
+			return m_treeBuilder.Build(blackboard);
 		}
 
 		private void Deserialize(int index)
@@ -76,6 +72,7 @@ namespace Zor.BehaviorTree.Serialization
 			ValidateChildren();
 			ValidateSubAssets();
 			ValidateDependedAssets();
+			m_treeBuilder = null;
 			OnAssetChanged?.Invoke();
 		}
 
