@@ -11,6 +11,57 @@ namespace Zor.BehaviorTree.Tests
 	public static class ActionTests
 	{
 		[Test]
+		public static void CopyClassValueTest()
+		{
+			var sourcePropertyName = new BlackboardPropertyName("value");
+			var destinationPropertyName = new BlackboardPropertyName("copied");
+			const string value = "value";
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<CopyClassValue<string>, BlackboardPropertyName, BlackboardPropertyName>(
+				sourcePropertyName, destinationPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue(sourcePropertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(destinationPropertyName, out string copiedValue));
+			Assert.AreEqual(value, copiedValue);
+
+			blackboard.SetClassValue<string>(sourcePropertyName, null);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(destinationPropertyName, out copiedValue));
+			Assert.AreEqual(null, copiedValue);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void CopyStructValueTest()
+		{
+			var sourcePropertyName = new BlackboardPropertyName("value");
+			var destinationPropertyName = new BlackboardPropertyName("copied");
+			const int value = 3;
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<CopyStructValue<int>, BlackboardPropertyName, BlackboardPropertyName>(
+				sourcePropertyName, destinationPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(sourcePropertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(destinationPropertyName, out int copiedValue));
+			Assert.AreEqual(value, copiedValue);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void RemoveClassValueTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
@@ -50,7 +101,7 @@ namespace Zor.BehaviorTree.Tests
 		public static void SetClassValueTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
-			const string value = "value";
+			string value = "value";
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
 			treeBuilder.AddLeaf<SetClassValue<string>, string, BlackboardPropertyName>(value, propertyName)
@@ -60,6 +111,20 @@ namespace Zor.BehaviorTree.Tests
 
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetClassValue(propertyName, out string val));
+			Assert.AreEqual(value, val);
+
+			treeRoot.Dispose();
+
+			value = null;
+			blackboard = new Blackboard();
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetClassValue<string>, string, BlackboardPropertyName>(value, propertyName)
+				.Complete();
+			treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(propertyName, out val));
 			Assert.AreEqual(value, val);
 
 			treeRoot.Dispose();

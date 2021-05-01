@@ -7,8 +7,7 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
-	public sealed class HasClassValue<T> : Condition,
-		ISetupable<BlackboardPropertyName>, ISetupable<string>
+	public sealed class HasClassValue<T> : Condition, ISetupable<BlackboardPropertyName>, ISetupable<string>
 		where T : class
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_propertyName;
@@ -22,7 +21,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup([NotNull] string propertyName)
 		{
-			m_propertyName = new BlackboardPropertyName(propertyName);
+			Setup(new BlackboardPropertyName(propertyName));
 		}
 
 		[Pure]

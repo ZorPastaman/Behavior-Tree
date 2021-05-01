@@ -69,6 +69,23 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.RemoveObject(propertyName);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
+			value = null;
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsClassEqual<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
+			treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			value = "valueChanged";
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
 			treeRoot.Dispose();
 		}
 

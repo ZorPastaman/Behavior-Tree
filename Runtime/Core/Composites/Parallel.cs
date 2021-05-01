@@ -18,8 +18,7 @@ namespace Zor.BehaviorTree.Core.Composites
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(Mode mode)
 		{
-			m_successMode = mode;
-			m_failureMode = mode;
+			Setup(mode, mode);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

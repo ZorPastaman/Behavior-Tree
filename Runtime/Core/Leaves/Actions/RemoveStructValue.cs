@@ -7,8 +7,7 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
-	public sealed class RemoveStructValue<T> : Action,
-		ISetupable<BlackboardPropertyName>, ISetupable<string>
+	public sealed class RemoveStructValue<T> : Action, ISetupable<BlackboardPropertyName>, ISetupable<string>
 		where T : struct
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_propertyName;
@@ -22,7 +21,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup([NotNull] string propertyName)
 		{
-			m_propertyName = new BlackboardPropertyName(propertyName);
+			Setup(new BlackboardPropertyName(propertyName));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
