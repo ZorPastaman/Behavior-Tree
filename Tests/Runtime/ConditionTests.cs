@@ -1,6 +1,9 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
+using System.Collections;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Leaves.Conditions;
@@ -109,6 +112,65 @@ namespace Zor.BehaviorTree.Tests
 
 			blackboard.RemoveObject(propertyName);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[UnityTest]
+		public static IEnumerator WaitFramesTest()
+		{
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<WaitFrames, int>(3).Complete();
+			TreeRoot treeRoot = treeBuilder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return null;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return null;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[UnityTest]
+		public static IEnumerator WaitSecondsTest()
+		{
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<WaitSeconds, float>(3f).Complete();
+			TreeRoot treeRoot = treeBuilder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			treeRoot.Dispose();
 		}
