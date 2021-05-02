@@ -93,6 +93,96 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void IsClassGreaterTest()
+		{
+			var propertyName = new BlackboardPropertyName("value");
+			string value = "value";
+			var blackboard = new Blackboard();
+			blackboard.SetClassValue(propertyName, value);
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsClassGreater<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = "val";
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = "valueChanged";
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			value = null;
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsClassGreater<string>, string, BlackboardPropertyName>(null, propertyName).Complete();
+			treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = "value";
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			blackboard.RemoveObject<string>(propertyName);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsClassLessTest()
+		{
+			var propertyName = new BlackboardPropertyName("value");
+			string value = "value";
+			var blackboard = new Blackboard();
+			blackboard.SetClassValue(propertyName, value);
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsClassLess<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = "val";
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			value = "valueChanged";
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = null;
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsClassLess<string>, string, BlackboardPropertyName>(null, propertyName).Complete();
+			treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = "value";
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.RemoveObject<string>(propertyName);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void IsStructEqualTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
@@ -111,6 +201,62 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.RemoveObject(propertyName);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsStructGreater()
+		{
+			var propertyName = new BlackboardPropertyName("value");
+			int value = 0;
+			var blackboard = new Blackboard();
+			blackboard.SetStructValue(propertyName, value);
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsStructGreater<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = 10;
+			blackboard.SetStructValue(propertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			value = -10;
+			blackboard.SetStructValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.RemoveStruct<int>(propertyName);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsStructLess()
+		{
+			var propertyName = new BlackboardPropertyName("value");
+			int value = 0;
+			var blackboard = new Blackboard();
+			blackboard.SetStructValue(propertyName, value);
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsStructLess<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = 10;
+			blackboard.SetStructValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			value = -10;
+			blackboard.SetStructValue(propertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			blackboard.RemoveStruct<int>(propertyName);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			treeRoot.Dispose();

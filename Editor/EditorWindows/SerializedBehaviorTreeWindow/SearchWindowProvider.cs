@@ -121,10 +121,12 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 					? mainGroupEntry
 					: GetOrCreateGroupEntryForPath(tree, mainGroupEntry, groupNameAttribute.groupPath);
 
-				tree.Add(new SearchTreeEntry(new GUIContent(TypeHelper.GetUIName(behaviorType)))
+				var entry = new SearchTreeEntry(new GUIContent(TypeHelper.GetUIName(behaviorType)))
 				{
-					level = groupEntry.level + 1, userData = serializedBehaviorType
-				});
+					level = groupEntry.level + 1,
+					userData = serializedBehaviorType
+				};
+				tree.Insert(IndexOfNextGroup(tree, groupEntry), entry);
 			}
 		}
 
@@ -182,6 +184,22 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 			var entry = new SearchTreeGroupEntry(new GUIContent(groupName), level);
 			tree.Insert(index, entry);
 			return entry;
+		}
+
+		private static int IndexOfNextGroup([NotNull] List<SearchTreeEntry> tree, [NotNull] SearchTreeGroupEntry start)
+		{
+			int index = tree.IndexOf(start) + 1;
+
+			for (int count = tree.Count; index < count; ++index)
+			{
+				SearchTreeEntry entry = tree[index];
+				if (entry.level <= start.level && entry is SearchTreeGroupEntry)
+				{
+					break;
+				}
+			}
+
+			return index;
 		}
 	}
 }

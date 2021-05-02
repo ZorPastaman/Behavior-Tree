@@ -7,9 +7,9 @@ using Zor.BehaviorTree.DrawingAttributes;
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves.Conditions
 {
 	[NameOverride("Value", 0), NameOverride("Property Name", 1)]
-	[SearchGroup("Comparison/Is Struct Equal")]
-	public abstract class SerializedIsStructEqual<T> : SerializedCondition<IsStructEqual<T>, T, string>
-		where T : struct, IEquatable<T>
+	[SearchGroup("Comparison/Is Class Less")]
+	public abstract class SerializedIsClassLess<T> : SerializedCondition<IsClassLess<T>, T, string>
+		where T : class, IComparable<T>
 	{
 	}
 }
