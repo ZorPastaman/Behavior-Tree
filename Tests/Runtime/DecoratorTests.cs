@@ -55,7 +55,7 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
-		public static void RepeatTests()
+		public static void RepeatTest()
 		{
 			var builder = new TreeBuilder();
 			builder.AddDecorator<Repeater, uint>(3u)
@@ -111,6 +111,110 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void UntilTest()
+		{
+			var builder = new TreeBuilder();
+			builder.AddDecorator<Until>()
+				.AddLeaf<SuccessBehavior>().Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<Until>()
+				.AddLeaf<FailureBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<Until>()
+				.AddLeaf<RunningBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<Until>()
+				.AddLeaf<ErrorBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void WhileTest()
+		{
+			var builder = new TreeBuilder();
+			builder.AddDecorator<While>()
+				.AddLeaf<SuccessBehavior>().Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<While>()
+				.AddLeaf<FailureBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<While>()
+				.AddLeaf<RunningBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<While>()
+				.AddLeaf<ErrorBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
 			treeRoot.Dispose();
 		}
 	}
