@@ -8,6 +8,7 @@ using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Leaves.Conditions;
 using Zor.SimpleBlackboard.Core;
+using WaitForSeconds = Zor.BehaviorTree.Core.Leaves.Conditions.WaitForSeconds;
 
 namespace Zor.BehaviorTree.Tests
 {
@@ -59,7 +60,7 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			blackboard.SetClassValue(propertyName, value);
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsClassEqual<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
+			treeBuilder.AddLeaf<IsClassValueEqual<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -79,7 +80,7 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsClassEqual<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
+			treeBuilder.AddLeaf<IsClassValueEqual<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
 			treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -100,7 +101,7 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			blackboard.SetClassValue(propertyName, value);
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsClassGreater<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
+			treeBuilder.AddLeaf<IsClassValueGreater<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -121,7 +122,7 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsClassGreater<string>, string, BlackboardPropertyName>(null, propertyName).Complete();
+			treeBuilder.AddLeaf<IsClassValueGreater<string>, string, BlackboardPropertyName>(null, propertyName).Complete();
 			treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -145,7 +146,7 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			blackboard.SetClassValue(propertyName, value);
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsClassLess<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
+			treeBuilder.AddLeaf<IsClassValueLess<string>, string, BlackboardPropertyName>(value, propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -166,7 +167,7 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 
 			treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsClassLess<string>, string, BlackboardPropertyName>(null, propertyName).Complete();
+			treeBuilder.AddLeaf<IsClassValueLess<string>, string, BlackboardPropertyName>(null, propertyName).Complete();
 			treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -190,7 +191,7 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			blackboard.SetStructValue(propertyName, value);
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsStructEqual<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
+			treeBuilder.AddLeaf<IsStructValueEqual<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -214,7 +215,7 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			blackboard.SetStructValue(propertyName, value);
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsStructGreater<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
+			treeBuilder.AddLeaf<IsStructValueGreater<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -242,7 +243,7 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 			blackboard.SetStructValue(propertyName, value);
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<IsStructLess<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
+			treeBuilder.AddLeaf<IsStructValueLess<int>, int, BlackboardPropertyName>(value, propertyName).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -266,7 +267,7 @@ namespace Zor.BehaviorTree.Tests
 		public static IEnumerator WaitFramesTest()
 		{
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<WaitFrames, int>(3).Complete();
+			treeBuilder.AddLeaf<WaitForFrames, int>(3).Complete();
 			TreeRoot treeRoot = treeBuilder.Build();
 			treeRoot.Initialize();
 
@@ -300,22 +301,22 @@ namespace Zor.BehaviorTree.Tests
 		public static IEnumerator WaitSecondsTest()
 		{
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<WaitSeconds, float>(3f).Complete();
+			treeBuilder.AddLeaf<WaitForSeconds, float>(3f).Complete();
 			TreeRoot treeRoot = treeBuilder.Build();
 			treeRoot.Initialize();
 
 			Assert.AreEqual(Status.Running, treeRoot.Tick());
 
-			yield return new WaitForSeconds(1f);
+			yield return new UnityEngine.WaitForSeconds(1f);
 			Assert.AreEqual(Status.Running, treeRoot.Tick());
 
-			yield return new WaitForSeconds(3f);
+			yield return new UnityEngine.WaitForSeconds(3f);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
-			yield return new WaitForSeconds(1f);
+			yield return new UnityEngine.WaitForSeconds(1f);
 			Assert.AreEqual(Status.Running, treeRoot.Tick());
 
-			yield return new WaitForSeconds(3f);
+			yield return new UnityEngine.WaitForSeconds(3f);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			treeRoot.Dispose();

@@ -20,7 +20,7 @@ namespace Zor.BehaviorTree.Tests
 			var property = new BlackboardPropertyName("status");
 			var blackboard = new Blackboard();
 			var builder = new TreeBuilder();
-			builder.AddDecorator<CooldownFrames, int>(3)
+			builder.AddDecorator<CooldownOfFrames, int>(3)
 				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
 				.Complete();
 			TreeRoot treeRoot = builder.Build(blackboard);
@@ -77,7 +77,7 @@ namespace Zor.BehaviorTree.Tests
 			var property = new BlackboardPropertyName("status");
 			var blackboard = new Blackboard();
 			var builder = new TreeBuilder();
-			builder.AddDecorator<CooldownSeconds, float>(3f)
+			builder.AddDecorator<CooldownOfSeconds, float>(3f)
 				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
 			.Complete();
 			TreeRoot treeRoot = builder.Build(blackboard);
