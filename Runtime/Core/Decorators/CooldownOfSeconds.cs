@@ -23,7 +23,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		{
 			float time = Time.time;
 
-			if (m_isLastTickSuccess && time - m_lastChildTickTime < m_duration)
+			if (m_isLastTickSuccess & (time - m_lastChildTickTime < m_duration))
 			{
 				return Status.Failure;
 			}

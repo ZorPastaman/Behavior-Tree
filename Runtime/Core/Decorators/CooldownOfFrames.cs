@@ -23,7 +23,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		{
 			int frame = Time.frameCount;
 
-			if (m_isLastTickSuccess && frame - m_lastChildTickFrame < m_duration)
+			if (m_isLastTickSuccess & (frame - m_lastChildTickFrame < m_duration))
 			{
 				return Status.Failure;
 			}
