@@ -3,19 +3,26 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using Zor.BehaviorTree.DrawingAttributes;
+using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Decorators
 {
-	public sealed class LimitOfFrames : Decorator, ISetupable<int>
+	public sealed class LimitOfFramesVariable : Decorator, ISetupable<BlackboardPropertyName>, ISetupable<string>
 	{
-		[BehaviorInfo] private int m_duration;
+		[BehaviorInfo] private BlackboardPropertyName m_durationPropertyName;
 
 		[BehaviorInfo] private int m_beginFrame;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(int duration)
+		public void Setup(BlackboardPropertyName durationPropertyName)
 		{
-			m_duration = duration;
+			m_durationPropertyName = durationPropertyName;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Setup(string durationPropertyName)
+		{
+			Setup(new BlackboardPropertyName(durationPropertyName));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -27,9 +34,14 @@ namespace Zor.BehaviorTree.Core.Decorators
 
 		protected override unsafe Status Execute()
 		{
+			if (!blackboard.TryGetStructValue(m_durationPropertyName, out int duration))
+			{
+				return Status.Error;
+			}
+
 			Status childStatus = child.Tick();
 			Status* results = stackalloc[] {childStatus, Status.Failure};
-			bool isTimeOver = childStatus == Status.Running & (Time.frameCount - m_beginFrame >= m_duration);
+			bool isTimeOver = childStatus == Status.Running & (Time.frameCount - m_beginFrame >= duration);
 			byte index = *(byte*)&isTimeOver;
 
 			return results[index];

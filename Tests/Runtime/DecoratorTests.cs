@@ -15,14 +15,14 @@ namespace Zor.BehaviorTree.Tests
 	public static class DecoratorTests
 	{
 		[UnityTest]
-		public static IEnumerator CooldownFramesTest()
+		public static IEnumerator CooldownOfFramesTest()
 		{
 			var property = new BlackboardPropertyName("status");
 			var blackboard = new Blackboard();
 			var builder = new TreeBuilder();
 			builder.AddDecorator<CooldownOfFrames, int>(3)
 				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
-				.Complete();
+			.Complete();
 			TreeRoot treeRoot = builder.Build(blackboard);
 			treeRoot.Initialize();
 
@@ -72,7 +72,68 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[UnityTest]
-		public static IEnumerator CooldownSecondsTest()
+		public static IEnumerator CooldownOfFramesVariableTest()
+		{
+			var statusProperty = new BlackboardPropertyName("status");
+			var durationProperty = new BlackboardPropertyName("duration");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<CooldownOfFramesVariable, BlackboardPropertyName>(durationProperty)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(statusProperty).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(durationProperty, 3);
+			blackboard.SetStructValue(statusProperty, Status.Success);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Running);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			yield return null;
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[UnityTest]
+		public static IEnumerator CooldownOfSecondsTest()
 		{
 			var property = new BlackboardPropertyName("status");
 			var blackboard = new Blackboard();
@@ -109,6 +170,57 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetStructValue(property, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[UnityTest]
+		public static IEnumerator CooldownOfSecondsVariableTest()
+		{
+			var statusProperty = new BlackboardPropertyName("status");
+			var durationProperty = new BlackboardPropertyName("duration");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<CooldownOfSecondsVariable, BlackboardPropertyName>(durationProperty)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(statusProperty).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(durationProperty, 3f);
+			blackboard.SetStructValue(statusProperty, Status.Success);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Running);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Error);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			yield return new WaitForSeconds(1f);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
@@ -221,6 +333,68 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[UnityTest]
+		public static IEnumerator LimitOfFramesVariableTest()
+		{
+			var property = new BlackboardPropertyName("value");
+			var durationProperty = new BlackboardPropertyName("duration");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<LimitOfFramesVariable, BlackboardPropertyName>(durationProperty)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(durationProperty, 3);
+			blackboard.SetStructValue(property, Status.Success);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			yield return null;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Running);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			yield return null;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			yield return null;
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			yield return null;
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[UnityTest]
 		public static IEnumerator LimitOfSecondsTest()
 		{
 			var property = new BlackboardPropertyName("value");
@@ -266,8 +440,58 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 		}
 
+		[UnityTest]
+		public static IEnumerator LimitOfSecondsVariableTest()
+		{
+			var valueProperty = new BlackboardPropertyName("value");
+			var durationProperty = new BlackboardPropertyName("duration");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<LimitOfSecondsVariable, BlackboardPropertyName>(durationProperty)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(valueProperty).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(durationProperty, 3f);
+			blackboard.SetStructValue(valueProperty, Status.Success);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			yield return new WaitForSeconds(4f);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			blackboard.SetStructValue(valueProperty, Status.Running);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(valueProperty, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(valueProperty, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			yield return new WaitForSeconds(1f);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
 		[Test]
-		public static void RepeatTest()
+		public static void RepeaterTest()
 		{
 			var builder = new TreeBuilder();
 			builder.AddDecorator<Repeater, uint>(3u)
@@ -316,6 +540,78 @@ namespace Zor.BehaviorTree.Tests
 				.AddLeaf<ErrorBehavior>().Complete()
 			.Complete();
 			treeRoot = builder.Build();
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void RepeaterVariableTest()
+		{
+			var repeatsProperty = new BlackboardPropertyName("repeats");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<RepeaterVariable, BlackboardPropertyName>(repeatsProperty)
+				.AddLeaf<SuccessBehavior>().Complete()
+				.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			treeRoot.Dispose();
+
+			blackboard.SetStructValue(repeatsProperty, 3u);
+			builder = new TreeBuilder();
+			builder.AddDecorator<RepeaterVariable, BlackboardPropertyName>(repeatsProperty)
+				.AddLeaf<SuccessBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build(blackboard);
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<Repeater, uint>(3u)
+				.AddLeaf<RunningBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build(blackboard);
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<Repeater, uint>(3u)
+				.AddLeaf<FailureBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build(blackboard);
+			treeRoot.Initialize();
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			treeRoot.Dispose();
+
+			builder = new TreeBuilder();
+			builder.AddDecorator<Repeater, uint>(3u)
+				.AddLeaf<ErrorBehavior>().Complete()
+			.Complete();
+			treeRoot = builder.Build(blackboard);
 			treeRoot.Initialize();
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
