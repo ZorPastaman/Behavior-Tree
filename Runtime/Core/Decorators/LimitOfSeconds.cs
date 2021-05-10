@@ -34,5 +34,12 @@ namespace Zor.BehaviorTree.Core.Decorators
 
 			return results[index];
 		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected override void End()
+		{
+			child.Abort();
+			base.End();
+		}
 	}
 }
