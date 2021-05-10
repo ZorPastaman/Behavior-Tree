@@ -29,16 +29,12 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		[Pure]
 		protected override unsafe Status Execute()
 		{
-			if (blackboard.TryGetClassValue(m_propertyName, out T currentValue))
-			{
-				Status* results = stackalloc Status[] {Status.Failure, Status.Success};
-				bool equals = Equals(m_value, currentValue);
-				byte index = *(byte*)&equals;
+			Status* results = stackalloc Status[] {Status.Error, Status.Failure, Status.Success};
+			bool hasValue = blackboard.TryGetClassValue(m_propertyName, out T currentValue);
+			bool equals = Equals(m_value, currentValue);
+			int index = *(byte*)&hasValue << *(byte*)&equals;
 
-				return results[index];
-			}
-
-			return Status.Error;
+			return results[index];
 		}
 	}
 }

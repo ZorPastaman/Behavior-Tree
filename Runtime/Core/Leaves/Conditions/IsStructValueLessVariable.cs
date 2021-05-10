@@ -12,38 +12,32 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName>, ISetupable<string, string>
 		where T : struct, IComparable<T>
 	{
-		[BehaviorInfo] private BlackboardPropertyName m_referenceValuePropertyName;
-		[BehaviorInfo] private BlackboardPropertyName m_comparedValuePropertyName;
+		[BehaviorInfo] private BlackboardPropertyName m_leftPropertyName;
+		[BehaviorInfo] private BlackboardPropertyName m_rightPropertyName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(BlackboardPropertyName referenceValuePropertyName,
-			BlackboardPropertyName comparedValuePropertyName)
+		public void Setup(BlackboardPropertyName leftPropertyName, BlackboardPropertyName rightPropertyName)
 		{
-			m_referenceValuePropertyName = referenceValuePropertyName;
-			m_comparedValuePropertyName = comparedValuePropertyName;
+			m_leftPropertyName = leftPropertyName;
+			m_rightPropertyName = rightPropertyName;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(string referenceValuePropertyName, string comparedValuePropertyName)
+		public void Setup(string leftPropertyName, string rightPropertyName)
 		{
-			Setup(new BlackboardPropertyName(referenceValuePropertyName),
-				new BlackboardPropertyName(comparedValuePropertyName));
+			Setup(new BlackboardPropertyName(leftPropertyName), new BlackboardPropertyName(rightPropertyName));
 		}
 
 		[Pure]
 		protected override unsafe Status Execute()
 		{
-			if (blackboard.TryGetStructValue(m_referenceValuePropertyName, out T referenceValue) &
-				blackboard.TryGetStructValue(m_comparedValuePropertyName, out T comparedValue))
-			{
-				Status* results = stackalloc Status[] {Status.Failure, Status.Success};
-				bool isGreater = referenceValue.CompareTo(comparedValue) > 0;
-				byte index = *(byte*)&isGreater;
+			Status* results = stackalloc Status[] {Status.Error, Status.Failure, Status.Success};
+			bool hasValues = blackboard.TryGetStructValue(m_leftPropertyName, out T leftValue) &
+				blackboard.TryGetStructValue(m_rightPropertyName, out T rightValue);
+			bool isLess = leftValue.CompareTo(rightValue) < 0;
+			int index = *(byte*)&hasValues << *(byte*)&isLess;
 
-				return results[index];
-			}
-
-			return Status.Error;
+			return results[index];
 		}
 	}
 }

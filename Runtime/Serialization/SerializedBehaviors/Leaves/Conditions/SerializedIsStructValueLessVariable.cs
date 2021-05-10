@@ -6,7 +6,7 @@ using Zor.BehaviorTree.DrawingAttributes;
 
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves.Conditions
 {
-	[NameOverride("First Property Name", 0), NameOverride("Second Property Name", 1)]
+	[NameOverride("Left Property Name", 0), NameOverride("Right Property Name", 1)]
 	[SearchGroup("Comparison/Is Struct Value Less Variable")]
 	public abstract class SerializedIsStructValueLessVariable<T> :
 		SerializedCondition<IsStructValueLessVariable<T>, string, string> where T : struct, IComparable<T>

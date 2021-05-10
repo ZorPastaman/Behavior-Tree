@@ -36,14 +36,10 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		[Pure]
 		protected override unsafe Status Execute()
 		{
-			if (!blackboard.TryGetStructValue(m_durationPropertyName, out int duration))
-			{
-				return Status.Error;
-			}
-
-			Status* results = stackalloc Status[] {Status.Running, Status.Success};
+			Status* results = stackalloc Status[] {Status.Error, Status.Running, Status.Success};
+			bool hasDuration = blackboard.TryGetStructValue(m_durationPropertyName, out int duration);
 			bool isFinished = Time.frameCount - m_beginFrame >= duration;
-			byte index = *(byte*)&isFinished;
+			int index = *(byte*)&hasDuration << *(byte*)&isFinished;
 
 			return results[index];
 		}

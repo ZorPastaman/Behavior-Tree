@@ -31,17 +31,13 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		[Pure]
 		protected override unsafe Status Execute()
 		{
-			if (blackboard.TryGetStructValue(m_firstPropertyName, out T firstValue) &
-				blackboard.TryGetStructValue(m_secondPropertyName, out T secondValue))
-			{
-				Status* results = stackalloc Status[] {Status.Failure, Status.Success};
-				bool equals = firstValue.Equals(secondValue);
-				byte index = *(byte*)&equals;
+			Status* results = stackalloc Status[] {Status.Error, Status.Failure, Status.Success};
+			bool hasValues = blackboard.TryGetStructValue(m_firstPropertyName, out T firstValue) &
+				blackboard.TryGetStructValue(m_secondPropertyName, out T secondValue);
+			bool equals = firstValue.Equals(secondValue);
+			int index = *(byte*)&hasValues << *(byte*)&equals;
 
-				return results[index];
-			}
-
-			return Status.Error;
+			return results[index];
 		}
 	}
 }

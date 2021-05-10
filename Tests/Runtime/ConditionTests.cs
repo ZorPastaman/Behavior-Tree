@@ -167,6 +167,10 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetClassValue(propertyName, value);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
+			value = null;
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
 			blackboard.RemoveObject<string>(propertyName);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
@@ -194,19 +198,22 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			blackboard.SetClassValue(firstPropertyName, firstValue);
-			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetClassValue(secondPropertyName, firstValue);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetClassValue(firstPropertyName, secondValue);
-			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			blackboard.SetClassValue<string>(firstPropertyName, null);
-			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetClassValue<string>(secondPropertyName, null);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetClassValue(firstPropertyName, firstValue);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			treeRoot.Dispose();
 		}
@@ -250,6 +257,10 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetClassValue(propertyName, value);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
+			value = null;
+			blackboard.SetClassValue(propertyName, value);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
 			blackboard.RemoveObject<string>(propertyName);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
@@ -277,18 +288,21 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			blackboard.SetClassValue(firstPropertyName, firstValue);
-			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			blackboard.SetClassValue(secondPropertyName, firstValue);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetClassValue(firstPropertyName, secondValue);
-			Assert.AreEqual(Status.Success, treeRoot.Tick());
-
-			blackboard.SetClassValue<string>(firstPropertyName, null);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
+			blackboard.SetClassValue<string>(firstPropertyName, null);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
 			blackboard.SetClassValue<string>(secondPropertyName, null);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetClassValue(firstPropertyName, firstValue);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			treeRoot.Dispose();
@@ -399,13 +413,13 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			blackboard.SetStructValue(firstProperty, firstValue);
-			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetStructValue(secondProperty, firstValue);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetStructValue(firstProperty, secondValue);
-			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			treeRoot.Dispose();
 		}
@@ -459,13 +473,13 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			blackboard.SetStructValue(firstProperty, firstValue);
-			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			blackboard.SetStructValue(secondProperty, firstValue);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetStructValue(firstProperty, secondValue);
-			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			treeRoot.Dispose();
 		}

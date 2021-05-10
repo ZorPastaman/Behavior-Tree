@@ -12,7 +12,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		[BehaviorInfo] private BlackboardPropertyName m_durationPropertyName;
 
 		[BehaviorInfo] private int m_lastChildTickFrame;
-		[BehaviorInfo] private bool m_isLastTickSuccess;
+		private bool m_isLastTickSuccess;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Setup(BlackboardPropertyName durationPropertyName)

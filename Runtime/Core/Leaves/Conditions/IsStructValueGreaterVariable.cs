@@ -8,9 +8,9 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
-	public sealed class IsClassValueGreaterVariable<T> : Condition,
+	public sealed class IsStructValueGreaterVariable<T> : Condition,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName>, ISetupable<string, string>
-		where T : class, IComparable<T>
+		where T : struct, IComparable<T>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_leftPropertyName;
 		[BehaviorInfo] private BlackboardPropertyName m_rightPropertyName;
@@ -32,9 +32,9 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		protected override unsafe Status Execute()
 		{
 			Status* results = stackalloc Status[] {Status.Error, Status.Failure, Status.Success};
-			bool hasValues = blackboard.TryGetClassValue(m_leftPropertyName, out T leftValue) &
-				blackboard.TryGetClassValue(m_rightPropertyName, out T rightValue);
-			bool isGreater = rightValue == null ? leftValue != null : rightValue.CompareTo(leftValue) < 0;
+			bool hasValues = blackboard.TryGetStructValue(m_leftPropertyName, out T leftValue) &
+				blackboard.TryGetStructValue(m_rightPropertyName, out T rightValue);
+			bool isGreater = leftValue.CompareTo(rightValue) > 0;
 			int index = *(byte*)&hasValues << *(byte*)&isGreater;
 
 			return results[index];
