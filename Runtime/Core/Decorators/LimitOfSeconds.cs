@@ -13,7 +13,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		[BehaviorInfo] private float m_beginTime;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(float duration)
+		void ISetupable<float>.Setup(float duration)
 		{
 			m_duration = duration;
 		}

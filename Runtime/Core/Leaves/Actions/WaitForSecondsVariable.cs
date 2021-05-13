@@ -6,39 +6,45 @@ using UnityEngine;
 using Zor.BehaviorTree.DrawingAttributes;
 using Zor.SimpleBlackboard.Core;
 
-namespace Zor.BehaviorTree.Core.Leaves.Conditions
+namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
-	public sealed class WaitForFramesVariable : Condition, ISetupable<BlackboardPropertyName>, ISetupable<string>
+	public sealed class WaitForSecondsVariable : Action, ISetupable<BlackboardPropertyName>, ISetupable<string>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_durationPropertyName;
 
-		[BehaviorInfo] private int m_beginFrame;
+		[BehaviorInfo] private float m_beginTime;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(BlackboardPropertyName durationPropertyName)
+		void ISetupable<BlackboardPropertyName>.Setup(BlackboardPropertyName durationPropertyName)
 		{
-			m_durationPropertyName = durationPropertyName;
+			SetupInternal(durationPropertyName);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(string durationPropertyName)
+		void ISetupable<string>.Setup(string durationPropertyName)
 		{
-			Setup(new BlackboardPropertyName(durationPropertyName));
+			SetupInternal(new BlackboardPropertyName(durationPropertyName));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetupInternal(BlackboardPropertyName durationPropertyName)
+		{
+			m_durationPropertyName = durationPropertyName;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected override void Begin()
 		{
 			base.Begin();
-			m_beginFrame = Time.frameCount;
+			m_beginTime = Time.time;
 		}
 
 		[Pure]
 		protected override unsafe Status Execute()
 		{
 			Status* results = stackalloc Status[] {Status.Error, Status.Running, Status.Success};
-			bool hasDuration = blackboard.TryGetStructValue(m_durationPropertyName, out int duration);
-			bool isFinished = Time.frameCount - m_beginFrame >= duration;
+			bool hasDuration = blackboard.TryGetStructValue(m_durationPropertyName, out float duration);
+			bool isFinished = Time.time - m_beginTime >= duration;
 			int index = *(byte*)&hasDuration << *(byte*)&isFinished;
 
 			return results[index];

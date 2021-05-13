@@ -14,16 +14,25 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 		[BehaviorInfo] private BlackboardPropertyName m_destinationPropertyName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(BlackboardPropertyName sourcePropertyName, BlackboardPropertyName destinationPropertyName)
+		void ISetupable<BlackboardPropertyName, BlackboardPropertyName>.Setup(
+			BlackboardPropertyName sourcePropertyName, BlackboardPropertyName destinationPropertyName)
 		{
-			m_sourcePropertyName = sourcePropertyName;
-			m_destinationPropertyName = destinationPropertyName;
+			SetupInternal(sourcePropertyName, destinationPropertyName);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(string sourcePropertyName, string destinationPropertyName)
+		void ISetupable<string, string>.Setup(string sourcePropertyName, string destinationPropertyName)
 		{
-			Setup(new BlackboardPropertyName(sourcePropertyName), new BlackboardPropertyName(destinationPropertyName));
+			SetupInternal(new BlackboardPropertyName(sourcePropertyName),
+				new BlackboardPropertyName(destinationPropertyName));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetupInternal(BlackboardPropertyName sourcePropertyName,
+			BlackboardPropertyName destinationPropertyName)
+		{
+			m_sourcePropertyName = sourcePropertyName;
+			m_destinationPropertyName = destinationPropertyName;
 		}
 
 		protected override Status Execute()

@@ -15,15 +15,21 @@ namespace Zor.BehaviorTree.Core.Decorators
 		private bool m_isLastTickSuccess;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(BlackboardPropertyName durationPropertyName)
+		void ISetupable<BlackboardPropertyName>.Setup(BlackboardPropertyName durationPropertyName)
 		{
-			m_durationPropertyName = durationPropertyName;
+			SetupInternal(durationPropertyName);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(string durationPropertyName)
+		void ISetupable<string>.Setup(string durationPropertyName)
 		{
-			Setup(new BlackboardPropertyName(durationPropertyName));
+			SetupInternal(new BlackboardPropertyName(durationPropertyName));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetupInternal(BlackboardPropertyName durationPropertyName)
+		{
+			m_durationPropertyName = durationPropertyName;
 		}
 
 		protected override Status Execute()

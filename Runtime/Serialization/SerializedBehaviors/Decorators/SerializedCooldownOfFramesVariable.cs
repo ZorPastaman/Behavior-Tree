@@ -6,6 +6,7 @@ using Zor.BehaviorTree.DrawingAttributes;
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 {
 	[NameOverride("Duration Property Name", 0)]
+	[SearchGroup("Cooldowns")]
 	public sealed class SerializedCooldownOfFramesVariable : SerializedDecorator<CooldownOfFramesVariable, string>
 	{
 	}

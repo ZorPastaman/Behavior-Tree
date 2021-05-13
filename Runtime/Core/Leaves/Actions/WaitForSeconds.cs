@@ -5,16 +5,16 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Zor.BehaviorTree.DrawingAttributes;
 
-namespace Zor.BehaviorTree.Core.Leaves.Conditions
+namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
-	public sealed class WaitForSeconds : Condition, ISetupable<float>
+	public sealed class WaitForSeconds : Action, ISetupable<float>
 	{
 		[BehaviorInfo] private float m_duration;
 
 		[BehaviorInfo] private float m_beginTime;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(float duration)
+		void ISetupable<float>.Setup(float duration)
 		{
 			m_duration = duration;
 		}

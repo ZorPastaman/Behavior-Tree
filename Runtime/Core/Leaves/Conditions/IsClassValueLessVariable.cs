@@ -16,16 +16,23 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		[BehaviorInfo] private BlackboardPropertyName m_rightPropertyName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(BlackboardPropertyName leftPropertyName, BlackboardPropertyName rightPropertyName)
+		void ISetupable<BlackboardPropertyName, BlackboardPropertyName>.Setup(
+			BlackboardPropertyName leftPropertyName, BlackboardPropertyName rightPropertyName)
 		{
-			m_leftPropertyName = leftPropertyName;
-			m_rightPropertyName = rightPropertyName;
+			SetupInternal(leftPropertyName, rightPropertyName);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(string leftPropertyName, string rightPropertyName)
+		void ISetupable<string, string>.Setup(string leftPropertyName, string rightPropertyName)
 		{
-			Setup(new BlackboardPropertyName(leftPropertyName), new BlackboardPropertyName(rightPropertyName));
+			SetupInternal(new BlackboardPropertyName(leftPropertyName), new BlackboardPropertyName(rightPropertyName));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetupInternal(BlackboardPropertyName leftPropertyName, BlackboardPropertyName rightPropertyName)
+		{
+			m_leftPropertyName = leftPropertyName;
+			m_rightPropertyName = rightPropertyName;
 		}
 
 		[Pure]

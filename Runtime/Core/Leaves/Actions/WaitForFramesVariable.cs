@@ -1,17 +1,18 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using UnityEngine;
 using Zor.BehaviorTree.DrawingAttributes;
 using Zor.SimpleBlackboard.Core;
 
-namespace Zor.BehaviorTree.Core.Decorators
+namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
-	public sealed class LimitOfSecondsVariable : Decorator, ISetupable<BlackboardPropertyName>, ISetupable<string>
+	public sealed class WaitForFramesVariable : Action, ISetupable<BlackboardPropertyName>, ISetupable<string>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_durationPropertyName;
 
-		[BehaviorInfo] private float m_beginTime;
+		[BehaviorInfo] private int m_beginFrame;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void ISetupable<BlackboardPropertyName>.Setup(BlackboardPropertyName durationPropertyName)
@@ -35,29 +36,18 @@ namespace Zor.BehaviorTree.Core.Decorators
 		protected override void Begin()
 		{
 			base.Begin();
-			m_beginTime = Time.time;
+			m_beginFrame = Time.frameCount;
 		}
 
+		[Pure]
 		protected override unsafe Status Execute()
 		{
-			if (!blackboard.TryGetStructValue(m_durationPropertyName, out float duration))
-			{
-				return Status.Error;
-			}
-
-			Status childStatus = child.Tick();
-			Status* results = stackalloc[] {childStatus, Status.Failure};
-			bool isTimeOver = childStatus == Status.Running & (Time.time - m_beginTime >= duration);
-			byte index = *(byte*)&isTimeOver;
+			Status* results = stackalloc Status[] {Status.Error, Status.Running, Status.Success};
+			bool hasDuration = blackboard.TryGetStructValue(m_durationPropertyName, out int duration);
+			bool isFinished = Time.frameCount - m_beginFrame >= duration;
+			int index = *(byte*)&hasDuration << *(byte*)&isFinished;
 
 			return results[index];
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected override void End()
-		{
-			child.Abort();
-			base.End();
 		}
 	}
 }

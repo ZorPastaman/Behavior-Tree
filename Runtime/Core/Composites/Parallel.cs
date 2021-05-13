@@ -16,13 +16,19 @@ namespace Zor.BehaviorTree.Core.Composites
 		[BehaviorInfo] private Mode m_failureMode;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(Mode mode)
+		void ISetupable<Mode>.Setup(Mode mode)
 		{
-			Setup(mode, mode);
+			SetupInternal(mode, mode);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(Mode successMode, Mode failureMode)
+		void ISetupable<Mode, Mode>.Setup(Mode successMode, Mode failureMode)
+		{
+			SetupInternal(successMode, failureMode);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetupInternal(Mode successMode, Mode failureMode)
 		{
 			m_successMode = successMode;
 			m_failureMode = failureMode;

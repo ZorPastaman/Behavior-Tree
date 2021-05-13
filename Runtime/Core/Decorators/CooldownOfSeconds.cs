@@ -14,7 +14,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		private bool m_isLastTickSuccess;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(float duration)
+		void ISetupable<float>.Setup(float duration)
 		{
 			m_duration = duration;
 		}

@@ -13,15 +13,21 @@ namespace Zor.BehaviorTree.Core.Decorators
 		[BehaviorInfo] private uint m_currentRepeats;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(BlackboardPropertyName repeatsPropertyName)
+		void ISetupable<BlackboardPropertyName>.Setup(BlackboardPropertyName repeatsPropertyName)
 		{
-			m_repeatsPropertyName = repeatsPropertyName;
+			SetupInternal(repeatsPropertyName);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(string repeatsPropertyName)
+		void ISetupable<string>.Setup(string repeatsPropertyName)
 		{
-			Setup(new BlackboardPropertyName(repeatsPropertyName));
+			SetupInternal(new BlackboardPropertyName(repeatsPropertyName));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetupInternal(BlackboardPropertyName repeatsPropertyName)
+		{
+			m_repeatsPropertyName = repeatsPropertyName;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

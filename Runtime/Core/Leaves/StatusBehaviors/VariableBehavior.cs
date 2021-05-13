@@ -12,15 +12,21 @@ namespace Zor.BehaviorTree.Core.Leaves.StatusBehaviors
 		[BehaviorInfo] private BlackboardPropertyName m_variableName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(BlackboardPropertyName variableName)
+		void ISetupable<BlackboardPropertyName>.Setup(BlackboardPropertyName variableName)
 		{
-			m_variableName = variableName;
+			SetupInternal(variableName);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup([NotNull] string variableName)
+		void ISetupable<string>.Setup(string variableName)
 		{
-			m_variableName = new BlackboardPropertyName(variableName);
+			SetupInternal(new BlackboardPropertyName(variableName));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetupInternal(BlackboardPropertyName variableName)
+		{
+			m_variableName = variableName;
 		}
 
 		[Pure]

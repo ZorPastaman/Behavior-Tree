@@ -13,15 +13,21 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		[BehaviorInfo] private BlackboardPropertyName m_propertyName;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(BlackboardPropertyName propertyName)
+		void ISetupable<BlackboardPropertyName>.Setup(BlackboardPropertyName propertyName)
 		{
-			m_propertyName = propertyName;
+			SetupInternal(propertyName);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup([NotNull] string propertyName)
+		void ISetupable<string>.Setup(string propertyName)
 		{
-			Setup(new BlackboardPropertyName(propertyName));
+			SetupInternal(new BlackboardPropertyName(propertyName));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetupInternal(BlackboardPropertyName propertyName)
+		{
+			m_propertyName = propertyName;
 		}
 
 		[Pure]

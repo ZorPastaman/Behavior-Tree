@@ -6,6 +6,7 @@ using Zor.BehaviorTree.DrawingAttributes;
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 {
 	[NameOverride("Repeats Property Name", 0)]
+	[SearchGroup("Repeaters")]
 	public sealed class SerializedRepeaterVariable : SerializedDecorator<RepeaterVariable, string>
 	{
 	}

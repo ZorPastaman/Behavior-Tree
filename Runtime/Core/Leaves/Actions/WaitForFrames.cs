@@ -5,16 +5,16 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Zor.BehaviorTree.DrawingAttributes;
 
-namespace Zor.BehaviorTree.Core.Leaves.Conditions
+namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
-	public sealed class WaitForFrames : Condition, ISetupable<int>
+	public sealed class WaitForFrames : Action, ISetupable<int>
 	{
 		[BehaviorInfo] private int m_duration;
 
 		[BehaviorInfo] private int m_beginFrame;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(int duration)
+		void ISetupable<int>.Setup(int duration)
 		{
 			m_duration = duration;
 		}

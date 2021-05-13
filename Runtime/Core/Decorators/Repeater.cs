@@ -12,7 +12,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		[BehaviorInfo] private uint m_currentRepeats;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(uint repeats)
+		void ISetupable<uint>.Setup(uint repeats)
 		{
 			m_repeats = repeats;
 		}

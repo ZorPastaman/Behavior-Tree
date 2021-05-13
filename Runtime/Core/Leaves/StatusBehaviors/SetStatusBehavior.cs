@@ -11,7 +11,7 @@ namespace Zor.BehaviorTree.Core.Leaves.StatusBehaviors
 		[BehaviorInfo] private Status m_returnedStatus;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Setup(Status returnedStatus)
+		void ISetupable<Status>.Setup(Status returnedStatus)
 		{
 			m_returnedStatus = returnedStatus;
 		}
