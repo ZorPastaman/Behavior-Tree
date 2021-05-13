@@ -9,6 +9,8 @@ namespace Zor.BehaviorTree.Core
 {
 	public sealed class TreeRoot : IDisposable
 	{
+		public const string MultithreadingDefine = "BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING";
+
 		[NotNull] private readonly Blackboard m_blackboard;
 		[NotNull] private readonly Behavior m_rootBehavior;
 
@@ -29,26 +31,46 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Initialize()
 		{
-			m_rootBehavior.Initialize();
+#if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
+			lock (m_blackboard)
+#endif
+			{
+				m_rootBehavior.Initialize();
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Tick()
 		{
-			return m_rootBehavior.Tick();
+#if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
+			lock (m_blackboard)
+#endif
+			{
+				return m_rootBehavior.Tick();
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Abort()
 		{
-			return m_rootBehavior.Abort();
+#if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
+			lock (m_blackboard)
+#endif
+			{
+				return m_rootBehavior.Abort();
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Dispose()
 		{
-			m_rootBehavior.Abort();
-			m_rootBehavior.Dispose();
+#if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
+			lock (m_blackboard)
+#endif
+			{
+				m_rootBehavior.Abort();
+				m_rootBehavior.Dispose();
+			}
 		}
 	}
 }
