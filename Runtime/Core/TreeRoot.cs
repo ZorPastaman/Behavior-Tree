@@ -28,7 +28,9 @@ namespace Zor.BehaviorTree.Core
 			get => m_blackboard;
 		}
 
+#if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 		public void Initialize()
 		{
 #if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
@@ -39,7 +41,9 @@ namespace Zor.BehaviorTree.Core
 			}
 		}
 
+#if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 		public Status Tick()
 		{
 #if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
@@ -50,7 +54,9 @@ namespace Zor.BehaviorTree.Core
 			}
 		}
 
+#if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 		public Status Abort()
 		{
 #if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
@@ -61,7 +67,9 @@ namespace Zor.BehaviorTree.Core
 			}
 		}
 
+#if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
 		public void Dispose()
 		{
 #if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING

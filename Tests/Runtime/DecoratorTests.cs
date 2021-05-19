@@ -84,6 +84,86 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 		}
 
+		[Test]
+		public static void CooldownOfFramesBlackboardTest()
+		{
+			const string rootFieldName = "m_rootBehavior";
+			const string childFieldName = "child";
+
+			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var property = new BlackboardPropertyName("status");
+			var frameProperty = new BlackboardPropertyName("frame");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<CooldownOfFramesBlackboard, BlackboardPropertyName, int>(frameProperty, 3)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			object root = rootField.GetValue(treeRoot);
+			var child = (Behavior)childField.GetValue(root);
+			treeRoot.Initialize();
+
+			blackboard.SetStructValue(property, Status.Success);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			int frame = 0;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Running);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
 		[UnityTest]
 		public static IEnumerator CooldownOfFramesVariableTest()
 		{
@@ -107,10 +187,10 @@ namespace Zor.BehaviorTree.Tests
 			var child = (Behavior)childField.GetValue(root);
 			treeRoot.Initialize();
 
+			blackboard.SetStructValue(statusProperty, Status.Success);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			blackboard.SetStructValue(durationProperty, 3);
-			blackboard.SetStructValue(statusProperty, Status.Success);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			yield return null;
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
@@ -152,6 +232,95 @@ namespace Zor.BehaviorTree.Tests
 			yield return null;
 			yield return null;
 			yield return null;
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void CooldownOfFramesVariableBlackboardTest()
+		{
+			const string rootFieldName = "m_rootBehavior";
+			const string childFieldName = "child";
+
+			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var statusProperty = new BlackboardPropertyName("status");
+			var durationProperty = new BlackboardPropertyName("duration");
+			var frameProperty = new BlackboardPropertyName("frame");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<CooldownOfFramesVariableBlackboard, BlackboardPropertyName, BlackboardPropertyName>(
+					frameProperty, durationProperty)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(statusProperty).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			object root = rootField.GetValue(treeRoot);
+			var child = (Behavior)childField.GetValue(root);
+			treeRoot.Initialize();
+
+			blackboard.SetStructValue(statusProperty, Status.Success);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			int frame = 0;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(durationProperty, 3);
+			blackboard.RemoveStruct<int>(frameProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Running);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			treeRoot.Dispose();
@@ -215,6 +384,79 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 		}
 
+		[Test]
+		public static void CooldownOfSecondsBlackboardTest()
+		{
+			const string rootFieldName = "m_rootBehavior";
+			const string childFieldName = "child";
+
+			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var property = new BlackboardPropertyName("status");
+			var secondsProperty = new BlackboardPropertyName("seconds");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<CooldownOfSecondsBlackboard, BlackboardPropertyName, float>(secondsProperty, 3f)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			object root = rootField.GetValue(treeRoot);
+			var child = (Behavior)childField.GetValue(root);
+			treeRoot.Initialize();
+
+			blackboard.SetStructValue(property, Status.Success);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			float seconds = 0f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Running);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
 		[UnityTest]
 		public static IEnumerator CooldownOfSecondsVariableTest()
 		{
@@ -238,10 +480,10 @@ namespace Zor.BehaviorTree.Tests
 			var child = (Behavior)childField.GetValue(root);
 			treeRoot.Initialize();
 
+			blackboard.SetStructValue(statusProperty, Status.Success);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			blackboard.SetStructValue(durationProperty, 3f);
-			blackboard.SetStructValue(statusProperty, Status.Success);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			yield return new WaitForSeconds(1f);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
@@ -272,6 +514,88 @@ namespace Zor.BehaviorTree.Tests
 			yield return new WaitForSeconds(1f);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void CooldownOfSecondsVariableBlackboardTest()
+		{
+			const string rootFieldName = "m_rootBehavior";
+			const string childFieldName = "child";
+
+			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var statusProperty = new BlackboardPropertyName("status");
+			var durationProperty = new BlackboardPropertyName("duration");
+			var secondsProperty = new BlackboardPropertyName("seconds");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<CooldownOfSecondsVariableBlackboard, BlackboardPropertyName, BlackboardPropertyName>(
+					secondsProperty, durationProperty)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(statusProperty).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			object root = rootField.GetValue(treeRoot);
+			var child = (Behavior)childField.GetValue(root);
+			treeRoot.Initialize();
+
+			blackboard.SetStructValue(statusProperty, Status.Success);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			float seconds = 0f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.RemoveStruct<float>(secondsProperty);
+			blackboard.SetStructValue(durationProperty, 3f);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Running);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(statusProperty, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			treeRoot.Dispose();
@@ -391,6 +715,81 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 		}
 
+		[Test]
+		public static void LimitOfFramesBlackboardTest()
+		{
+			const string rootFieldName = "m_rootBehavior";
+			const string childFieldName = "child";
+
+			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var property = new BlackboardPropertyName("value");
+			var frameProperty = new BlackboardPropertyName("frame");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<LimitOfFramesBlackboard, BlackboardPropertyName, int>(frameProperty, 3)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			object root = rootField.GetValue(treeRoot);
+			var child = (Behavior)childField.GetValue(root);
+			treeRoot.Initialize();
+
+			blackboard.SetStructValue(property, Status.Success);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			int frame = 0;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Running);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+
+			blackboard.SetStructValue(property, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
 		[UnityTest]
 		public static IEnumerator LimitOfFramesVariableTest()
 		{
@@ -414,10 +813,10 @@ namespace Zor.BehaviorTree.Tests
 			var child = (Behavior)childField.GetValue(root);
 			treeRoot.Initialize();
 
+			blackboard.SetStructValue(property, Status.Success);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			blackboard.SetStructValue(durationProperty, 3);
-			blackboard.SetStructValue(property, Status.Success);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			yield return null;
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
@@ -460,6 +859,90 @@ namespace Zor.BehaviorTree.Tests
 			yield return null;
 			yield return null;
 			yield return null;
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LimitOfFramesVariableBlackboardTest()
+		{
+			const string rootFieldName = "m_rootBehavior";
+			const string childFieldName = "child";
+
+			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var property = new BlackboardPropertyName("value");
+			var durationProperty = new BlackboardPropertyName("duration");
+			var frameProperty = new BlackboardPropertyName("frame");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<LimitOfFramesVariableBlackboard, BlackboardPropertyName, BlackboardPropertyName>(
+					frameProperty, durationProperty)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			object root = rootField.GetValue(treeRoot);
+			var child = (Behavior)childField.GetValue(root);
+			treeRoot.Initialize();
+
+			blackboard.SetStructValue(property, Status.Success);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			int frame = 0;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(durationProperty, 3);
+			blackboard.RemoveStruct<int>(frameProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Running);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+
+			blackboard.SetStructValue(property, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			++frame;
+			blackboard.SetStructValue(frameProperty, frame);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			frame += 3;
+			blackboard.SetStructValue(frameProperty, frame);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			treeRoot.Dispose();
@@ -523,6 +1006,78 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 		}
 
+		[Test]
+		public static void LimitOfSecondsBlackboardTest()
+		{
+			const string rootFieldName = "m_rootBehavior";
+			const string childFieldName = "child";
+
+			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var property = new BlackboardPropertyName("value");
+			var secondsProperty = new BlackboardPropertyName("seconds");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<LimitOfSecondsBlackboard, BlackboardPropertyName, float>(secondsProperty, 3f)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(property).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			object root = rootField.GetValue(treeRoot);
+			var child = (Behavior)childField.GetValue(root);
+			treeRoot.Initialize();
+
+			blackboard.SetStructValue(property, Status.Success);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			float seconds = 0f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			seconds += 4f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Running);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+
+			blackboard.SetStructValue(property, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(property, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
 		[UnityTest]
 		public static IEnumerator LimitOfSecondsVariableTest()
 		{
@@ -546,10 +1101,10 @@ namespace Zor.BehaviorTree.Tests
 			var child = (Behavior)childField.GetValue(root);
 			treeRoot.Initialize();
 
+			blackboard.SetStructValue(valueProperty, Status.Success);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			blackboard.SetStructValue(durationProperty, 3f);
-			blackboard.SetStructValue(valueProperty, Status.Success);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			yield return new WaitForSeconds(4f);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
@@ -580,6 +1135,87 @@ namespace Zor.BehaviorTree.Tests
 			yield return new WaitForSeconds(1f);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			yield return new WaitForSeconds(3f);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LimitOfSecondsVariableBlackboardTest()
+		{
+			const string rootFieldName = "m_rootBehavior";
+			const string childFieldName = "child";
+
+			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
+				BindingFlags.NonPublic | BindingFlags.Instance);
+
+			var valueProperty = new BlackboardPropertyName("value");
+			var durationProperty = new BlackboardPropertyName("duration");
+			var secondsProperty = new BlackboardPropertyName("seconds");
+			var blackboard = new Blackboard();
+			var builder = new TreeBuilder();
+			builder.AddDecorator<LimitOfSecondsVariableBlackboard, BlackboardPropertyName, BlackboardPropertyName>(
+					secondsProperty, durationProperty)
+				.AddLeaf<VariableBehavior, BlackboardPropertyName>(valueProperty).Complete()
+			.Complete();
+			TreeRoot treeRoot = builder.Build(blackboard);
+			object root = rootField.GetValue(treeRoot);
+			var child = (Behavior)childField.GetValue(root);
+			treeRoot.Initialize();
+
+			blackboard.SetStructValue(valueProperty, Status.Success);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			float seconds = 0f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(durationProperty, 3f);
+			blackboard.RemoveStruct<float>(secondsProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			seconds += 4f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			blackboard.SetStructValue(valueProperty, Status.Running);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Running, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.AreNotEqual(Status.Running, child.status);
+
+			blackboard.SetStructValue(valueProperty, Status.Failure);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			blackboard.SetStructValue(valueProperty, Status.Error);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			seconds += 1f;
+			blackboard.SetStructValue(secondsProperty, seconds);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			seconds += 3f;
+			blackboard.SetStructValue(secondsProperty, seconds);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			treeRoot.Dispose();

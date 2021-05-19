@@ -28,6 +28,9 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 		private static readonly Vector2 s_defaultSize = new Vector2(200f, 200f);
 
+		private const float SearchWindowWidth = 300f;
+		private const float SearchWindowHeight = 400f;
+
 		[NotNull] private readonly SerializedBehaviorTree m_serializedBehaviorTree;
 		[NotNull] private readonly SerializedObject m_serializedBehaviorTreeObject;
 		[NotNull] private readonly RootNode m_rootNode;
@@ -550,7 +553,9 @@ namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 
 		private void OnCreateNode(NodeCreationContext context)
 		{
-			SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), m_searchWindowProvider);
+			var windowContext = new SearchWindowContext(context.screenMousePosition,
+				SearchWindowWidth, SearchWindowHeight);
+			SearchWindow.Open(windowContext, m_searchWindowProvider);
 		}
 
 		[CanBeNull]
