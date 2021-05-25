@@ -83,7 +83,7 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 			switch (m_behavior.status)
 			{
 				case Status.Idle:
-					statusColor = Color.gray;
+					statusColor = Color.black;
 					break;
 				case Status.Success:
 					statusColor = Color.green;
