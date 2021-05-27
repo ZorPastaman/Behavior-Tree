@@ -27,17 +27,17 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Composites
 	public abstract class SerializedComposite<TComposite, TArg> : SerializedBehavior<TComposite>
 		where TComposite : Composite, ISetupable<TArg>, new()
 	{
-		[SerializeField] private TArg m_Arg;
+		[SerializeField] private TArg m_Arg0;
 
 		public sealed override object[] serializedCustomData
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-			get => new object[] {m_Arg};
+			get => new object[] {m_Arg0};
 		}
 
 		public sealed override void AddBehavior(TreeBuilder treeBuilder)
 		{
-			treeBuilder.AddComposite<TComposite, TArg>(m_Arg);
+			treeBuilder.AddComposite<TComposite, TArg>(m_Arg0);
 		}
 	}
 

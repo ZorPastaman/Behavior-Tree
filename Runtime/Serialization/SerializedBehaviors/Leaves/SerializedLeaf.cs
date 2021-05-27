@@ -26,17 +26,17 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 	public abstract class SerializedLeaf<TLeaf, TArg> : SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg>, new()
 	{
-		[SerializeField] private TArg m_Arg;
+		[SerializeField] private TArg m_Arg0;
 
 		public sealed override object[] serializedCustomData
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-			get => new object[] {m_Arg};
+			get => new object[] {m_Arg0};
 		}
 
 		public sealed override void AddBehavior(TreeBuilder treeBuilder)
 		{
-			treeBuilder.AddLeaf<TLeaf, TArg>(m_Arg);
+			treeBuilder.AddLeaf<TLeaf, TArg>(m_Arg0);
 		}
 	}
 

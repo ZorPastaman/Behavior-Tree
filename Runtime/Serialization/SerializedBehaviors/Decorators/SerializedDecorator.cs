@@ -27,17 +27,17 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 	public abstract class SerializedDecorator<TDecorator, TArg> : SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg>, new()
 	{
-		[SerializeField] private TArg m_Arg;
+		[SerializeField] private TArg m_Arg0;
 
 		public sealed override object[] serializedCustomData
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-			get => new object[] {m_Arg};
+			get => new object[] {m_Arg0};
 		}
 
 		public sealed override void AddBehavior(TreeBuilder treeBuilder)
 		{
-			treeBuilder.AddDecorator<TDecorator, TArg>(m_Arg);
+			treeBuilder.AddDecorator<TDecorator, TArg>(m_Arg0);
 		}
 	}
 
