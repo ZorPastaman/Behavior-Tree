@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using UnityEngine;
 using Zor.BehaviorTree.DrawingAttributes;
 using Zor.SimpleBlackboard.Core;
@@ -29,6 +30,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 			m_audioPropertyName = audioPropertyName;
 		}
 
+		[Pure]
 		protected override unsafe Status Execute()
 		{
 			if (blackboard.TryGetClassValue(m_audioPropertyName, out AudioSource audio) & audio != null)
