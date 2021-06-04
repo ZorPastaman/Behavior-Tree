@@ -42,14 +42,10 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			Status* results = stackalloc Status[] {Status.Error, Status.Running, Status.Success};
 			bool hasFrame = blackboard.TryGetStructValue(m_framePropertyName, out int frame);
-			bool isFinished = frame - m_beginFrame >= m_duration;
-			int index = *(byte*)&hasFrame << *(byte*)&isFinished;
-
-			return results[index];
+			return StateToStatusHelper.FinishedToStatus(frame - m_beginFrame >= m_duration, hasFrame);
 		}
 	}
 }

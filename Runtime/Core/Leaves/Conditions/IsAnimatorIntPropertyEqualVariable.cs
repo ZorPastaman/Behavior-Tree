@@ -56,19 +56,12 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			if (blackboard.TryGetClassValue(m_animatorPropertyName, out Animator animator) & animator != null &
-				blackboard.TryGetStructValue(m_valuePropertyName, out int value))
-			{
-				Status* results = stackalloc Status[] {Status.Failure, Status.Success};
-				bool equals = animator.GetInteger(m_propertyId) == value;
-				byte index = *(byte*)&equals;
-
-				return results[index];
-			}
-
-			return Status.Error;
+			return blackboard.TryGetClassValue(m_animatorPropertyName, out Animator animator) & animator != null &
+				blackboard.TryGetStructValue(m_valuePropertyName, out int value)
+					? StateToStatusHelper.ConditionToStatus(animator.GetInteger(m_propertyId) == value)
+					: Status.Error;
 		}
 	}
 }

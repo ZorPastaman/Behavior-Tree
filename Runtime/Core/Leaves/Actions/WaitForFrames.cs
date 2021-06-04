@@ -27,13 +27,9 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			Status* results = stackalloc Status[] {Status.Running, Status.Success};
-			bool isFinished = Time.frameCount - m_beginFrame >= m_duration;
-			byte index = *(byte*)&isFinished;
-
-			return results[index];
+			return StateToStatusHelper.FinishedToStatus(Time.frameCount - m_beginFrame >= m_duration);
 		}
 	}
 }

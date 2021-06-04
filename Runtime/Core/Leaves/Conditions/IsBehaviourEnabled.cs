@@ -31,18 +31,11 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			if (blackboard.TryGetClassValue(m_behaviourPropertyName, out Behaviour behaviour) & behaviour != null)
-			{
-				Status* results = stackalloc Status[] {Status.Failure, Status.Success};
-				bool enabled = behaviour.enabled;
-				byte index = *(byte*)&enabled;
-
-				return results[index];
-			}
-
-			return Status.Error;
+			return blackboard.TryGetClassValue(m_behaviourPropertyName, out Behaviour behaviour) & behaviour != null
+				? StateToStatusHelper.ConditionToStatus(behaviour.enabled)
+				: Status.Error;
 		}
 	}
 }

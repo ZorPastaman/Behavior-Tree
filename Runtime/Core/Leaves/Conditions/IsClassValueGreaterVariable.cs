@@ -36,15 +36,12 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			Status* results = stackalloc Status[] {Status.Error, Status.Failure, Status.Success};
 			bool hasValues = blackboard.TryGetClassValue(m_leftPropertyName, out T leftValue) &
 				blackboard.TryGetClassValue(m_rightPropertyName, out T rightValue);
 			bool isGreater = rightValue == null ? leftValue != null : rightValue.CompareTo(leftValue) < 0;
-			int index = *(byte*)&hasValues << *(byte*)&isGreater;
-
-			return results[index];
+			return StateToStatusHelper.ConditionToStatus(isGreater, hasValues);
 		}
 	}
 }

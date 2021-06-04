@@ -44,15 +44,11 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			Status* results = stackalloc Status[] {Status.Error, Status.Running, Status.Success};
 			bool hasValues = blackboard.TryGetStructValue(m_timePropertyName, out float time) &
 				blackboard.TryGetStructValue(m_durationPropertyName, out float duration);
-			bool isFinished = time - m_beginTime >= duration;
-			int index = *(byte*)&hasValues << *(byte*)&isFinished;
-
-			return results[index];
+			return StateToStatusHelper.FinishedToStatus(time - m_beginTime >= duration, hasValues);
 		}
 	}
 }

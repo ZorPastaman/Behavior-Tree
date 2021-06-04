@@ -31,18 +31,11 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			if (blackboard.TryGetClassValue(m_audioPropertyName, out AudioSource audio) & audio != null)
-			{
-				Status* results = stackalloc Status[] {Status.Failure, Status.Success};
-				bool isPlaying = audio.isPlaying;
-				byte index = *(byte*)&isPlaying;
-
-				return results[index];
-			}
-
-			return Status.Error;
+			return blackboard.TryGetClassValue(m_audioPropertyName, out AudioSource audio) & audio != null
+				? StateToStatusHelper.ConditionToStatus(audio.isPlaying)
+				: Status.Error;
 		}
 	}
 }

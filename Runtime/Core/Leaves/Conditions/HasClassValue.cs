@@ -30,14 +30,10 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 			m_propertyName = propertyName;
 		}
 
-		[Pure]
-		protected override unsafe Status Execute()
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		protected override Status Execute()
 		{
-			Status* results = stackalloc Status[] {Status.Failure, Status.Success};
-			bool hasValue = blackboard.ContainsObjectValue<T>(m_propertyName);
-			byte index = *(byte*)&hasValue;
-
-			return results[index];
+			return StateToStatusHelper.ConditionToStatus(blackboard.ContainsObjectValue<T>(m_propertyName));
 		}
 	}
 }

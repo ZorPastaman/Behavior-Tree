@@ -35,14 +35,10 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			Status* results = stackalloc Status[] {Status.Error, Status.Failure, Status.Success};
 			bool hasValue = blackboard.TryGetStructValue(m_propertyName, out T value);
-			bool isGreater = m_value.CompareTo(value) < 0;
-			int index = *(byte*)&hasValue << *(byte*)&isGreater;
-
-			return results[index];
+			return StateToStatusHelper.ConditionToStatus(m_value.CompareTo(value) < 0, hasValue);
 		}
 	}
 }
