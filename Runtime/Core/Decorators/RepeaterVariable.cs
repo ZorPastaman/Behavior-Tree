@@ -37,7 +37,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			m_currentRepeats = 0u;
 		}
 
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
 			if (!blackboard.TryGetStructValue(m_repeatsPropertyName, out uint repeats))
 			{
@@ -46,16 +46,9 @@ namespace Zor.BehaviorTree.Core.Decorators
 
 			Status childStatus = child.Tick();
 
-			if (childStatus != Status.Success)
-			{
-				return childStatus;
-			}
-
-			Status* results = stackalloc Status[] {Status.Running, Status.Success};
-			bool finished = ++m_currentRepeats >= repeats;
-			byte index = *(byte*)&finished;
-
-			return results[index];
+			return childStatus != Status.Success
+				? childStatus
+				: StateToStatusHelper.FinishedToStatus(++m_currentRepeats >= repeats);
 		}
 	}
 }

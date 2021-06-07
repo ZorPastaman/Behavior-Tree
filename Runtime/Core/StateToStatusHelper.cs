@@ -80,5 +80,14 @@ namespace Zor.BehaviorTree.Core
 
 			return results[index];
 		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		public static unsafe Status ConditionToStatus(bool condition, Status falseStatus, Status trueStatus)
+		{
+			Status* results = stackalloc Status[] {falseStatus, trueStatus};
+			byte index = *(byte*)&condition;
+
+			return results[index];
+		}
 	}
 }

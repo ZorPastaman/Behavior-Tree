@@ -63,6 +63,21 @@ namespace Zor.BehaviorTree.Tests
 
 			Assert.AreEqual(Status.Error, StateToStatusHelper.ConditionToStatus(true, false));
 			Assert.AreEqual(Status.Error, StateToStatusHelper.ConditionToStatus(false, false));
+
+			Assert.AreEqual(Status.Failure,
+				StateToStatusHelper.ConditionToStatus(false, Status.Failure, Status.Success));
+			Assert.AreEqual(Status.Success,
+				StateToStatusHelper.ConditionToStatus(true, Status.Failure, Status.Success));
+
+			Assert.AreEqual(Status.Running,
+				StateToStatusHelper.ConditionToStatus(false, Status.Running, Status.Success));
+			Assert.AreEqual(Status.Success,
+				StateToStatusHelper.ConditionToStatus(true, Status.Running, Status.Success));
+
+			Assert.AreEqual(Status.Error,
+				StateToStatusHelper.ConditionToStatus(false, Status.Error, Status.Failure));
+			Assert.AreEqual(Status.Failure,
+				StateToStatusHelper.ConditionToStatus(true, Status.Error, Status.Failure));
 		}
 	}
 }

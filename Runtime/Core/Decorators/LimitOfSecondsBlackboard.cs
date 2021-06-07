@@ -40,7 +40,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			blackboard.TryGetStructValue(m_timePropertyName, out m_beginTime);
 		}
 
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
 			if (!blackboard.TryGetStructValue(m_timePropertyName, out float time))
 			{
@@ -48,11 +48,9 @@ namespace Zor.BehaviorTree.Core.Decorators
 			}
 
 			Status childStatus = child.Tick();
-			Status* results = stackalloc[] {childStatus, Status.Failure};
 			bool isTimeOver = childStatus == Status.Running & (time - m_beginTime >= m_duration);
-			byte index = *(byte*)&isTimeOver;
 
-			return results[index];
+			return StateToStatusHelper.ConditionToStatus(isTimeOver, childStatus, Status.Failure);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

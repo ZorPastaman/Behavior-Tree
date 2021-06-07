@@ -8,8 +8,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 		{
 			Status childStatus = child.Tick();
 			Status* results = stackalloc Status[] {childStatus, Status.Running};
-			bool isFailure = childStatus == Status.Failure;
-			byte index = *(byte*)&isFailure;
+			int index = (int)(childStatus & Status.Failure) >> 3;
 
 			return results[index];
 		}

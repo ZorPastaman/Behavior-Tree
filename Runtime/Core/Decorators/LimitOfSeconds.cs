@@ -25,14 +25,12 @@ namespace Zor.BehaviorTree.Core.Decorators
 			m_beginTime = Time.time;
 		}
 
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
 			Status childStatus = child.Tick();
-			Status* results = stackalloc[] {childStatus, Status.Failure};
 			bool isTimeOver = childStatus == Status.Running & (Time.time - m_beginTime >= m_duration);
-			byte index = *(byte*)&isTimeOver;
 
-			return results[index];
+			return StateToStatusHelper.ConditionToStatus(isTimeOver, childStatus, Status.Failure);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

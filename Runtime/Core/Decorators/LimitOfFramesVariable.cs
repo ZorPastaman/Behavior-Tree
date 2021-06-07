@@ -38,7 +38,7 @@ namespace Zor.BehaviorTree.Core.Decorators
 			m_beginFrame = Time.frameCount;
 		}
 
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
 			if (!blackboard.TryGetStructValue(m_durationPropertyName, out int duration))
 			{
@@ -46,11 +46,9 @@ namespace Zor.BehaviorTree.Core.Decorators
 			}
 
 			Status childStatus = child.Tick();
-			Status* results = stackalloc[] {childStatus, Status.Failure};
 			bool isTimeOver = childStatus == Status.Running & (Time.frameCount - m_beginFrame >= duration);
-			byte index = *(byte*)&isTimeOver;
 
-			return results[index];
+			return StateToStatusHelper.ConditionToStatus(isTimeOver, childStatus, Status.Failure);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
