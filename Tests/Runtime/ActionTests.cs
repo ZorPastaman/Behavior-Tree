@@ -2,11 +2,13 @@
 
 using System.Collections;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.TestTools;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Leaves.Actions;
 using Zor.SimpleBlackboard.Core;
+using WaitForSeconds = Zor.BehaviorTree.Core.Leaves.Actions.WaitForSeconds;
 
 namespace Zor.BehaviorTree.Tests
 {
@@ -64,6 +66,41 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void GetBehaviourEnabledTest()
+		{
+			var behaviourProperty = new BlackboardPropertyName("behaviour");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+			var behaviour = new GameObject().AddComponent<Camera>();
+			behaviour.enabled = false;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetBehaviourEnabled, BlackboardPropertyName, BlackboardPropertyName>(behaviourProperty,
+				valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(valueProperty));
+
+			blackboard.SetClassValue<Behaviour>(behaviourProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(valueProperty));
+
+			blackboard.SetClassValue(behaviourProperty, behaviour);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(valueProperty, out bool value));
+			Assert.IsFalse(value);
+
+			behaviour.enabled = true;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(valueProperty, out value));
+			Assert.IsTrue(value);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void RemoveClassValueTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
@@ -95,6 +132,92 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(propertyName, value);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsObjectValue<int>(propertyName));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetBehaviourEnabledTest()
+		{
+			var behaviourProperty = new BlackboardPropertyName("behaviour");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetBehaviourEnabled, BlackboardPropertyName, bool>(behaviourProperty, false).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue<Behaviour>(behaviourProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Behaviour behaviour = new GameObject().AddComponent<Camera>();
+			blackboard.SetClassValue(behaviourProperty, behaviour);
+			behaviour.enabled = true;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsFalse(behaviour.enabled);
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsFalse(behaviour.enabled);
+
+			treeRoot.Dispose();
+
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetBehaviourEnabled, BlackboardPropertyName, bool>(behaviourProperty, true).Complete();
+			treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			behaviour.enabled = false;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(behaviour.enabled);
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(behaviour.enabled);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetBehaviourEnabledVariableTest()
+		{
+			var behaviourProperty = new BlackboardPropertyName("behaviour");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+			.AddLeaf<SetBehaviourEnabledVariable, BlackboardPropertyName, BlackboardPropertyName>(behaviourProperty, valueProperty)
+			.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue<Behaviour>(behaviourProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Behaviour behaviour = new GameObject().AddComponent<Camera>();
+			blackboard.SetClassValue(behaviourProperty, behaviour);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue<Behaviour>(behaviourProperty, null);
+			blackboard.SetStructValue(valueProperty, false);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue(behaviourProperty, behaviour);
+			behaviour.enabled = true;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsFalse(behaviour.enabled);
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsFalse(behaviour.enabled);
+
+			blackboard.SetStructValue(valueProperty, true);
+			behaviour.enabled = false;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(behaviour.enabled);
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(behaviour.enabled);
 
 			treeRoot.Dispose();
 		}

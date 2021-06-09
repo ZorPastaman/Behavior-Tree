@@ -1,6 +1,7 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using NUnit.Framework;
+using UnityEngine;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Leaves.Conditions;
@@ -43,6 +44,32 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			blackboard.SetStructValue(propertyName, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsBehaviourEnabledTest()
+		{
+			var property = new BlackboardPropertyName("behaviour");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsBehaviourEnabled, BlackboardPropertyName>(property).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue<Behaviour>(property, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Behaviour behaviour = new GameObject().AddComponent<Camera>();
+			behaviour.enabled = false;
+			blackboard.SetClassValue(property, behaviour);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			behaviour.enabled = true;
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			treeRoot.Dispose();
