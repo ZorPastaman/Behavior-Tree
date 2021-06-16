@@ -101,6 +101,83 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void GetBoundsClosestPointTest()
+		{
+			var boundsPropertyName = new BlackboardPropertyName("bounds");
+			var pointPropertyName = new BlackboardPropertyName("point");
+			var closestPointPropertyName = new BlackboardPropertyName("closest");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetBoundsClosestPoint, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					boundsPropertyName, pointPropertyName, closestPointPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.SetStructValue(boundsPropertyName, new Bounds());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.RemoveStruct<Bounds>(boundsPropertyName);
+			blackboard.SetStructValue(pointPropertyName, new Vector3());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.SetStructValue(boundsPropertyName, new Bounds(Vector3.zero, Vector3.one));
+			blackboard.SetStructValue(pointPropertyName, new Vector3(2f, 0f, 0f));
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(closestPointPropertyName, out Vector3 closestPoint));
+			Assert.AreEqual(new Vector3(0.5f, 0f, 0f), closestPoint);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetBoundsIntersectRayDistanceTest()
+		{
+			var boundsPropertyName = new BlackboardPropertyName("bounds");
+			var rayPropertyName = new BlackboardPropertyName("ray");
+			var distancePropertyName = new BlackboardPropertyName("distance");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetBoundsIntersectRayDistance, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(boundsPropertyName, rayPropertyName, distancePropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(distancePropertyName));
+
+			blackboard.SetStructValue(boundsPropertyName, new Bounds());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(distancePropertyName));
+
+			blackboard.RemoveStruct<Bounds>(boundsPropertyName);
+			blackboard.SetStructValue(rayPropertyName, new Ray());
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(distancePropertyName));
+
+			blackboard.SetStructValue(boundsPropertyName, new Bounds(Vector3.zero, Vector3.one));
+			blackboard.SetStructValue(rayPropertyName, new Ray(new Vector3(2f, 0f, 0f), new Vector3(-5f, 0f, 0f)));
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(distancePropertyName, out float distance));
+			Assert.AreEqual(1.5f, distance, 0.0001f);
+
+			blackboard.RemoveStruct<float>(distancePropertyName);
+			blackboard.SetStructValue(rayPropertyName, new Ray(new Vector3(2f, 0f, 0f), new Vector3(5f, 0f, 0f)));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(distancePropertyName));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void RemoveClassValueTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
@@ -218,6 +295,62 @@ namespace Zor.BehaviorTree.Tests
 
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(behaviour.enabled);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetBoundsTest()
+		{
+			Vector3 center = Vector3.zero;
+			Vector3 size = Vector3.one;
+			var boundsPropertyName = new BlackboardPropertyName("bounds");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetBounds, Vector3, Vector3, BlackboardPropertyName>(center, size, boundsPropertyName)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(boundsPropertyName, out Bounds bounds));
+			Assert.AreEqual(new Bounds(center, size), bounds);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetBoundsVariableTest()
+		{
+			Vector3 center = Vector3.zero;
+			Vector3 size = Vector3.one;
+			var centerPropertyName = new BlackboardPropertyName("center");
+			var sizePropertyName = new BlackboardPropertyName("size");
+			var boundsPropertyName = new BlackboardPropertyName("bounds");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetBoundsVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					centerPropertyName, sizePropertyName, boundsPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Bounds>(boundsPropertyName));
+
+			blackboard.SetStructValue(centerPropertyName, center);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Bounds>(boundsPropertyName));
+
+			blackboard.RemoveStruct<Vector3>(centerPropertyName);
+			blackboard.SetStructValue(sizePropertyName, size);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Bounds>(boundsPropertyName));
+
+			blackboard.SetStructValue(centerPropertyName, center);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(boundsPropertyName, out Bounds bounds));
+			Assert.AreEqual(new Bounds(center, size), bounds);
 
 			treeRoot.Dispose();
 		}
