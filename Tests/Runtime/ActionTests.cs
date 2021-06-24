@@ -178,6 +178,280 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void GetColliderBoundsTest()
+		{
+			var colliderPropertyName = new BlackboardPropertyName("collider");
+			var boundsPropertyName = new BlackboardPropertyName("bounds");
+			var blackboard = new Blackboard();
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 5f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetColliderBounds, BlackboardPropertyName, BlackboardPropertyName>(colliderPropertyName,
+				boundsPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Bounds>(boundsPropertyName));
+
+			blackboard.SetClassValue<Collider>(colliderPropertyName, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Bounds>(boundsPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(boundsPropertyName, out Bounds bounds));
+			Assert.AreEqual(collider.bounds, bounds);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetColliderClosestPointTest()
+		{
+			var colliderPropertyName = new BlackboardPropertyName("collider");
+			var pointPropertyName = new BlackboardPropertyName("point");
+			var closestPointPropertyName = new BlackboardPropertyName("closestPoint");
+			var blackboard = new Blackboard();
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 5f;
+			var point = new Vector3(10f, 10f, 0f);
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetColliderClosestPoint, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(colliderPropertyName, pointPropertyName, closestPointPropertyName)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.SetClassValue<Collider>(colliderPropertyName, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.RemoveObject<Collider>(colliderPropertyName);
+			blackboard.SetStructValue(pointPropertyName, point);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(closestPointPropertyName, out Vector3 closestPoint));
+			Assert.AreEqual(collider.ClosestPoint(point), closestPoint);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetColliderClosestPointOnBoundsTest()
+		{
+			var colliderPropertyName = new BlackboardPropertyName("collider");
+			var pointPropertyName = new BlackboardPropertyName("point");
+			var closestPointPropertyName = new BlackboardPropertyName("closestPoint");
+			var blackboard = new Blackboard();
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 5f;
+			var point = new Vector3(10f, 10f, 0f);
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetColliderClosestPointOnBounds, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(colliderPropertyName, pointPropertyName, closestPointPropertyName)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.SetClassValue<Collider>(colliderPropertyName, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.RemoveObject<Collider>(colliderPropertyName);
+			blackboard.SetStructValue(pointPropertyName, point);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(closestPointPropertyName, out Vector3 closestPoint));
+			Assert.AreEqual(collider.ClosestPointOnBounds(point), closestPoint);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetColliderEnabledTest()
+		{
+			var colliderPropertyName = new BlackboardPropertyName("collider");
+			var enabledPropertyName = new BlackboardPropertyName("enabled");
+			var blackboard = new Blackboard();
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 5f;
+			collider.enabled = false;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetColliderEnabled, BlackboardPropertyName, BlackboardPropertyName>(colliderPropertyName,
+					enabledPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(enabledPropertyName));
+
+			blackboard.SetClassValue<Collider>(colliderPropertyName, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(enabledPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(enabledPropertyName, out bool enabled));
+			Assert.AreEqual(collider.enabled, enabled);
+
+			collider.enabled = true;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(enabledPropertyName, out enabled));
+			Assert.AreEqual(collider.enabled, enabled);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetColliderRigidbodyTest()
+		{
+			var colliderPropertyName = new BlackboardPropertyName("collider");
+			var rigidbodyPropertyName = new BlackboardPropertyName("rigidbody");
+			var blackboard = new Blackboard();
+			var go = new GameObject();
+			var collider = go.AddComponent<SphereCollider>();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetColliderRigidbody, BlackboardPropertyName, BlackboardPropertyName>(
+				colliderPropertyName, rigidbodyPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Rigidbody>(rigidbodyPropertyName));
+
+			blackboard.SetClassValue<Collider>(colliderPropertyName, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Rigidbody>(rigidbodyPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(rigidbodyPropertyName, out Rigidbody rigid));
+			Assert.AreEqual(collider.attachedRigidbody, rigid);
+			Assert.AreEqual(null, rigid);
+
+			var rigidbody = go.AddComponent<Rigidbody>();
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(rigidbodyPropertyName, out rigid));
+			Assert.AreEqual(collider.attachedRigidbody, rigid);
+			Assert.AreEqual(rigidbody, rigid);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void RaycastColliderTest()
+		{
+			var colliderPropertyName = new BlackboardPropertyName("collider");
+			var originPropertyName = new BlackboardPropertyName("origin");
+			var directionPropertyName = new BlackboardPropertyName("direction");
+			var hitPropertyName = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 5f;
+			var origin = new Vector3(10f, 0f, 0f);
+			var direction = new Vector3(-20f, 0f, 0f);
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<RaycastCollider, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(colliderPropertyName, originPropertyName, directionPropertyName,
+					hitPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.SetClassValue<Collider>(colliderPropertyName, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.SetStructValue(originPropertyName, origin);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.RemoveStruct<Vector3>(originPropertyName);
+			blackboard.SetStructValue(directionPropertyName, direction);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.RemoveObject<Collider>(colliderPropertyName);
+			blackboard.RemoveStruct<Vector3>(directionPropertyName);
+			blackboard.SetStructValue(originPropertyName, origin);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.RemoveObject<Collider>(colliderPropertyName);
+			blackboard.SetStructValue(directionPropertyName, direction);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.RemoveStruct<Vector3>(originPropertyName);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.RemoveObject<Collider>(colliderPropertyName);
+			blackboard.SetStructValue(originPropertyName, origin);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(hitPropertyName, out RaycastHit hit));
+			collider.Raycast(new Ray(origin, direction), out RaycastHit hitInfo, (direction - origin).magnitude);
+			Assert.AreEqual(hitInfo, hit);
+
+			blackboard.RemoveStruct<RaycastHit>(hitPropertyName);
+			blackboard.SetStructValue(directionPropertyName, new Vector3(20f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitPropertyName));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void RemoveClassValueTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
@@ -384,6 +658,78 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetClassValue(propertyName, out val));
 			Assert.AreEqual(value, val);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetColliderEnabledTest()
+		{
+			var colliderPropertyName = new BlackboardPropertyName("collider");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetColliderEnabled, BlackboardPropertyName, bool>(colliderPropertyName, false)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue<Collider>(colliderPropertyName, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(false, collider.enabled);
+
+			treeRoot.Dispose();
+
+			treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetColliderEnabled, BlackboardPropertyName, bool>(colliderPropertyName, true)
+				.Complete();
+			treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(true, collider.enabled);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetColliderEnabledVariableTest()
+		{
+			var colliderPropertyName = new BlackboardPropertyName("collider");
+			var enabledPropertyName = new BlackboardPropertyName("enabled");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColliderEnabledVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					colliderPropertyName, enabledPropertyName).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue<Collider>(colliderPropertyName, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.RemoveObject<Collider>(colliderPropertyName);
+			blackboard.SetStructValue(enabledPropertyName, false);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue(colliderPropertyName, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(false, collider.enabled);
+
+			blackboard.SetStructValue(enabledPropertyName, true);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(true, collider.enabled);
 
 			treeRoot.Dispose();
 		}
