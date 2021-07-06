@@ -15,6 +15,137 @@ namespace Zor.BehaviorTree.Tests
 	public static class ActionTests
 	{
 		[Test]
+		public static void AddColorsTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var first = new Color(0.3f, 0.35f, 0.25f, 0.4f);
+			var second = new Color(0.4f, 0.2f, 0.5f, 0.45f);
+			Color result = first + second;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<AddColors, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					firstProperty, secondProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(firstProperty);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void ColorToVector4Test()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var blackboard = new Blackboard();
+			var color = new Color(0.3f, 0.7f, 0.9f, 0.7f);
+			Vector4 vector = color;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<ColorToVector4, BlackboardPropertyName, BlackboardPropertyName>(colorProperty, vectorProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector4>(vectorProperty));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(vectorProperty, out Vector4 vec));
+			Assert.AreEqual(vector, vec);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void DivideColorAndNumberTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var color = new Color(0.8f, 0.3f, 0.95f, 0.9f);
+			const float number = 3f;
+			Color result = color / number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<DivideColorAndNumber, BlackboardPropertyName, float, BlackboardPropertyName>(colorProperty,
+					number, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void DivideColorAndNumberVariableTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var numberProperty = new BlackboardPropertyName("number");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var color = new Color(0.8f, 0.3f, 0.95f, 0.9f);
+			const float number = 3f;
+			Color result = color / number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<DivideColorAndNumberVariable, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(colorProperty, numberProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(colorProperty);
+			blackboard.SetStructValue(numberProperty, number);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void CopyClassValueTest()
 		{
 			var sourcePropertyName = new BlackboardPropertyName("value");
@@ -363,6 +494,303 @@ namespace Zor.BehaviorTree.Tests
 			Assert.IsTrue(blackboard.TryGetClassValue(rigidbodyPropertyName, out rigid));
 			Assert.AreEqual(collider.attachedRigidbody, rigid);
 			Assert.AreEqual(rigidbody, rigid);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetColorAlphaTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var alphaProperty = new BlackboardPropertyName("alpha");
+			var blackboard = new Blackboard();
+			var color = new Color(0.55f, 0.45f, 0.35f, 0.65f);
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetColorAlpha, BlackboardPropertyName, BlackboardPropertyName>(colorProperty, alphaProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(alphaProperty, out float alpha));
+			Assert.AreEqual(color.a, alpha);
+			
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetColorBlueTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var blueProperty = new BlackboardPropertyName("blue");
+			var blackboard = new Blackboard();
+			var color = new Color(0.55f, 0.45f, 0.35f, 0.65f);
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetColorBlue, BlackboardPropertyName, BlackboardPropertyName>(colorProperty, blueProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(blueProperty, out float blue));
+			Assert.AreEqual(color.b, blue);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetColorGreenTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var greenProperty = new BlackboardPropertyName("green");
+			var blackboard = new Blackboard();
+			var color = new Color(0.55f, 0.45f, 0.35f, 0.65f);
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetColorGreen, BlackboardPropertyName, BlackboardPropertyName>(colorProperty, greenProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(greenProperty, out float green));
+			Assert.AreEqual(color.g, green);
+			
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetColorRedTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var redProperty = new BlackboardPropertyName("red");
+			var blackboard = new Blackboard();
+			var color = new Color(0.55f, 0.45f, 0.35f, 0.65f);
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetColorRed, BlackboardPropertyName, BlackboardPropertyName>(colorProperty, redProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(redProperty, out float red));
+			Assert.AreEqual(color.r, red);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LerpColorTest()
+		{
+			var fromProperty = new BlackboardPropertyName("from");
+			var toProperty = new BlackboardPropertyName("to");
+			var resultProperty = new BlackboardPropertyName("result");
+			var from = new Color(0.1f, 0.3f, 0.2f, 0.4f);
+			var to = new Color(0.7f, 0.8f, 0.9f, 0.95f);
+			const float time = 0.76f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<LerpColor, BlackboardPropertyName, BlackboardPropertyName, float, BlackboardPropertyName>(
+					fromProperty, toProperty, time, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(fromProperty);
+			blackboard.SetStructValue(toProperty, to);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			Assert.AreEqual(Color.Lerp(from, to, time), result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LerpColorVariableTest()
+		{
+			var fromProperty = new BlackboardPropertyName("from");
+			var toProperty = new BlackboardPropertyName("to");
+			var timeProperty = new BlackboardPropertyName("time");
+			var resultProperty = new BlackboardPropertyName("result");
+			var from = new Color(0.1f, 0.3f, 0.2f, 0.4f);
+			var to = new Color(0.7f, 0.8f, 0.9f, 0.95f);
+			const float time = 0.76f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<LerpColorVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(fromProperty, toProperty, timeProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(fromProperty);
+			blackboard.SetStructValue(toProperty, to);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(toProperty);
+			blackboard.SetStructValue(timeProperty, time);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<float>(timeProperty);
+			blackboard.SetStructValue(toProperty, to);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(fromProperty);
+			blackboard.SetStructValue(timeProperty, time);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			Assert.AreEqual(Color.Lerp(from, to, time), result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void MultiplyColorAndNumberTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var color = new Color(0.1f, 0.25f, 0.2f, 0.3f);
+			const float number = 3f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<MultiplyColorAndNumber, BlackboardPropertyName, float, BlackboardPropertyName>(colorProperty,
+					number, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			Assert.AreEqual(color * number, result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void MultiplyColorAndNumberVariableTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var numberProperty = new BlackboardPropertyName("number");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var color = new Color(0.1f, 0.25f, 0.2f, 0.3f);
+			const float number = 3f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<MultiplyColorAndNumberVariable, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(colorProperty, numberProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(numberProperty, number);
+			blackboard.RemoveStruct<Color>(colorProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			Assert.AreEqual(color * number, result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void MultiplyColorsTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var first = new Color(0.5f, 0.45f, 0.44f, 0.4f);
+			var second = new Color(0.55f, 0.35f, 0.37f, 0.3f);
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<MultiplyColors, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					firstProperty, secondProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(firstProperty);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			Assert.AreEqual(first * second, result);
 
 			treeRoot.Dispose();
 		}
@@ -735,6 +1163,399 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void SetColorTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var blackboard = new Blackboard();
+			const float red = 0.6f;
+			const float green = 0.7f;
+			const float blue = 0.25f;
+			const float alpha = 0.8f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetColor, float, float, float, float, BlackboardPropertyName>(red, green, blue, alpha,
+				colorProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(colorProperty, out Color color));
+			Assert.AreEqual(new Color(red, green, blue, alpha), color);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetColorAlphaTest()
+		{
+			var colorProperty = new BlackboardPropertyName("property");
+			var result = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
+			const float alpha = 0.1f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorAlpha, BlackboardPropertyName, float, BlackboardPropertyName>(colorProperty, alpha,
+					result).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(result));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(result, out Color col));
+			color.a = alpha;
+			Assert.AreEqual(color, col);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetColorAlphaVariableTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var alphaProperty = new BlackboardPropertyName("alpha");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			
+			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
+			const float alpha = 0.1f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorAlphaVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					colorProperty, alphaProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(colorProperty);
+			blackboard.SetStructValue(alphaProperty, alpha);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			color.a = alpha;
+			Assert.AreEqual(color, result);
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void SetColorBlueTest()
+		{
+			var colorProperty = new BlackboardPropertyName("property");
+			var result = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
+			const float blue = 0.1f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorBlue, BlackboardPropertyName, float, BlackboardPropertyName>(colorProperty, blue,
+					result).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(result));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(result, out Color col));
+			color.b = blue;
+			Assert.AreEqual(color, col);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetColorBlueVariableTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var blueProperty = new BlackboardPropertyName("blue");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			
+			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
+			const float blue = 0.1f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorBlueVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					colorProperty, blueProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(colorProperty);
+			blackboard.SetStructValue(blueProperty, blue);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			color.b = blue;
+			Assert.AreEqual(color, result);
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void SetColorGreenTest()
+		{
+			var colorProperty = new BlackboardPropertyName("property");
+			var result = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
+			const float green = 0.1f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorGreen, BlackboardPropertyName, float, BlackboardPropertyName>(colorProperty, green,
+					result).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(result));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(result, out Color col));
+			color.g = green;
+			Assert.AreEqual(color, col);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetColorGreenVariableTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var greenProperty = new BlackboardPropertyName("green");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			
+			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
+			const float green = 0.1f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorGreenVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					colorProperty, greenProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(colorProperty);
+			blackboard.SetStructValue(greenProperty, green);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			color.g = green;
+			Assert.AreEqual(color, result);
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void SetColorRedTest()
+		{
+			var colorProperty = new BlackboardPropertyName("property");
+			var result = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
+			const float red = 0.1f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorRed, BlackboardPropertyName, float, BlackboardPropertyName>(colorProperty, red,
+					result).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(result));
+
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(result, out Color col));
+			color.r = red;
+			Assert.AreEqual(color, col);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetColorRedVariableTest()
+		{
+			var colorProperty = new BlackboardPropertyName("color");
+			var redProperty = new BlackboardPropertyName("red");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			
+			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
+			const float red = 0.1f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorRedVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					colorProperty, redProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(colorProperty);
+			blackboard.SetStructValue(redProperty, red);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+			
+			blackboard.SetStructValue(colorProperty, color);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			color.r = red;
+			Assert.AreEqual(color, result);
+			
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetColorVariableTest()
+		{
+			var redProperty = new BlackboardPropertyName("red");
+			var greenProperty = new BlackboardPropertyName("green");
+			var blueProperty = new BlackboardPropertyName("blue");
+			var alphaProperty = new BlackboardPropertyName("alpha");
+			var colorProperty = new BlackboardPropertyName("color");
+			var blackboard = new Blackboard();
+
+			const float red = 0.5f;
+			const float green = 0.95f;
+			const float blue = 0.3f;
+			const float alpha = 0.8f;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetColorVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName, BlackboardPropertyName>(redProperty, greenProperty, blueProperty,
+					alphaProperty, colorProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.SetStructValue(redProperty, red);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(redProperty);
+			blackboard.SetStructValue(greenProperty, green);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(greenProperty);
+			blackboard.SetStructValue(blueProperty, blue);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(blueProperty);
+			blackboard.SetStructValue(alphaProperty, alpha);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(alphaProperty);
+			blackboard.SetStructValue(redProperty, red);
+			blackboard.SetStructValue(greenProperty, green);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(greenProperty);
+			blackboard.SetStructValue(blueProperty, blue);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(blueProperty);
+			blackboard.SetStructValue(alphaProperty, alpha);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(alphaProperty);
+			blackboard.SetStructValue(greenProperty, green);
+			blackboard.SetStructValue(blueProperty, blue);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(blueProperty);
+			blackboard.SetStructValue(alphaProperty, alpha);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(greenProperty);
+			blackboard.SetStructValue(blueProperty, blue);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(redProperty);
+			blackboard.RemoveStruct<float>(alphaProperty);
+			blackboard.SetStructValue(greenProperty, green);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(blueProperty);
+			blackboard.SetStructValue(alphaProperty, alpha);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.RemoveStruct<float>(greenProperty);
+			blackboard.SetStructValue(blueProperty, blue);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(colorProperty));
+
+			blackboard.SetStructValue(redProperty, red);
+			blackboard.SetStructValue(greenProperty, green);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(colorProperty, out Color color));
+			Assert.AreEqual(new Color(red, green, blue, alpha), color);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void SetStructValueTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
@@ -748,6 +1569,43 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(propertyName, out int val));
 			Assert.AreEqual(value, val);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SubtractColorsTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var resultProperty = new BlackboardPropertyName("result");
+			var first = new Color(0.9f, 0.8f, 0.7f, 0.75f);
+			var second = new Color(0.6f, 0.5f, 0.4f, 0.3f);
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SubtractColors, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					firstProperty, secondProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.RemoveStruct<Color>(firstProperty);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
+			Assert.AreEqual(first - second, result);
 
 			treeRoot.Dispose();
 		}
