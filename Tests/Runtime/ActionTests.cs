@@ -599,6 +599,69 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void GetComponentGameObjectTest()
+		{
+			var componentProperty = new BlackboardPropertyName("component");
+			var gameObjectProperty = new BlackboardPropertyName("gameObject");
+			var blackboard = new Blackboard();
+			var gameObject = new GameObject();
+			Component component = gameObject.AddComponent<Rigidbody>();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetComponentGameObject, BlackboardPropertyName, BlackboardPropertyName>(componentProperty,
+					gameObjectProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<GameObject>(gameObjectProperty));
+
+			blackboard.SetClassValue<Component>(componentProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<GameObject>(gameObjectProperty));
+
+			blackboard.SetClassValue(componentProperty, component);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(gameObjectProperty, out GameObject go));
+			Assert.AreEqual(gameObject, go);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetComponentTransformTest()
+		{
+			var componentProperty = new BlackboardPropertyName("component");
+			var transformProperty = new BlackboardPropertyName("transform");
+			var blackboard = new Blackboard();
+			var gameObject = new GameObject();
+			Component component = gameObject.AddComponent<Rigidbody>();
+			Transform transform = gameObject.transform;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetComponentTransform, BlackboardPropertyName, BlackboardPropertyName>(componentProperty,
+					transformProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Transform>(transformProperty));
+
+			blackboard.SetClassValue<Component>(componentProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Transform>(transformProperty));
+
+			blackboard.SetClassValue(componentProperty, component);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(transformProperty, out Transform trans));
+			Assert.AreEqual(transform, trans);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void LerpColorTest()
 		{
 			var fromProperty = new BlackboardPropertyName("from");
