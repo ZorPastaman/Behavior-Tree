@@ -662,6 +662,57 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void GetCursorLockStateTest()
+		{
+			var lockStateProperty = new BlackboardPropertyName("lockState");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetCursorLockState, BlackboardPropertyName>(lockStateProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Cursor.lockState = CursorLockMode.None;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(lockStateProperty, out CursorLockMode lockState));
+			Assert.AreEqual(CursorLockMode.None, lockState);
+
+			Cursor.lockState = CursorLockMode.Locked;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(lockStateProperty, out lockState));
+			Assert.AreEqual(CursorLockMode.Locked, lockState);
+
+			Cursor.lockState = CursorLockMode.Confined;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(lockStateProperty, out lockState));
+			Assert.AreEqual(CursorLockMode.Confined, lockState);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetCursorVisibleTest()
+		{
+			var visibleProperty = new BlackboardPropertyName("visible");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetCursorVisible, BlackboardPropertyName>(visibleProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Cursor.visible = false;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(visibleProperty, out bool visible));
+			Assert.AreEqual(false, visible);
+
+			Cursor.visible = true;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(visibleProperty, out visible));
+			Assert.AreEqual(true, visible);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void LerpColorTest()
 		{
 			var fromProperty = new BlackboardPropertyName("from");
@@ -1614,6 +1665,86 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(colorProperty, out Color color));
 			Assert.AreEqual(new Color(red, green, blue, alpha), color);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetCursorLockStateTest()
+		{
+			const CursorLockMode lockState = CursorLockMode.Confined;
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetCursorLockState, CursorLockMode>(lockState).Complete();
+			TreeRoot treeRoot = treeBuilder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(lockState, Cursor.lockState);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetCursorLockStateVariableTest()
+		{
+			var lockStateProperty = new BlackboardPropertyName("lockState");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetCursorLockStateVariable, BlackboardPropertyName>(lockStateProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(lockStateProperty, CursorLockMode.None);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(CursorLockMode.None, Cursor.lockState);
+
+			blackboard.SetStructValue(lockStateProperty, CursorLockMode.Locked);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(CursorLockMode.Locked, Cursor.lockState);
+
+			blackboard.SetStructValue(lockStateProperty, CursorLockMode.Confined);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(CursorLockMode.Confined, Cursor.lockState);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetCursorVisibleTest()
+		{
+			const bool visible = false;
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetCursorVisible, bool>(visible).Complete();
+			TreeRoot treeRoot = treeBuilder.Build();
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(visible, Cursor.visible);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetCursorVisibleVariableTest()
+		{
+			var visibleProperty = new BlackboardPropertyName("visible");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetCursorVisibleVariable, BlackboardPropertyName>(visibleProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(visibleProperty, false);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(false, Cursor.visible);
+
+			blackboard.SetStructValue(visibleProperty, true);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(true, Cursor.visible);
 
 			treeRoot.Dispose();
 		}

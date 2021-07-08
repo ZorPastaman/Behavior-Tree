@@ -1032,6 +1032,41 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void IsCursorLockStateEqualTest()
+		{
+			const CursorLockMode lockState = CursorLockMode.Confined;
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsCursorLockStateEqual, CursorLockMode>(lockState).Complete();
+			TreeRoot treeRoot = treeBuilder.Build();
+			treeRoot.Initialize();
+
+			Cursor.lockState = lockState;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			Cursor.lockState = CursorLockMode.None;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsCursorVisibleTest()
+		{
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsCursorVisible>().Complete();
+			TreeRoot treeRoot = treeBuilder.Build();
+			treeRoot.Initialize();
+
+			Cursor.visible = false;
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			Cursor.visible = true;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void IsStructEqualTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
