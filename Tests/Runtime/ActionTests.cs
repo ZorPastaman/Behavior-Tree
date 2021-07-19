@@ -492,6 +492,40 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void GetColliderIsTriggerTest()
+		{
+			var colliderProperty = new BlackboardPropertyName("collider");
+			var isTriggerProperty = new BlackboardPropertyName("isTrigger");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetColliderIsTrigger, BlackboardPropertyName, BlackboardPropertyName>(colliderProperty,
+				isTriggerProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(isTriggerProperty));
+
+			blackboard.SetClassValue<Collider>(colliderProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(isTriggerProperty));
+
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.isTrigger = false;
+			blackboard.SetClassValue(colliderProperty, collider);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(isTriggerProperty, out bool isTrigger));
+			Assert.AreEqual(false, isTrigger);
+
+			collider.isTrigger = true;
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(isTriggerProperty, out isTrigger));
+			Assert.AreEqual(true, isTrigger);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void GetColliderRigidbodyTest()
 		{
 			var colliderPropertyName = new BlackboardPropertyName("collider");
@@ -844,6 +878,76 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(visibleProperty, out visible));
 			Assert.AreEqual(true, visible);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetGameObjectIsActiveTest()
+		{
+			var goProperty = new BlackboardPropertyName("go");
+			var isActiveProperty = new BlackboardPropertyName("isActive");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetGameObjectIsActive, BlackboardPropertyName, BlackboardPropertyName>(goProperty,
+					isActiveProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(isActiveProperty));
+
+			blackboard.SetClassValue<GameObject>(goProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(isActiveProperty));
+
+			var gameObject = new GameObject();
+			blackboard.SetClassValue(goProperty, gameObject);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(isActiveProperty, out bool isActive));
+			Assert.AreEqual(true, isActive);
+
+			gameObject.SetActive(false);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(isActiveProperty, out isActive));
+			Assert.AreEqual(false, isActive);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetGameObjectIsActiveInHierarchyTest()
+		{
+			var goProperty = new BlackboardPropertyName("go");
+			var isActiveProperty = new BlackboardPropertyName("isActive");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetGameObjectIsActiveInHierarchy, BlackboardPropertyName, BlackboardPropertyName>(goProperty,
+					isActiveProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(isActiveProperty));
+
+			blackboard.SetClassValue<GameObject>(goProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<bool>(isActiveProperty));
+
+			var parent = new GameObject();
+			var gameObject = new GameObject();
+			gameObject.transform.SetParent(parent.transform);
+			blackboard.SetClassValue(goProperty, gameObject);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(isActiveProperty, out bool isActive));
+			Assert.AreEqual(true, isActive);
+
+			parent.SetActive(false);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(isActiveProperty, out isActive));
+			Assert.AreEqual(false, isActive);
 
 			treeRoot.Dispose();
 		}
