@@ -1040,6 +1040,238 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void LayerMaskAndTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			LayerMask second = 23;
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<LayerMaskAnd, BlackboardPropertyName, LayerMask, BlackboardPropertyName>(firstProperty,
+				second, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask first = 27;
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out LayerMask result));
+			Assert.AreEqual(first & second, (int)result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LayerMaskAndVariable()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<LayerMaskAndVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					firstProperty, secondProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask first = 23;
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask second = 27;
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<LayerMask>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out LayerMask result));
+			Assert.AreEqual(first & second, (int)result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LayerMaskComplementTest()
+		{
+			var valueProperty = new BlackboardPropertyName("value");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<LayerMaskComplement, BlackboardPropertyName, BlackboardPropertyName>(valueProperty,
+					resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask value = 13;
+			blackboard.SetStructValue(valueProperty, value);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out LayerMask result));
+			Assert.AreEqual((LayerMask)~value, result);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void LayerMaskOrTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			LayerMask second = 23;
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<LayerMaskOr, BlackboardPropertyName, LayerMask, BlackboardPropertyName>(firstProperty,
+				second, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask first = 27;
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out LayerMask result));
+			Assert.AreEqual(first | second, (int)result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LayerMaskOrVariable()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<LayerMaskOrVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					firstProperty, secondProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask first = 23;
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask second = 27;
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<LayerMask>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out LayerMask result));
+			Assert.AreEqual(first | second, (int)result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LayerMaskToValueTest()
+		{
+			var layerMaskProperty = new BlackboardPropertyName("layerMask");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<LayerMaskToValue, BlackboardPropertyName, BlackboardPropertyName>(layerMaskProperty,
+				valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<int>(valueProperty));
+
+			LayerMask layerMask = 6;
+			blackboard.SetStructValue(layerMaskProperty, layerMask);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(valueProperty, out int value));
+			Assert.AreEqual(layerMask.value, value);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void LayerMaskXorTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			LayerMask second = 23;
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<LayerMaskXor, BlackboardPropertyName, LayerMask, BlackboardPropertyName>(firstProperty,
+				second, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask first = 27;
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out LayerMask result));
+			Assert.AreEqual(first ^ second, (int)result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void LayerMaskXorVariable()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<LayerMaskXorVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					firstProperty, secondProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask first = 23;
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			LayerMask second = 27;
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<LayerMask>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(resultProperty));
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out LayerMask result));
+			Assert.AreEqual(first ^ second, (int)result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void LerpColorTest()
 		{
 			var fromProperty = new BlackboardPropertyName("from");
@@ -2337,6 +2569,29 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
 			Assert.AreEqual(first - second, result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void ValueToLayerMaskTest()
+		{
+			var valueProperty = new BlackboardPropertyName("value");
+			var layerMaskProperty = new BlackboardPropertyName("layerMask");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<ValueToLayerMask, BlackboardPropertyName, BlackboardPropertyName>(valueProperty,
+				layerMaskProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<LayerMask>(layerMaskProperty));
+
+			blackboard.SetStructValue(valueProperty, 6);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(layerMaskProperty, out LayerMask layerMask));
+			Assert.AreEqual(6, layerMask.value);
 
 			treeRoot.Dispose();
 		}
