@@ -1184,6 +1184,31 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void IsObjectAliveTest()
+		{
+			var objectProperty = new BlackboardPropertyName("object");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsObjectAlive, BlackboardPropertyName>(objectProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue<GameObject>(objectProperty, null);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			var gameObject = new GameObject();
+			blackboard.SetClassValue(objectProperty, gameObject);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			Object.DestroyImmediate(gameObject);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void IsStructEqualTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");

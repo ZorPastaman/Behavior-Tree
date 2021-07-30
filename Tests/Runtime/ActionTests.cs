@@ -226,6 +226,31 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 		}
 
+		[UnityTest]
+		public static IEnumerator DestroyObject()
+		{
+			var objectProperty = new BlackboardPropertyName("object");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<DestroyObject, BlackboardPropertyName>(objectProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue<Object>(objectProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var @object = new GameObject();
+			blackboard.SetClassValue(objectProperty, @object);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			yield return null;
+			yield return null;
+			Assert.IsFalse(@object);
+
+			treeRoot.Dispose();
+		}
+
 		[Test]
 		public static void GetBehaviourEnabledTest()
 		{
@@ -1035,6 +1060,194 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetClassValue(transformProperty, out Transform transform));
 			Assert.AreEqual(gameObject.transform, transform);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void InstantiateObjectTest()
+		{
+			var prefabProperty = new BlackboardPropertyName("prefab");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<InstantiateObject, BlackboardPropertyName, BlackboardPropertyName>(prefabProperty,
+					resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue<Object>(prefabProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			var @object = new GameObject();
+			blackboard.SetClassValue(prefabProperty, @object);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(resultProperty, out GameObject result));
+			Assert.IsTrue(result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void InstantiateObjectInParentTest()
+		{
+			var prefabProperty = new BlackboardPropertyName("prefab");
+			var parentProperty = new BlackboardPropertyName("parent");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<InstantiateObjectInParent, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(prefabProperty, parentProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue<Object>(prefabProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			var @object = new GameObject();
+			blackboard.SetClassValue(prefabProperty, @object);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue<Transform>(parentProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			Transform parent = new GameObject().transform;
+			blackboard.SetClassValue(parentProperty, parent);
+			blackboard.RemoveObject<GameObject>(prefabProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue(prefabProperty, @object);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(resultProperty, out GameObject result));
+			Assert.IsTrue(result);
+			Assert.AreEqual(parent, result.transform.parent);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void InstantiateObjectInParentAndPositionTest()
+		{
+			var prefabProperty = new BlackboardPropertyName("prefab");
+			var parentProperty = new BlackboardPropertyName("parent");
+			var positionProperty = new BlackboardPropertyName("position");
+			var rotationProperty = new BlackboardPropertyName("rotation");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<InstantiateObjectInParentAndPosition, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(prefabProperty,
+				parentProperty, positionProperty, rotationProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue<Object>(prefabProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			var @object = new GameObject();
+			blackboard.SetClassValue(prefabProperty, @object);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue<Transform>(parentProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			Transform parent = new GameObject().transform;
+			blackboard.SetClassValue(parentProperty, parent);
+			blackboard.RemoveObject<GameObject>(prefabProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue(prefabProperty, @object);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			var position = new Vector3(5f, 10f, -6f);
+			blackboard.SetStructValue(positionProperty, position);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			var rotation = new Quaternion(0.2f, 0.2f, 0.2f, 0.9f);
+			blackboard.SetStructValue(rotationProperty, rotation);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(resultProperty, out GameObject result));
+			Assert.IsTrue(result);
+			Assert.AreEqual(parent, result.transform.parent);
+			Assert.AreEqual(position, result.transform.position);
+			Quaternion objectRotation = result.transform.rotation;
+			Assert.AreEqual(rotation.x, objectRotation.x, 0.1f);
+			Assert.AreEqual(rotation.y, objectRotation.y, 0.1f);
+			Assert.AreEqual(rotation.z, objectRotation.z, 0.1f);
+			Assert.AreEqual(rotation.w, objectRotation.w, 0.1f);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void InstantiateObjectInPositionTest()
+		{
+			var prefabProperty = new BlackboardPropertyName("prefab");
+			var positionProperty = new BlackboardPropertyName("position");
+			var rotationProperty = new BlackboardPropertyName("rotation");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<InstantiateObjectInPosition, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName, BlackboardPropertyName>(prefabProperty, positionProperty, rotationProperty,
+				resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue<Object>(prefabProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			var @object = new GameObject();
+			blackboard.SetClassValue(prefabProperty, @object);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			blackboard.SetClassValue(prefabProperty, @object);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			var position = new Vector3(5f, 10f, -6f);
+			blackboard.SetStructValue(positionProperty, position);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Object>(resultProperty));
+
+			var rotation = new Quaternion(0.2f, 0.2f, 0.2f, 0.9f);
+			blackboard.SetStructValue(rotationProperty, rotation);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(resultProperty, out GameObject result));
+			Assert.IsTrue(result);
+			Assert.AreEqual(position, result.transform.position);
+			Quaternion objectRotation = result.transform.rotation;
+			Assert.AreEqual(rotation.x, objectRotation.x, 0.1f);
+			Assert.AreEqual(rotation.y, objectRotation.y, 0.1f);
+			Assert.AreEqual(rotation.z, objectRotation.z, 0.1f);
+			Assert.AreEqual(rotation.w, objectRotation.w, 0.1f);
 
 			treeRoot.Dispose();
 		}
