@@ -30,13 +30,10 @@ namespace Zor.BehaviorTree.Core.Leaves.StatusBehaviors
 		}
 
 		[Pure]
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
-			Status* results = stackalloc Status[] {Status.Error, Status.Error};
-			bool found = blackboard.TryGetStructValue(m_variableName, out results[1]);
-			byte index = *(byte*)&found;
-
-			return results[index];
+			bool found = blackboard.TryGetStructValue(m_variableName, out Status variableStatus);
+			return StateToStatusHelper.ConditionToStatus(found, Status.Error, variableStatus);
 		}
 	}
 }

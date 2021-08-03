@@ -10,84 +10,78 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static unsafe Status FinishedToStatus(bool isFinished)
 		{
-			Status* results = stackalloc Status[] {Status.Running, Status.Success};
-			byte index = *(byte*)&isFinished;
+			const int running = (int)Status.Running;
+			const int runningSuccessDiff = (int)Status.Success - (int)Status.Running;
 
-			return results[index];
+			return (Status)(running + *(byte*)&isFinished * runningSuccessDiff);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-		public static unsafe Status FinishedToStatus(bool isFinished, bool isValid)
+		public static Status FinishedToStatus(bool isFinished, bool isValid)
 		{
-			Status* results = stackalloc Status[] {Status.Error, Status.Running, Status.Success};
-			int index = *(byte*)&isValid << *(byte*)&isFinished;
-
-			return results[index];
+			return ConditionToStatus(isValid, Status.Error, FinishedToStatus(isFinished));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static unsafe Status FailedToStatus(bool isFailed)
 		{
-			Status* results = stackalloc Status[] {Status.Running, Status.Failure};
-			byte index = *(byte*)&isFailed;
+			const int running = (int)Status.Running;
+			const int runningFailureDiff = Status.Failure - Status.Running;
 
-			return results[index];
+			return (Status)(running + *(byte*)&isFailed * runningFailureDiff);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-		public static unsafe Status FailedToStatus(bool isFailed, bool isValid)
+		public static Status FailedToStatus(bool isFailed, bool isValid)
 		{
-			Status* results = stackalloc Status[] {Status.Error, Status.Running, Status.Failure};
-			int index = *(byte*)&isValid << *(byte*)&isFailed;
-
-			return results[index];
+			return ConditionToStatus(isValid, Status.Error, FailedToStatus(isFailed));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-		public static unsafe Status FinishedFailedToStatus(bool isFinished, bool isFailed)
+		public static Status FinishedFailedToStatus(bool isFinished, bool isFailed)
 		{
-			Status* results = stackalloc Status[] {Status.Running, Status.Failure, Status.Success, Status.Error};
-			int index = (*(byte*)&isFinished << 1) | *(byte*)&isFailed;
-
-			return results[index];
+			Status falseStatus = FinishedFailedToStatusSimple(isFinished, isFailed);
+			return ConditionToStatus(isFinished & isFailed, falseStatus, Status.Error);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-		public static unsafe Status FinishedFailedToStatus(bool isFinished, bool isFailed, bool isValid)
+		public static Status FinishedFailedToStatus(bool isFinished, bool isFailed, bool isValid)
 		{
-			isFinished |= !isValid;
-			isFailed |= !isValid;
-			Status* results = stackalloc Status[] {Status.Running, Status.Failure, Status.Success, Status.Error};
-			int index = (*(byte*)&isFinished << 1) | *(byte*)&isFailed;
-
-			return results[index];
+			Status trueStatus = FinishedFailedToStatusSimple(isFinished, isFailed);
+			return ConditionToStatus(!(isFinished & isFailed) & isValid, Status.Error, trueStatus);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static unsafe Status ConditionToStatus(bool condition)
 		{
-			Status* results = stackalloc Status[] {Status.Failure, Status.Success};
-			byte index = *(byte*)&condition;
+			const int failure = (int)Status.Failure;
+			const int failureSuccessDiff = (int)Status.Success - (int)Status.Failure;
 
-			return results[index];
+			return (Status)(failure + *(byte*)&condition * failureSuccessDiff);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-		public static unsafe Status ConditionToStatus(bool condition, bool isValid)
+		public static Status ConditionToStatus(bool condition, bool isValid)
 		{
-			Status* results = stackalloc Status[] {Status.Error, Status.Failure, Status.Success};
-			int index = *(byte*)&isValid << *(byte*)&condition;
-
-			return results[index];
+			return ConditionToStatus(isValid, Status.Error, ConditionToStatus(condition));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static unsafe Status ConditionToStatus(bool condition, Status falseStatus, Status trueStatus)
 		{
-			Status* results = stackalloc Status[] {falseStatus, trueStatus};
-			byte index = *(byte*)&condition;
+			int statusDiff = trueStatus - falseStatus;
+			return (Status)((int)falseStatus + *(byte*)&condition * statusDiff);
+		}
 
-			return results[index];
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		private static unsafe Status FinishedFailedToStatusSimple(bool isFinished, bool isFailed)
+		{
+			const int running = (int)Status.Running;
+			const int runningFailureDiff = Status.Failure - Status.Running;
+			const int runningSuccessDiff = (int)Status.Success - (int)Status.Running;
+
+			return (Status)(running + *(byte*)&isFinished * runningSuccessDiff +
+				*(byte*)&isFailed * runningFailureDiff);
 		}
 	}
 }

@@ -4,13 +4,12 @@ namespace Zor.BehaviorTree.Core.Decorators
 {
 	public sealed class While : Decorator, INotSetupable
 	{
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
 			Status childStatus = child.Tick();
-			Status* results = stackalloc Status[] {childStatus, Status.Running, Status.Success};
-			int index = ((int)(childStatus & Status.Success) >> 1) | ((int)(childStatus & Status.Failure) >> 2);
+			int midStatus = (int)(childStatus & Status.Success) << 1 | (int)(childStatus & Status.Failure) >> 2;
 
-			return results[index];
+			return StateToStatusHelper.ConditionToStatus(midStatus == 0, (Status)midStatus, childStatus);
 		}
 	}
 }

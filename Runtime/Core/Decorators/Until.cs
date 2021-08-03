@@ -4,13 +4,10 @@ namespace Zor.BehaviorTree.Core.Decorators
 {
 	public sealed class Until : Decorator, INotSetupable
 	{
-		protected override unsafe Status Execute()
+		protected override Status Execute()
 		{
 			Status childStatus = child.Tick();
-			Status* results = stackalloc Status[] {childStatus, Status.Running};
-			int index = (int)(childStatus & Status.Failure) >> 3;
-
-			return results[index];
+			return StateToStatusHelper.ConditionToStatus(childStatus == Status.Failure, childStatus, Status.Running);
 		}
 	}
 }
