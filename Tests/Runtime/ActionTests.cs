@@ -364,6 +364,397 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void GetBoxCastHitTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var centerProperty = new BlackboardPropertyName("center");
+			var halfExtentsProperty = new BlackboardPropertyName("half extents");
+			var directionProperty = new BlackboardPropertyName("direction");
+			var orientationProperty = new BlackboardPropertyName("orientation");
+			const float maxDistance = 15f;
+			LayerMask layerMask = 1;
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetBoxCastHit, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName, float, LayerMask, BlackboardPropertyName>(centerProperty, halfExtentsProperty,
+				directionProperty, orientationProperty, maxDistance, layerMask, hitProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(centerProperty, new Vector3(25f, 0f, 0f));
+			blackboard.SetStructValue(halfExtentsProperty, new Vector3(5f, 5f, 5f));
+			blackboard.SetStructValue(directionProperty, new Vector3(-1f, 0f, 0f));
+			blackboard.SetStructValue(orientationProperty, Quaternion.identity);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(directionProperty, new Vector3(1f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetBoxCastHitVariableTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var centerProperty = new BlackboardPropertyName("center");
+			var halfExtentsProperty = new BlackboardPropertyName("half extents");
+			var directionProperty = new BlackboardPropertyName("direction");
+			var orientationProperty = new BlackboardPropertyName("orientation");
+			var maxDistanceProperty = new BlackboardPropertyName("maxDistance");
+			var layerMaskProperty = new BlackboardPropertyName("layerMask");
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetBoxCastHitVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				centerProperty, halfExtentsProperty, directionProperty, orientationProperty, maxDistanceProperty,
+				layerMaskProperty, hitProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(centerProperty, new Vector3(25f, 0f, 0f));
+			blackboard.SetStructValue(halfExtentsProperty, new Vector3(5f, 5f, 5f));
+			blackboard.SetStructValue(directionProperty, new Vector3(-1f, 0f, 0f));
+			blackboard.SetStructValue(orientationProperty, Quaternion.identity);
+			blackboard.SetStructValue(maxDistanceProperty, 15f);
+			blackboard.SetStructValue(layerMaskProperty, (LayerMask)1);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(directionProperty, new Vector3(1f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetCapsuleCastHitTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var point1Property = new BlackboardPropertyName("point1");
+			var point2Property = new BlackboardPropertyName("point2");
+			var radiusProperty = new BlackboardPropertyName("radius");
+			var directionProperty = new BlackboardPropertyName("direction");
+			const float maxDistance = 15f;
+			LayerMask layerMask = 1;
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetCapsuleCastHit, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName, BlackboardPropertyName, float, LayerMask, BlackboardPropertyName>(
+					point1Property, point2Property, radiusProperty, directionProperty, maxDistance, layerMask,
+					hitProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(point1Property, new Vector3(20f, 5f, 0f));
+			blackboard.SetStructValue(point2Property, new Vector3(20f, -5f, 0f));
+			blackboard.SetStructValue(radiusProperty, 5f);
+			blackboard.SetStructValue(directionProperty, new Vector3(-1f, 0f, 0f));
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(directionProperty, new Vector3(1f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetCapsuleCastHitVariableTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var point1Property = new BlackboardPropertyName("point1");
+			var point2Property = new BlackboardPropertyName("point2");
+			var radiusProperty = new BlackboardPropertyName("radius");
+			var directionProperty = new BlackboardPropertyName("direction");
+			var maxDistanceProperty = new BlackboardPropertyName("maxDistance");
+			var layerMaskProperty = new BlackboardPropertyName("layerMask");
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetCapsuleCastHitVariable, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(point1Property, point2Property, radiusProperty, directionProperty,
+					maxDistanceProperty, layerMaskProperty, hitProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(point1Property, new Vector3(20f, 5f, 0f));
+			blackboard.SetStructValue(point2Property, new Vector3(20f, -5f, 0f));
+			blackboard.SetStructValue(radiusProperty, 5f);
+			blackboard.SetStructValue(directionProperty, new Vector3(-1f, 0f, 0f));
+			blackboard.SetStructValue(maxDistanceProperty, 15f);
+			blackboard.SetStructValue(layerMaskProperty, (LayerMask)1);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(directionProperty, new Vector3(1f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetLinecastHitTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var originProperty = new BlackboardPropertyName("origin");
+			var endProperty = new BlackboardPropertyName("end");
+			LayerMask layerMask = 1;
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetLinecastHit, BlackboardPropertyName, BlackboardPropertyName, LayerMask,
+				BlackboardPropertyName>(originProperty, endProperty, layerMask, hitProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(originProperty, new Vector3(15f, 0f, 0f));
+			blackboard.SetStructValue(endProperty, new Vector3(-15f, 0f, 0f));
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(endProperty, new Vector3(20f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetLinecastHitVariableTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var originProperty = new BlackboardPropertyName("origin");
+			var endProperty = new BlackboardPropertyName("end");
+			var layerMaskProperty = new BlackboardPropertyName("layerMask");
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetLinecastHitVariable, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName, BlackboardPropertyName>(originProperty, endProperty, layerMaskProperty,
+				hitProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(originProperty, new Vector3(15f, 0f, 0f));
+			blackboard.SetStructValue(endProperty, new Vector3(-15f, 0f, 0f));
+			blackboard.SetStructValue(layerMaskProperty, (LayerMask)1);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(endProperty, new Vector3(20f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetRaycastHitTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var originProperty = new BlackboardPropertyName("origin");
+			var directionProperty = new BlackboardPropertyName("direction");
+			const float maxDistance = 15f;
+			LayerMask layerMask = 1;
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRaycastHit, BlackboardPropertyName, BlackboardPropertyName, float, LayerMask,
+					BlackboardPropertyName>(originProperty, directionProperty, maxDistance, layerMask, hitProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(originProperty, new Vector3(15f, 0f, 0f));
+			blackboard.SetStructValue(directionProperty, new Vector3(-1f, 0f, 0f));
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(directionProperty, new Vector3(1f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetRaycastHitVariableTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var originProperty = new BlackboardPropertyName("origin");
+			var directionProperty = new BlackboardPropertyName("direction");
+			var maxDistanceProperty = new BlackboardPropertyName("maxDistance");
+			var layerMaskProperty = new BlackboardPropertyName("layerMask");
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRaycastHitVariable, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(originProperty,
+					directionProperty, maxDistanceProperty, layerMaskProperty, hitProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(originProperty, new Vector3(15f, 0f, 0f));
+			blackboard.SetStructValue(directionProperty, new Vector3(-1f, 0f, 0f));
+			blackboard.SetStructValue(maxDistanceProperty, 15f);
+			blackboard.SetStructValue(layerMaskProperty, (LayerMask)1);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(directionProperty, new Vector3(1f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetSphereCastHitTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var originProperty = new BlackboardPropertyName("origin");
+			var radiusProperty = new BlackboardPropertyName("radius");
+			var directionProperty = new BlackboardPropertyName("direction");
+			const float maxDistance = 15f;
+			LayerMask layerMask = 1;
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetSphereCastHit, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName, float, LayerMask, BlackboardPropertyName>(originProperty, radiusProperty,
+				directionProperty, maxDistance, layerMask, hitProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(originProperty, new Vector3(20f, 0f, 0f));
+			blackboard.SetStructValue(radiusProperty, 5f);
+			blackboard.SetStructValue(directionProperty, new Vector3(-1f, 0f, 0f));
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(directionProperty, new Vector3(1f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetSphereCastHitVariableTest()
+		{
+			var collider = new GameObject().AddComponent<SphereCollider>();
+			collider.radius = 10f;
+
+			var originProperty = new BlackboardPropertyName("origin");
+			var radiusProperty = new BlackboardPropertyName("radius");
+			var directionProperty = new BlackboardPropertyName("direction");
+			var maxDistanceProperty = new BlackboardPropertyName("maxDistance");
+			var layerMaskProperty = new BlackboardPropertyName("layerMask");
+			var hitProperty = new BlackboardPropertyName("hit");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetSphereCastHitVariable, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				originProperty, radiusProperty, directionProperty, maxDistanceProperty, layerMaskProperty, hitProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.SetStructValue(originProperty, new Vector3(20f, 0f, 0f));
+			blackboard.SetStructValue(radiusProperty, 5f);
+			blackboard.SetStructValue(directionProperty, new Vector3(-1f, 0f, 0f));
+			blackboard.SetStructValue(maxDistanceProperty, 15f);
+			blackboard.SetStructValue(layerMaskProperty, (LayerMask)1);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			blackboard.RemoveStruct<RaycastHit>(hitProperty);
+			blackboard.SetStructValue(directionProperty, new Vector3(1f, 0f, 0f));
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<RaycastHit>(hitProperty));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void GetColliderBoundsTest()
 		{
 			var colliderPropertyName = new BlackboardPropertyName("collider");
