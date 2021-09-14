@@ -1732,6 +1732,782 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void IsQuaternionAngleGreaterTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			const float angle = 50f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionAngleGreater, BlackboardPropertyName, BlackboardPropertyName, float>(
+				firstProperty, secondProperty, angle).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion first = Quaternion.Euler(150f, 30f, 10f);
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion second = Quaternion.Euler(150f, 30f, 110f);
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<Quaternion>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			second = Quaternion.Euler(150f, 30f, 30f);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionAngleGreaterVariableTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var angleProperty = new BlackboardPropertyName("angle");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionAngleGreaterVariable, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName>(firstProperty, secondProperty, angleProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion first = Quaternion.Euler(150f, 30f, 10f);
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion second = Quaternion.Euler(150f, 30f, 110f);
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<Quaternion>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float angle = 50f;
+			blackboard.SetStructValue(angleProperty, angle);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			second = Quaternion.Euler(150f, 30f, 30f);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void IsQuaternionAngleLessTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			const float angle = 50f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionAngleLess, BlackboardPropertyName, BlackboardPropertyName, float>(
+				firstProperty, secondProperty, angle).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion first = Quaternion.Euler(150f, 30f, 10f);
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion second = Quaternion.Euler(150f, 30f, 110f);
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<Quaternion>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			second = Quaternion.Euler(150f, 30f, 30f);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionAngleLessVariableTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var angleProperty = new BlackboardPropertyName("angle");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionAngleLessVariable, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName>(firstProperty, secondProperty, angleProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion first = Quaternion.Euler(150f, 30f, 10f);
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion second = Quaternion.Euler(150f, 30f, 110f);
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<Quaternion>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float angle = 50f;
+			blackboard.SetStructValue(angleProperty, angle);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			second = Quaternion.Euler(150f, 30f, 30f);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void IsQuaternionDotGreaterTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			const float dot = 0.5f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionDotGreater, BlackboardPropertyName, BlackboardPropertyName, float>(
+				firstProperty, secondProperty, dot).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion first = Quaternion.Euler(150f, 30f, 10f);
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion second = Quaternion.Euler(150f, 30f, 75f);
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<Quaternion>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			second = Quaternion.Euler(150f, 30f, 180f);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionDotGreaterVariableTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var dotProperty = new BlackboardPropertyName("dot");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionDotGreaterVariable, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName>(firstProperty, secondProperty, dotProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion first = Quaternion.Euler(150f, 30f, 10f);
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion second = Quaternion.Euler(150f, 30f, 75f);
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<Quaternion>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float dot = 0.5f;
+			blackboard.SetStructValue(dotProperty, dot);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			second = Quaternion.Euler(150f, 30f, 180f);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void IsQuaternionDotLessTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			const float dot = 0.5f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionDotLess, BlackboardPropertyName, BlackboardPropertyName, float>(
+				firstProperty, secondProperty, dot).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion first = Quaternion.Euler(150f, 30f, 10f);
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion second = Quaternion.Euler(150f, 30f, 75f);
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<Quaternion>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			second = Quaternion.Euler(150f, 30f, 180f);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionDotLessVariableTest()
+		{
+			var firstProperty = new BlackboardPropertyName("first");
+			var secondProperty = new BlackboardPropertyName("second");
+			var dotProperty = new BlackboardPropertyName("dot");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionDotLessVariable, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName>(firstProperty, secondProperty, dotProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion first = Quaternion.Euler(150f, 30f, 10f);
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion second = Quaternion.Euler(150f, 30f, 75f);
+			blackboard.SetStructValue(secondProperty, second);
+			blackboard.RemoveStruct<Quaternion>(firstProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(firstProperty, first);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float dot = 0.5f;
+			blackboard.SetStructValue(dotProperty, dot);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			second = Quaternion.Euler(150f, 30f, 180f);
+			blackboard.SetStructValue(secondProperty, second);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionWGreaterTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			const float value = 2f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionWGreater, BlackboardPropertyName, float>(quaternionProperty, value)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			quaternion.w = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionWGreaterVariableTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionWGreaterVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					quaternionProperty, valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float value = 2f;
+			blackboard.SetStructValue(valueProperty, value);
+			blackboard.RemoveStruct<Quaternion>(quaternionProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			quaternion.w = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void IsQuaternionWLessTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			const float value = 2f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionWLess, BlackboardPropertyName, float>(quaternionProperty, value)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			quaternion.w = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionWLessVariableTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionWLessVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					quaternionProperty, valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float value = 2f;
+			blackboard.SetStructValue(valueProperty, value);
+			blackboard.RemoveStruct<Quaternion>(quaternionProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			quaternion.w = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionXGreaterTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			const float value = 20f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionXGreater, BlackboardPropertyName, float>(quaternionProperty, value)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			quaternion.x = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionXGreaterVariableTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionXGreaterVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					quaternionProperty, valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float value = 20f;
+			blackboard.SetStructValue(valueProperty, value);
+			blackboard.RemoveStruct<Quaternion>(quaternionProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			quaternion.x = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionXLessTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			const float value = 20f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionXLess, BlackboardPropertyName, float>(quaternionProperty, value)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			quaternion.x = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionXLessVariableTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionXLessVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					quaternionProperty, valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float value = 20f;
+			blackboard.SetStructValue(valueProperty, value);
+			blackboard.RemoveStruct<Quaternion>(quaternionProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			quaternion.x = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionYGreaterTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			const float value = 20f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionYGreater, BlackboardPropertyName, float>(quaternionProperty, value)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			quaternion.y = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionYGreaterVariableTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionYGreaterVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					quaternionProperty, valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float value = 20f;
+			blackboard.SetStructValue(valueProperty, value);
+			blackboard.RemoveStruct<Quaternion>(quaternionProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			quaternion.y = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionYLessTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			const float value = 20f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionYLess, BlackboardPropertyName, float>(quaternionProperty, value)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			quaternion.y = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionYLessVariableTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionYLessVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					quaternionProperty, valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float value = 20f;
+			blackboard.SetStructValue(valueProperty, value);
+			blackboard.RemoveStruct<Quaternion>(quaternionProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			quaternion.y = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionZGreaterTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			const float value = 60f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionZGreater, BlackboardPropertyName, float>(quaternionProperty, value)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			quaternion.z = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionZGreaterVariableTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionZGreaterVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					quaternionProperty, valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float value = 60f;
+			blackboard.SetStructValue(valueProperty, value);
+			blackboard.RemoveStruct<Quaternion>(quaternionProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			quaternion.z = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionZLessTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			const float value = 60f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionZLess, BlackboardPropertyName, float>(quaternionProperty, value)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			quaternion.z = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsQuaternionZLessVariableTest()
+		{
+			var quaternionProperty = new BlackboardPropertyName("quaternion");
+			var valueProperty = new BlackboardPropertyName("value");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsQuaternionZLessVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					quaternionProperty, valueProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var quaternion = new Quaternion(50f, 30f, 70f, 5f);
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float value = 60f;
+			blackboard.SetStructValue(valueProperty, value);
+			blackboard.RemoveStruct<Quaternion>(quaternionProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			quaternion.z = 0f;
+			blackboard.SetStructValue(quaternionProperty, quaternion);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void IsStructEqualTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
