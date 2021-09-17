@@ -2508,6 +2508,126 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void IsRaycastHitDistanceGreaterTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			const float distance = 30f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsRaycastHitDistanceGreater, BlackboardPropertyName, float>(raycastProperty, distance)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var raycast = new RaycastHit { distance = 50f };
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			raycast.distance = 10f;
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void IsRaycastHitDistanceGreaterVariableTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			var distanceProperty = new BlackboardPropertyName("distance");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsRaycastHitDistanceGreaterVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					raycastProperty, distanceProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var raycast = new RaycastHit { distance = 50f };
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float distance = 30f;
+			blackboard.SetStructValue(distanceProperty, distance);
+			blackboard.RemoveStruct<RaycastHit>(raycastProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			raycast.distance = 10f;
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void IsRaycastHitDistanceLessTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			const float distance = 30f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsRaycastHitDistanceLess, BlackboardPropertyName, float>(raycastProperty, distance)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var raycast = new RaycastHit { distance = 50f };
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			raycast.distance = 10f;
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void IsRaycastHitDistanceLessVariableTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			var distanceProperty = new BlackboardPropertyName("distance");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsRaycastHitDistanceLessVariable, BlackboardPropertyName, BlackboardPropertyName>(
+					raycastProperty, distanceProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var raycast = new RaycastHit { distance = 50f };
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float distance = 30f;
+			blackboard.SetStructValue(distanceProperty, distance);
+			blackboard.RemoveStruct<RaycastHit>(raycastProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			raycast.distance = 10f;
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void IsStructEqualTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");

@@ -1,6 +1,8 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
+using System;
 using System.Collections;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -8,6 +10,7 @@ using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Leaves.Actions;
 using Zor.SimpleBlackboard.Core;
+using Object = UnityEngine.Object;
 using WaitForSeconds = Zor.BehaviorTree.Core.Leaves.Actions.WaitForSeconds;
 
 namespace Zor.BehaviorTree.Tests
@@ -831,6 +834,193 @@ namespace Zor.BehaviorTree.Tests
 			treeRoot.Dispose();
 		}
 
+		[Test]
+		public static void GetRaycastHitColliderTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			var colliderProperty = new BlackboardPropertyName("collider");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRaycastHitCollider, BlackboardPropertyName, BlackboardPropertyName>(raycastProperty,
+				colliderProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Collider>(colliderProperty));
+
+			var raycast = new RaycastHit();
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(colliderProperty, out Collider collider));
+			Assert.AreEqual(null, collider);
+
+			var sphere = new GameObject().AddComponent<SphereCollider>();
+			Type raycastType = typeof(RaycastHit);
+			const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+			object raycastObject = raycast;
+			raycastType.GetField("m_Collider", bindingFlags).SetValue(raycastObject, sphere.GetInstanceID());
+			raycast = (RaycastHit)raycastObject;
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(colliderProperty, out collider));
+			Assert.AreEqual(sphere, collider);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetRaycastHitDistanceTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			var distanceProperty = new BlackboardPropertyName("distance");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRaycastHitDistance, BlackboardPropertyName, BlackboardPropertyName>(raycastProperty,
+				distanceProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(distanceProperty));
+
+			var raycast = new RaycastHit { distance = 300f };
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(distanceProperty, out float distance));
+			Assert.AreEqual(raycast.distance, distance);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetRaycastHitNormalTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			var normalProperty = new BlackboardPropertyName("normal");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRaycastHitNormal, BlackboardPropertyName, BlackboardPropertyName>(raycastProperty,
+				normalProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(normalProperty));
+
+			var raycast = new RaycastHit { normal = new Vector3(30f, 0f, 17f) };
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(normalProperty, out Vector3 normal));
+			Assert.AreEqual(raycast.normal, normal);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetRaycastHitPointTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			var pointProperty = new BlackboardPropertyName("point");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRaycastHitPoint, BlackboardPropertyName, BlackboardPropertyName>(raycastProperty,
+				pointProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(pointProperty));
+
+			var raycast = new RaycastHit { point = new Vector3(30f, 0f, 17f) };
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(pointProperty, out Vector3 point));
+			Assert.AreEqual(raycast.point, point);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetRaycastHitRigidbodyTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRaycastHitRigidbody, BlackboardPropertyName, BlackboardPropertyName>(raycastProperty,
+				rigidbodyProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Rigidbody>(rigidbodyProperty));
+
+			var raycast = new RaycastHit();
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(rigidbodyProperty, out Rigidbody rigidbody));
+			Assert.AreEqual(null, rigidbody);
+
+			var gameObject = new GameObject();
+			var expectedRigidbody = gameObject.AddComponent<Rigidbody>();
+			var sphere = gameObject.AddComponent<SphereCollider>();
+			Type raycastType = typeof(RaycastHit);
+			const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+			object raycastObject = raycast;
+			raycastType.GetField("m_Collider", bindingFlags).SetValue(raycastObject, sphere.GetInstanceID());
+			raycast = (RaycastHit)raycastObject;
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(rigidbodyProperty, out rigidbody));
+			Assert.AreEqual(expectedRigidbody, rigidbody);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetRaycastHitTransformTest()
+		{
+			var raycastProperty = new BlackboardPropertyName("raycast");
+			var transformProperty = new BlackboardPropertyName("transform");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRaycastHitTransform, BlackboardPropertyName, BlackboardPropertyName>(raycastProperty,
+				transformProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsObjectValue<Transform>(transformProperty));
+
+			var raycast = new RaycastHit();
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(transformProperty, out Transform transform));
+			Assert.AreEqual(null, transform);
+
+			var gameObject = new GameObject();
+			Transform expectedTransform = gameObject.transform;
+			var sphere = gameObject.AddComponent<SphereCollider>();
+			Type raycastType = typeof(RaycastHit);
+			const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+			object raycastObject = raycast;
+			raycastType.GetField("m_Collider", bindingFlags).SetValue(raycastObject, sphere.GetInstanceID());
+			raycast = (RaycastHit)raycastObject;
+			blackboard.SetStructValue(raycastProperty, raycast);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetClassValue(transformProperty, out transform));
+			Assert.AreEqual(expectedTransform, transform);
+
+			treeRoot.Dispose();
+		}
+		
 		[Test]
 		public static void GetSphereCastHitTest()
 		{
