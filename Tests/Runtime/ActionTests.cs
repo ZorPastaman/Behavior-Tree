@@ -1020,7 +1020,82 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
+		[Test]
+		public static void GetRigidbodyPositionTest()
+		{
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			var positionProperty = new BlackboardPropertyName("position");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRigidbodyPosition, BlackboardPropertyName, BlackboardPropertyName>(rigidbodyProperty,
+				positionProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var rigidbody = new GameObject().AddComponent<Rigidbody>();
+			rigidbody.position = new Vector3(-20f, 3f, 50f);
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(positionProperty, out Vector3 position));
+			Assert.AreEqual(rigidbody.position, position);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetRigidbodyRotationTest()
+		{
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			var rotationProperty = new BlackboardPropertyName("rotation");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRigidbodyRotation, BlackboardPropertyName, BlackboardPropertyName>(rigidbodyProperty,
+				rotationProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var rigidbody = new GameObject().AddComponent<Rigidbody>();
+			rigidbody.rotation = Quaternion.Euler(100f, -30f, 10f);
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(rotationProperty, out Quaternion rotation));
+			Assert.AreEqual(rigidbody.rotation, rotation);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetRigidbodyVelocityTest()
+		{
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			var velocityProperty = new BlackboardPropertyName("velocity");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetRigidbodyVelocity, BlackboardPropertyName, BlackboardPropertyName>(rigidbodyProperty,
+				velocityProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var rigidbody = new GameObject().AddComponent<Rigidbody>();
+			rigidbody.velocity = new Vector3(-20f, 3f, 50f);
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(velocityProperty, out Vector3 velocity));
+			Assert.AreEqual(rigidbody.velocity, velocity);
+
+			treeRoot.Dispose();
+		}
+
 		[Test]
 		public static void GetSphereCastHitTest()
 		{
@@ -3030,6 +3105,45 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(propertyName, value);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsObjectValue<int>(propertyName));
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void RigidbodyClosestPointOnBoundsTest()
+		{
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			var positionProperty = new BlackboardPropertyName("position");
+			var closestPointProperty = new BlackboardPropertyName("closestPoint");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<RigidbodyClosestPointOnBounds, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(rigidbodyProperty, positionProperty, closestPointProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointProperty));
+
+			var gameObject = new GameObject();
+			var rigidbody = gameObject.AddComponent<Rigidbody>();
+			gameObject.AddComponent<SphereCollider>().radius = 5f;
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointProperty));
+
+			var position = new Vector3(20f, 5f, -3f);
+			blackboard.SetStructValue(positionProperty, position);
+			blackboard.RemoveObject<Rigidbody>(rigidbodyProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(closestPointProperty));
+
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(closestPointProperty, out Vector3 closestPoint));
+			Assert.AreEqual(rigidbody.ClosestPointOnBounds(position), closestPoint);
 
 			treeRoot.Dispose();
 		}

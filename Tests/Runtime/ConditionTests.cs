@@ -2628,6 +2628,126 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void IsRigidbodyVelocityGreaterTest()
+		{
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			const float velocity = 100f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsRigidbodyVelocityGreater, BlackboardPropertyName, float>(rigidbodyProperty, velocity)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var rigidbody = new GameObject().AddComponent<Rigidbody>();
+			rigidbody.velocity = new Vector3(150f, 0f, 0f);
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			rigidbody.velocity = new Vector3(30f, 0f, 0f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsRigidbodyVelocityGreaterVariableTest()
+		{
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			var velocityProperty = new BlackboardPropertyName("velocity");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsRigidbodyVelocityGreaterVariable, BlackboardPropertyName, BlackboardPropertyName>(
+				rigidbodyProperty, velocityProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var rigidbody = new GameObject().AddComponent<Rigidbody>();
+			rigidbody.velocity = new Vector3(150f, 0f, 0f);
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float velocity = 100f;
+			blackboard.SetStructValue(velocityProperty, velocity);
+			blackboard.RemoveObject<Rigidbody>(rigidbodyProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			rigidbody.velocity = new Vector3(30f, 0f, 0f);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void IsRigidbodyVelocityLessTest()
+		{
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			const float velocity = 100f;
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsRigidbodyVelocityLess, BlackboardPropertyName, float>(rigidbodyProperty, velocity)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var rigidbody = new GameObject().AddComponent<Rigidbody>();
+			rigidbody.velocity = new Vector3(150f, 0f, 0f);
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			rigidbody.velocity = new Vector3(30f, 0f, 0f);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void IsRigidbodyVelocityLessVariableTest()
+		{
+			var rigidbodyProperty = new BlackboardPropertyName("rigidbody");
+			var velocityProperty = new BlackboardPropertyName("velocity");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<IsRigidbodyVelocityLessVariable, BlackboardPropertyName, BlackboardPropertyName>(
+				rigidbodyProperty, velocityProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var rigidbody = new GameObject().AddComponent<Rigidbody>();
+			rigidbody.velocity = new Vector3(150f, 0f, 0f);
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			const float velocity = 100f;
+			blackboard.SetStructValue(velocityProperty, velocity);
+			blackboard.RemoveObject<Rigidbody>(rigidbodyProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			blackboard.SetClassValue(rigidbodyProperty, rigidbody);
+			Assert.AreEqual(Status.Failure, treeRoot.Tick());
+
+			rigidbody.velocity = new Vector3(30f, 0f, 0f);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void IsStructEqualTest()
 		{
 			var propertyName = new BlackboardPropertyName("value");
