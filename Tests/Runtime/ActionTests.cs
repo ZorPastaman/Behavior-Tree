@@ -1176,6 +1176,161 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void GetTransformForwardTest()
+		{
+			var transformProperty = new BlackboardPropertyName("transform");
+			var forwardProperty = new BlackboardPropertyName("forward");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetTransformForward, BlackboardPropertyName, BlackboardPropertyName>(transformProperty,
+				forwardProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(forwardProperty));
+
+			blackboard.SetClassValue<Transform>(transformProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(forwardProperty));
+
+			Transform transform = new GameObject().transform;
+			transform.position = new Vector3(30f, 40f, -20f);
+			transform.rotation = Quaternion.Euler(50f, -50f, 25f);
+			blackboard.SetClassValue(transformProperty, transform);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(forwardProperty, out Vector3 forward));
+			Assert.AreEqual(transform.forward, forward);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetTransformPositionTest()
+		{
+			var transformProperty = new BlackboardPropertyName("transform");
+			var positionProperty = new BlackboardPropertyName("position");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetTransformPosition, BlackboardPropertyName, BlackboardPropertyName>(transformProperty,
+				positionProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(positionProperty));
+
+			blackboard.SetClassValue<Transform>(transformProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(positionProperty));
+
+			Transform transform = new GameObject().transform;
+			transform.position = new Vector3(30f, 40f, -20f);
+			transform.rotation = Quaternion.Euler(50f, -50f, 25f);
+			blackboard.SetClassValue(transformProperty, transform);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(positionProperty, out Vector3 position));
+			Assert.AreEqual(transform.position, position);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetTransformRightTest()
+		{
+			var transformProperty = new BlackboardPropertyName("transform");
+			var rightProperty = new BlackboardPropertyName("right");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetTransformRight, BlackboardPropertyName, BlackboardPropertyName>(transformProperty,
+				rightProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(rightProperty));
+
+			blackboard.SetClassValue<Transform>(transformProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(rightProperty));
+
+			Transform transform = new GameObject().transform;
+			transform.position = new Vector3(30f, 40f, -20f);
+			transform.rotation = Quaternion.Euler(50f, -50f, 25f);
+			blackboard.SetClassValue(transformProperty, transform);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(rightProperty, out Vector3 right));
+			Assert.AreEqual(transform.right, right);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetTransformRotationTest()
+		{
+			var transformProperty = new BlackboardPropertyName("transform");
+			var rotationProperty = new BlackboardPropertyName("rotation");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetTransformRotation, BlackboardPropertyName, BlackboardPropertyName>(transformProperty,
+				rotationProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Quaternion>(rotationProperty));
+
+			blackboard.SetClassValue<Transform>(transformProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Quaternion>(rotationProperty));
+
+			Transform transform = new GameObject().transform;
+			transform.position = new Vector3(30f, 40f, -20f);
+			transform.rotation = Quaternion.Euler(50f, -50f, 25f);
+			blackboard.SetClassValue(transformProperty, transform);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(rotationProperty, out Quaternion rotation));
+			Assert.AreEqual(transform.rotation, rotation);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetTransformUpTest()
+		{
+			var transformProperty = new BlackboardPropertyName("transform");
+			var upProperty = new BlackboardPropertyName("up");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetTransformUp, BlackboardPropertyName, BlackboardPropertyName>(transformProperty,
+				upProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(upProperty));
+
+			blackboard.SetClassValue<Transform>(transformProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(upProperty));
+
+			Transform transform = new GameObject().transform;
+			transform.position = new Vector3(30f, 40f, -20f);
+			transform.rotation = Quaternion.Euler(50f, -50f, 25f);
+			blackboard.SetClassValue(transformProperty, transform);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(upProperty, out Vector3 up));
+			Assert.AreEqual(transform.up, up);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void GetColliderBoundsTest()
 		{
 			var colliderPropertyName = new BlackboardPropertyName("collider");
@@ -4423,6 +4578,72 @@ namespace Zor.BehaviorTree.Tests
 			Assert.IsTrue(blackboard.TryGetStructValue(propertyName, out int val));
 			Assert.AreEqual(value, val);
 
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetTransformPositionTest()
+		{
+			var transformProperty = new BlackboardPropertyName("transform");
+			var positionProperty = new BlackboardPropertyName("position");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetTransformPosition, BlackboardPropertyName, BlackboardPropertyName>(transformProperty,
+				positionProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			
+			blackboard.SetClassValue<Transform>(transformProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			var position = new Vector3(30f, -50f, 70f);
+			blackboard.SetStructValue(positionProperty, position);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			
+			blackboard.RemoveObject<Transform>(transformProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Transform transform = new GameObject().transform;
+			blackboard.SetClassValue(transformProperty, transform);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(position, transform.position);
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void SetTransformRotationTest()
+		{
+			var transformProperty = new BlackboardPropertyName("transform");
+			var rotationProperty = new BlackboardPropertyName("rotation");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetTransformRotation, BlackboardPropertyName, BlackboardPropertyName>(transformProperty,
+				rotationProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			
+			blackboard.SetClassValue<Transform>(transformProperty, null);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Quaternion rotation = Quaternion.Euler(30f, -50f, 70f);
+			blackboard.SetStructValue(rotationProperty, rotation);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			
+			blackboard.RemoveObject<Transform>(transformProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+
+			Transform transform = new GameObject().transform;
+			blackboard.SetClassValue(transformProperty, transform);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.AreEqual(rotation, transform.rotation);
+			
 			treeRoot.Dispose();
 		}
 		
