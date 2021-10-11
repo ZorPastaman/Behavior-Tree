@@ -86,6 +86,78 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void AddVector2Test()
+		{
+			var leftProperty = new BlackboardPropertyName("left");
+			var rightProperty = new BlackboardPropertyName("right");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<AddVector2, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				leftProperty, rightProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var left = new Vector2(20f, -30f);
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var right = new Vector2(-50f, 50f);
+			blackboard.SetStructValue(rightProperty, right);
+			blackboard.RemoveStruct<Vector2>(leftProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(left + right, result);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void AddVector3Test()
+		{
+			var leftProperty = new BlackboardPropertyName("left");
+			var rightProperty = new BlackboardPropertyName("right");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<AddVector3, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				leftProperty, rightProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var left = new Vector3(20f, -30f, 20f);
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var right = new Vector3(-50f, 50f, 20f);
+			blackboard.SetStructValue(rightProperty, right);
+			blackboard.RemoveStruct<Vector3>(leftProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(left + right, result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void ColorToVector4Test()
 		{
 			var colorProperty = new BlackboardPropertyName("color");
@@ -173,6 +245,174 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void DivideVector2Test()
+		{
+			var leftProperty = new BlackboardPropertyName("left");
+			var rightProperty = new BlackboardPropertyName("right");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<DivideVector2, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				leftProperty, rightProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var left = new Vector2(20f, -30f);
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var right = new Vector2(-50f, 50f);
+			blackboard.SetStructValue(rightProperty, right);
+			blackboard.RemoveStruct<Vector2>(leftProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(left / right, result);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void DivideVector2AndNumberTest()
+		{
+			var vector2Property = new BlackboardPropertyName("vector2");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var vector2 = new Vector2(0.8f, 0.3f);
+			const float number = 3f;
+			Vector2 result = vector2 / number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<DivideVector2AndNumber, BlackboardPropertyName, float, BlackboardPropertyName>(vector2Property,
+					number, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(vector2Property, vector2);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void DivideVector2AndNumberVariableTest()
+		{
+			var vector2Property = new BlackboardPropertyName("vector2");
+			var numberProperty = new BlackboardPropertyName("number");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var vector2 = new Vector2(0.8f, 0.3f);
+			const float number = 3f;
+			Vector2 result = vector2 / number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<DivideVector2AndNumberVariable, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(vector2Property, numberProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(vector2Property, vector2);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.RemoveStruct<Vector2>(vector2Property);
+			blackboard.SetStructValue(numberProperty, number);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(vector2Property, vector2);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void DivideVector3AndNumberTest()
+		{
+			var vector3Property = new BlackboardPropertyName("vector3");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var vector3 = new Vector3(0.8f, 0.3f, 20f);
+			const float number = 3f;
+			Vector3 result = vector3 / number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<DivideVector3AndNumber, BlackboardPropertyName, float, BlackboardPropertyName>(vector3Property,
+					number, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vector3Property, vector3);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void DivideVector3AndNumberVariableTest()
+		{
+			var vector3Property = new BlackboardPropertyName("vector3");
+			var numberProperty = new BlackboardPropertyName("number");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var vector3 = new Vector3(0.8f, 0.3f, 20f);
+			const float number = 3f;
+			Vector3 result = vector3 / number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<DivideVector3AndNumberVariable, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(vector3Property, numberProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vector3Property, vector3);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.RemoveStruct<Vector3>(vector3Property);
+			blackboard.SetStructValue(numberProperty, number);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vector3Property, vector3);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 res));
 			Assert.AreEqual(result, res);
 
 			treeRoot.Dispose();
@@ -1326,6 +1566,292 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(upProperty, out Vector3 up));
 			Assert.AreEqual(transform.up, up);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetVector2CoordinatesTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var xProperty = new BlackboardPropertyName("x");
+			var yProperty = new BlackboardPropertyName("y");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<GetVector2Coordinates, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					vectorProperty, xProperty, yProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(xProperty));
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(yProperty));
+
+			var vector = new Vector2(30f, 10f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(xProperty, out float x));
+			Assert.IsTrue(blackboard.TryGetStructValue(yProperty, out float y));
+			Assert.AreEqual(vector.x, x);
+			Assert.AreEqual(vector.y, y);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetVector2MagnitudeTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var magnitudeProperty = new BlackboardPropertyName("magnitude");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector2Magnitude, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty,
+				magnitudeProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(magnitudeProperty));
+
+			var vector = new Vector2(40f, -70f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(magnitudeProperty, out float magnitude));
+			Assert.AreEqual(vector.magnitude, magnitude);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetVector2NormalizedTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var normalizedProperty = new BlackboardPropertyName("normalized");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector2Normalized, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty,
+				normalizedProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(normalizedProperty));
+
+			var vector = new Vector2(40f, -70f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(normalizedProperty, out Vector2 normalized));
+			Assert.AreEqual(vector.normalized, normalized);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetVector2XTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var xProperty = new BlackboardPropertyName("x");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector2X, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty, xProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(xProperty));
+
+			var vector = new Vector2(10f, 30f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(xProperty, out float x));
+			Assert.AreEqual(vector.x, x);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetVector2YTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var yProperty = new BlackboardPropertyName("y");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector2Y, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty, yProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(yProperty));
+
+			var vector = new Vector2(10f, 30f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(yProperty, out float y));
+			Assert.AreEqual(vector.y, y);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetVector3CoordinatesTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var xProperty = new BlackboardPropertyName("x");
+			var yProperty = new BlackboardPropertyName("y");
+			var zProperty = new BlackboardPropertyName("z");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector3Coordinates, BlackboardPropertyName, BlackboardPropertyName, 
+				BlackboardPropertyName, BlackboardPropertyName>(vectorProperty, xProperty, yProperty, zProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(xProperty));
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(yProperty));
+
+			var vector = new Vector3(30f, 10f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(xProperty, out float x));
+			Assert.IsTrue(blackboard.TryGetStructValue(yProperty, out float y));
+			Assert.AreEqual(vector.x, x);
+			Assert.AreEqual(vector.y, y);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetVector3MagnitudeTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var magnitudeProperty = new BlackboardPropertyName("magnitude");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector3Magnitude, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty,
+				magnitudeProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(magnitudeProperty));
+
+			var vector = new Vector3(40f, -70f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(magnitudeProperty, out float magnitude));
+			Assert.AreEqual(vector.magnitude, magnitude);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetVector3NormalizedTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var normalizedProperty = new BlackboardPropertyName("normalized");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector3Normalized, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty,
+				normalizedProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(normalizedProperty));
+
+			var vector = new Vector3(40f, -70f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(normalizedProperty, out Vector3 normalized));
+			Assert.AreEqual(vector.normalized, normalized);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetVector3XTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var xProperty = new BlackboardPropertyName("x");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector3X, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty, xProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(xProperty));
+
+			var vector = new Vector3(10f, 30f, 50f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(xProperty, out float x));
+			Assert.AreEqual(vector.x, x);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void GetVector3YTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var yProperty = new BlackboardPropertyName("y");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector3Y, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty, yProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(yProperty));
+
+			var vector = new Vector3(10f, 30f, 50f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(yProperty, out float y));
+			Assert.AreEqual(vector.y, y);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void GetVector3ZTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var zProperty = new BlackboardPropertyName("z");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<GetVector3Z, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty, zProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(zProperty));
+
+			var vector = new Vector3(10f, 30f, 50f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(zProperty, out float z));
+			Assert.AreEqual(vector.z, z);
 
 			treeRoot.Dispose();
 		}
@@ -2801,6 +3327,224 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
+		
+		[Test]
+		public static void MultiplyVector2Test()
+		{
+			var leftProperty = new BlackboardPropertyName("left");
+			var rightProperty = new BlackboardPropertyName("right");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<MultiplyVector2, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				leftProperty, rightProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var left = new Vector2(20f, -30f);
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var right = new Vector2(-50f, 50f);
+			blackboard.SetStructValue(rightProperty, right);
+			blackboard.RemoveStruct<Vector2>(leftProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(left * right, result);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void MultiplyVector2AndNumberTest()
+		{
+			var vector2Property = new BlackboardPropertyName("vector2");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var vector2 = new Vector2(0.8f, 0.3f);
+			const float number = 3f;
+			Vector2 result = vector2 * number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<MultiplyVector2AndNumber, BlackboardPropertyName, float, BlackboardPropertyName>(vector2Property,
+					number, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(vector2Property, vector2);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void MultiplyVector2AndNumberVariableTest()
+		{
+			var vector2Property = new BlackboardPropertyName("vector2");
+			var numberProperty = new BlackboardPropertyName("number");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var vector2 = new Vector2(0.8f, 0.3f);
+			const float number = 3f;
+			Vector2 result = vector2 * number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<MultiplyVector2AndNumberVariable, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(vector2Property, numberProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(vector2Property, vector2);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.RemoveStruct<Vector2>(vector2Property);
+			blackboard.SetStructValue(numberProperty, number);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(vector2Property, vector2);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void NegateVector2Test()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<NegateVector2, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty,
+				resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var vector = new Vector2(30f, -50f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(-vector, result);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void MultiplyVector3AndNumberTest()
+		{
+			var vector3Property = new BlackboardPropertyName("vector3");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var vector3 = new Vector3(0.8f, 0.3f, 6f);
+			const float number = 3f;
+			Vector3 result = vector3 * number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<MultiplyVector3AndNumber, BlackboardPropertyName, float, BlackboardPropertyName>(vector3Property,
+					number, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vector3Property, vector3);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void MultiplyVector3AndNumberVariableTest()
+		{
+			var vector3Property = new BlackboardPropertyName("vector3");
+			var numberProperty = new BlackboardPropertyName("number");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+			var vector3 = new Vector3(0.8f, 0.3f, 6f);
+			const float number = 3f;
+			Vector3 result = vector3 * number;
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<MultiplyVector3AndNumberVariable, BlackboardPropertyName, BlackboardPropertyName,
+					BlackboardPropertyName>(vector3Property, numberProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vector3Property, vector3);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.RemoveStruct<Vector3>(vector3Property);
+			blackboard.SetStructValue(numberProperty, number);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vector3Property, vector3);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 res));
+			Assert.AreEqual(result, res);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void NegateVector3Test()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<NegateVector3, BlackboardPropertyName, BlackboardPropertyName>(vectorProperty,
+				resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var vector = new Vector3(30f, -50f, 20f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(-vector, result);
+
+			treeRoot.Dispose();
+		}
 
 		[Test]
 		public static void QuaternionAngleTest()
@@ -3390,26 +4134,6 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
-		public static void SetBoundsTest()
-		{
-			Vector3 center = Vector3.zero;
-			Vector3 size = Vector3.one;
-			var boundsPropertyName = new BlackboardPropertyName("bounds");
-			var blackboard = new Blackboard();
-			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<SetBounds, Vector3, Vector3, BlackboardPropertyName>(center, size, boundsPropertyName)
-				.Complete();
-			TreeRoot treeRoot = treeBuilder.Build(blackboard);
-			treeRoot.Initialize();
-
-			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			Assert.IsTrue(blackboard.TryGetStructValue(boundsPropertyName, out Bounds bounds));
-			Assert.AreEqual(new Bounds(center, size), bounds);
-
-			treeRoot.Dispose();
-		}
-
-		[Test]
 		public static void SetBoundsVariableTest()
 		{
 			Vector3 center = Vector3.zero;
@@ -3546,29 +4270,6 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(enabledPropertyName, true);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.AreEqual(true, collider.enabled);
-
-			treeRoot.Dispose();
-		}
-
-		[Test]
-		public static void SetColorTest()
-		{
-			var colorProperty = new BlackboardPropertyName("color");
-			var blackboard = new Blackboard();
-			const float red = 0.6f;
-			const float green = 0.7f;
-			const float blue = 0.25f;
-			const float alpha = 0.8f;
-
-			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<SetColor, float, float, float, float, BlackboardPropertyName>(red, green, blue, alpha,
-				colorProperty).Complete();
-			TreeRoot treeRoot = treeBuilder.Build(blackboard);
-			treeRoot.Initialize();
-
-			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			Assert.IsTrue(blackboard.TryGetStructValue(colorProperty, out Color color));
-			Assert.AreEqual(new Color(red, green, blue, alpha), color);
 
 			treeRoot.Dispose();
 		}
@@ -4234,32 +4935,6 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
-		public static void SetQuaternionTest()
-		{
-			var quaternionProperty = new BlackboardPropertyName("quaternion");
-			const float x = 50f;
-			const float y = -25f;
-			const float z = 126f;
-			const float w = -35f;
-			var blackboard = new Blackboard();
-
-			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<SetQuaternion, float, float, float, float, BlackboardPropertyName>(x, y, z, w,
-					quaternionProperty).Complete();
-			TreeRoot treeRoot = treeBuilder.Build(blackboard);
-			treeRoot.Initialize();
-
-			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			Assert.IsTrue(blackboard.TryGetStructValue(quaternionProperty, out Quaternion quaternion));
-			Assert.AreEqual(x, quaternion.x);
-			Assert.AreEqual(y, quaternion.y);
-			Assert.AreEqual(z, quaternion.z);
-			Assert.AreEqual(w, quaternion.w);
-
-			treeRoot.Dispose();
-		}
-
-		[Test]
 		public static void SetQuaternionVariableTest()
 		{
 			var quaternionProperty = new BlackboardPropertyName("quaternion");
@@ -4646,6 +5321,422 @@ namespace Zor.BehaviorTree.Tests
 			
 			treeRoot.Dispose();
 		}
+
+		[Test]
+		public static void SetVector2VariableTest()
+		{
+			var xProperty = new BlackboardPropertyName("x");
+			var yProperty = new BlackboardPropertyName("y");
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetVector2Variable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					xProperty, yProperty, vectorProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(vectorProperty));
+
+			const float x = 30f;
+			blackboard.SetStructValue(xProperty, x);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(vectorProperty));
+
+			const float y = -60f;
+			blackboard.SetStructValue(yProperty, y);
+			blackboard.RemoveStruct<float>(xProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(vectorProperty));
+
+			blackboard.SetStructValue(xProperty, x);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(vectorProperty, out Vector2 vector));
+			Assert.AreEqual(vector.x, x);
+			Assert.AreEqual(vector.y, y);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetVector2XTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			const float x = 50f;
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetVector2X, BlackboardPropertyName, float, BlackboardPropertyName>(
+					vectorProperty, x, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var vector = new Vector2(30f, 100f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(x, result.x);
+			Assert.AreEqual(vector.y, result.y);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetVector2XVariableTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var xProperty = new BlackboardPropertyName("x");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetVector2XVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				vectorProperty, xProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var vector = new Vector2(30f, 100f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			const float x = 50f;
+			blackboard.SetStructValue(xProperty, x);
+			blackboard.RemoveStruct<Vector2>(vectorProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(x, result.x);
+			Assert.AreEqual(vector.y, result.y);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void SetVector2YTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			const float y = 50f;
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetVector2Y, BlackboardPropertyName, float, BlackboardPropertyName>(
+					vectorProperty, y, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var vector = new Vector2(30f, 100f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(vector.x, result.x);
+			Assert.AreEqual(y, result.y);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetVector2YVariableTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var yProperty = new BlackboardPropertyName("y");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetVector2YVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				vectorProperty, yProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var vector = new Vector2(30f, 100f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			const float y = 50f;
+			blackboard.SetStructValue(yProperty, y);
+			blackboard.RemoveStruct<Vector2>(vectorProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(vector.x, result.x);
+			Assert.AreEqual(y, result.y);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void SetVector3VariableTest()
+		{
+			var xProperty = new BlackboardPropertyName("x");
+			var yProperty = new BlackboardPropertyName("y");
+			var zProperty = new BlackboardPropertyName("z");
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetVector3Variable, BlackboardPropertyName, BlackboardPropertyName,
+				BlackboardPropertyName, BlackboardPropertyName>(xProperty, yProperty, zProperty, vectorProperty)
+				.Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(vectorProperty));
+
+			const float x = 30f;
+			blackboard.SetStructValue(xProperty, x);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(vectorProperty));
+
+			const float y = -60f;
+			blackboard.SetStructValue(yProperty, y);
+			blackboard.RemoveStruct<float>(xProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(vectorProperty));
+
+			const float z = 50f;
+			blackboard.SetStructValue(zProperty, z);
+			blackboard.RemoveStruct<float>(yProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(vectorProperty));
+
+			blackboard.SetStructValue(xProperty, x);
+			blackboard.SetStructValue(yProperty, y);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(vectorProperty, out Vector3 vector));
+			Assert.AreEqual(vector.x, x);
+			Assert.AreEqual(vector.y, y);
+			Assert.AreEqual(vector.z, z);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetVector3XTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			const float x = 50f;
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetVector3X, BlackboardPropertyName, float, BlackboardPropertyName>(
+					vectorProperty, x, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var vector = new Vector3(30f, 100f, -10f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(x, result.x);
+			Assert.AreEqual(vector.y, result.y);
+			Assert.AreEqual(vector.z, result.z);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetVector3XVariableTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var xProperty = new BlackboardPropertyName("x");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetVector3XVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				vectorProperty, xProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var vector = new Vector3(30f, 100f, -10f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			const float x = 50f;
+			blackboard.SetStructValue(xProperty, x);
+			blackboard.RemoveStruct<Vector3>(vectorProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(x, result.x);
+			Assert.AreEqual(vector.y, result.y);
+			Assert.AreEqual(vector.z, result.z);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void SetVector3YTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			const float y = 50f;
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetVector3Y, BlackboardPropertyName, float, BlackboardPropertyName>(
+					vectorProperty, y, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var vector = new Vector3(30f, 100f, -10f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(vector.x, result.x);
+			Assert.AreEqual(y, result.y);
+			Assert.AreEqual(vector.z, result.z);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetVector3YVariableTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var yProperty = new BlackboardPropertyName("y");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetVector3YVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				vectorProperty, yProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var vector = new Vector3(30f, 100f, -10f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			const float y = 50f;
+			blackboard.SetStructValue(yProperty, y);
+			blackboard.RemoveStruct<Vector3>(vectorProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(vector.x, result.x);
+			Assert.AreEqual(y, result.y);
+			Assert.AreEqual(vector.z, result.z);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetVector3ZTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			const float z = 50f;
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SetVector3Z, BlackboardPropertyName, float, BlackboardPropertyName>(
+					vectorProperty, z, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var vector = new Vector3(30f, 100f, -10f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(vector.x, result.x);
+			Assert.AreEqual(vector.y, result.y);
+			Assert.AreEqual(z, result.z);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetVector3ZVariableTest()
+		{
+			var vectorProperty = new BlackboardPropertyName("vector");
+			var zProperty = new BlackboardPropertyName("z");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetVector3ZVariable, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				vectorProperty, zProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var vector = new Vector3(30f, 100f, -10f);
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			const float z = 50f;
+			blackboard.SetStructValue(zProperty, z);
+			blackboard.RemoveStruct<Vector3>(vectorProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(vectorProperty, vector);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(vector.x, result.x);
+			Assert.AreEqual(vector.y, result.y);
+			Assert.AreEqual(z, result.z);
+
+			treeRoot.Dispose();
+		}
 		
 		[Test]
 		public static void SlerpQuaternionTest()
@@ -4767,6 +5858,78 @@ namespace Zor.BehaviorTree.Tests
 		}
 
 		[Test]
+		public static void SubtractVector2Test()
+		{
+			var leftProperty = new BlackboardPropertyName("left");
+			var rightProperty = new BlackboardPropertyName("right");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SubtractVector2, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				leftProperty, rightProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var left = new Vector2(20f, -30f);
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			var right = new Vector2(-50f, 50f);
+			blackboard.SetStructValue(rightProperty, right);
+			blackboard.RemoveStruct<Vector2>(leftProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector2>(resultProperty));
+
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector2 result));
+			Assert.AreEqual(left - right, result);
+
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void SubtractVector3Test()
+		{
+			var leftProperty = new BlackboardPropertyName("left");
+			var rightProperty = new BlackboardPropertyName("right");
+			var resultProperty = new BlackboardPropertyName("result");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder.AddLeaf<SubtractVector3, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+				leftProperty, rightProperty, resultProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var left = new Vector3(20f, -30f, 10f);
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			var right = new Vector3(-50f, 50f, -20f);
+			blackboard.SetStructValue(rightProperty, right);
+			blackboard.RemoveStruct<Vector3>(leftProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(resultProperty));
+
+			blackboard.SetStructValue(leftProperty, left);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Vector3 result));
+			Assert.AreEqual(left - right, result);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
 		public static void ValueToLayerMaskTest()
 		{
 			var valueProperty = new BlackboardPropertyName("value");
@@ -4786,6 +5949,154 @@ namespace Zor.BehaviorTree.Tests
 			Assert.IsTrue(blackboard.TryGetStructValue(layerMaskProperty, out LayerMask layerMask));
 			Assert.AreEqual(6, layerMask.value);
 
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void Vector2AngleTest()
+		{
+			var fromProperty = new BlackboardPropertyName("from");
+			var toProperty = new BlackboardPropertyName("to");
+			var angleProperty = new BlackboardPropertyName("angle");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<Vector2Angle, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					fromProperty, toProperty, angleProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
+
+			var from = new Vector2(50f, -100f);
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
+
+			var to = new Vector2(-30f, 60f);
+			blackboard.SetStructValue(toProperty, to);
+			blackboard.RemoveStruct<Vector2>(fromProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
+			
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(angleProperty, out float angle));
+			Assert.AreEqual(Vector2.Angle(from, to), angle);
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void Vector2DotTest()
+		{
+			var fromProperty = new BlackboardPropertyName("from");
+			var toProperty = new BlackboardPropertyName("to");
+			var dotProperty = new BlackboardPropertyName("dot");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<Vector2Dot, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					fromProperty, toProperty, dotProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
+
+			var from = new Vector2(50f, -100f);
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
+
+			var to = new Vector2(-30f, 60f);
+			blackboard.SetStructValue(toProperty, to);
+			blackboard.RemoveStruct<Vector2>(fromProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
+			
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(dotProperty, out float dot));
+			Assert.AreEqual(Vector2.Dot(from, to), dot);
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void Vector3AngleTest()
+		{
+			var fromProperty = new BlackboardPropertyName("from");
+			var toProperty = new BlackboardPropertyName("to");
+			var angleProperty = new BlackboardPropertyName("angle");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<Vector3Angle, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					fromProperty, toProperty, angleProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
+
+			var from = new Vector3(50f, -100f, 30f);
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
+
+			var to = new Vector3(-30f, 60f, -130f);
+			blackboard.SetStructValue(toProperty, to);
+			blackboard.RemoveStruct<Vector3>(fromProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
+			
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(angleProperty, out float angle));
+			Assert.AreEqual(Vector3.Angle(from, to), angle);
+			
+			treeRoot.Dispose();
+		}
+		
+		[Test]
+		public static void Vector3DotTest()
+		{
+			var fromProperty = new BlackboardPropertyName("from");
+			var toProperty = new BlackboardPropertyName("to");
+			var dotProperty = new BlackboardPropertyName("dot");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<Vector3Dot, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					fromProperty, toProperty, dotProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+			
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
+
+			var from = new Vector3(50f, -100f, 30f);
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
+
+			var to = new Vector3(-30f, 60, -130f);
+			blackboard.SetStructValue(toProperty, to);
+			blackboard.RemoveStruct<Vector3>(fromProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
+			
+			blackboard.SetStructValue(fromProperty, from);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(dotProperty, out float dot));
+			Assert.AreEqual(Vector3.Dot(from, to), dot);
+			
 			treeRoot.Dispose();
 		}
 
