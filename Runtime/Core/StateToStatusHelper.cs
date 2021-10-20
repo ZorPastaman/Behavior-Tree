@@ -10,10 +10,7 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static unsafe Status FinishedToStatus(bool isFinished)
 		{
-			const int running = (int)Status.Running;
-			const int runningSuccessDiff = (int)Status.Success - (int)Status.Running;
-
-			return (Status)(running + *(byte*)&isFinished * runningSuccessDiff);
+			return (Status)((int)Status.Running >> *(byte*)&isFinished);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -25,10 +22,7 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static unsafe Status FailedToStatus(bool isFailed)
 		{
-			const int running = (int)Status.Running;
-			const int runningFailureDiff = Status.Failure - Status.Running;
-
-			return (Status)(running + *(byte*)&isFailed * runningFailureDiff);
+			return (Status)((int)Status.Running << *(byte*)&isFailed);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -54,10 +48,7 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static unsafe Status ConditionToStatus(bool condition)
 		{
-			const int failure = (int)Status.Failure;
-			const int failureSuccessDiff = (int)Status.Success - (int)Status.Failure;
-
-			return (Status)(failure + *(byte*)&condition * failureSuccessDiff);
+			return (Status)((int)Status.Failure >> (*(byte*)&condition << 1));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -69,19 +60,14 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static unsafe Status ConditionToStatus(bool condition, Status falseStatus, Status trueStatus)
 		{
-			int statusDiff = trueStatus - falseStatus;
-			return (Status)((int)falseStatus + *(byte*)&condition * statusDiff);
+			int conditionMask = -(*(byte*)&condition);
+			return (Status)(((int)trueStatus & conditionMask) | ((int)falseStatus & ~conditionMask));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		private static unsafe Status FinishedFailedToStatusSimple(bool isFinished, bool isFailed)
 		{
-			const int running = (int)Status.Running;
-			const int runningFailureDiff = Status.Failure - Status.Running;
-			const int runningSuccessDiff = (int)Status.Success - (int)Status.Running;
-
-			return (Status)(running + *(byte*)&isFinished * runningSuccessDiff +
-				*(byte*)&isFailed * runningFailureDiff);
+			return (Status)((int)Status.Running >> *(byte*)&isFinished << *(byte*)&isFailed);
 		}
 	}
 }
