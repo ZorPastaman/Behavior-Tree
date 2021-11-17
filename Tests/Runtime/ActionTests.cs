@@ -5,6 +5,7 @@ using System.Collections;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.TestTools;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
@@ -4930,6 +4931,43 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetClassValue(tagProperty, "Finish");
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.AreEqual("Finish", gameObject.tag);
+
+			treeRoot.Dispose();
+		}
+
+		[Test]
+		public static void SetNavMeshQueryFilterTest()
+		{
+			var agentIdProperty = new BlackboardPropertyName("agentId");
+			var areaMaskProperty = new BlackboardPropertyName("areaMask");
+			var filterProperty = new BlackboardPropertyName("filter");
+			var blackboard = new Blackboard();
+
+			var treeBuilder = new TreeBuilder();
+			treeBuilder
+				.AddLeaf<SetNavMeshQueryFilter, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(
+					agentIdProperty, areaMaskProperty, filterProperty).Complete();
+			TreeRoot treeRoot = treeBuilder.Build(blackboard);
+			treeRoot.Initialize();
+
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<NavMeshQueryFilter>(filterProperty));
+
+			const int agentId = 2;
+			blackboard.SetStructValue(agentIdProperty, agentId);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<NavMeshQueryFilter>(filterProperty));
+
+			const int areaMask = 12;
+			blackboard.SetStructValue(areaMaskProperty, areaMask);
+			blackboard.RemoveStruct<int>(agentIdProperty);
+			Assert.AreEqual(Status.Error, treeRoot.Tick());
+			Assert.IsFalse(blackboard.ContainsStructValue<NavMeshQueryFilter>(filterProperty));
+
+			blackboard.SetStructValue(agentIdProperty, agentId);
+			Assert.AreEqual(Status.Success, treeRoot.Tick());
+			Assert.IsTrue(blackboard.TryGetStructValue(filterProperty, out NavMeshQueryFilter filter));
+			Assert.AreEqual(new NavMeshQueryFilter {agentTypeID = agentId, areaMask = areaMask}, filter);
 
 			treeRoot.Dispose();
 		}
