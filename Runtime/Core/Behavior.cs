@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using UnityEngine.Profiling;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core
@@ -27,29 +28,47 @@ namespace Zor.BehaviorTree.Core
 
 		public Status Tick()
 		{
+			Profiler.BeginSample(GetType().FullName);
+
 			if (m_status != Status.Running)
 			{
+				Profiler.BeginSample("Begin");
 				Begin();
+				Profiler.EndSample();
 			}
 
+			Profiler.BeginSample("Execute");
 			m_status = Execute();
+			Profiler.EndSample();
 
 			if (m_status != Status.Running)
 			{
+				Profiler.BeginSample("End");
 				End();
+				Profiler.EndSample();
 			}
+
+			Profiler.EndSample();
 
 			return m_status;
 		}
 
 		public Status Abort()
 		{
+			Profiler.BeginSample(GetType().FullName);
+
 			if (m_status == Status.Running)
 			{
 				OnAbortInternal();
+
+				Profiler.BeginSample("OnAbort");
 				OnAbort();
+				Profiler.EndSample();
+
 				m_status = Status.Abort;
 			}
+
+			Profiler.EndSample();
 
 			return m_status;
 		}
@@ -57,13 +76,17 @@ namespace Zor.BehaviorTree.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal virtual void Initialize()
 		{
+			Profiler.BeginSample(GetType().FullName);
 			OnInitialize();
+			Profiler.EndSample();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal virtual void Dispose()
 		{
+			Profiler.BeginSample(GetType().FullName);
 			OnDispose();
+			Profiler.EndSample();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -164,7 +187,10 @@ namespace Zor.BehaviorTree.Core
 					continue;
 				}
 
+				Profiler.BeginSample("Setup");
 				interfaceType.InvokeMember("Setup", BindingFlags.InvokeMethod, null, behavior, parameters);
+				Profiler.EndSample();
+
 				return;
 			}
 

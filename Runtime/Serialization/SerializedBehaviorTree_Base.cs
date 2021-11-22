@@ -2,6 +2,7 @@
 
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Zor.BehaviorTree.Core;
 using Zor.SimpleBlackboard.Core;
 
@@ -12,7 +13,13 @@ namespace Zor.BehaviorTree.Serialization
 		[NotNull]
 		public TreeRoot CreateTree()
 		{
-			return CreateTree(new Blackboard());
+			Profiler.BeginSample("SerializedBehaviorTree.CreateTree()");
+
+			TreeRoot treeRoot = CreateTree(new Blackboard());
+
+			Profiler.EndSample();
+
+			return treeRoot;
 		}
 
 		[NotNull]

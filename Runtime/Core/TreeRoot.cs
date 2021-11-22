@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using UnityEngine.Profiling;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core
@@ -33,12 +34,16 @@ namespace Zor.BehaviorTree.Core
 #endif
 		public void Initialize()
 		{
+			Profiler.BeginSample("TreeRoot.Initialize");
+
 #if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 			lock (m_blackboard)
 #endif
 			{
 				m_rootBehavior.Initialize();
 			}
+
+			Profiler.EndSample();
 		}
 
 #if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
@@ -46,12 +51,20 @@ namespace Zor.BehaviorTree.Core
 #endif
 		public Status Tick()
 		{
+			Profiler.BeginSample("TreeRoot.Tick");
+
+			Status status;
+
 #if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 			lock (m_blackboard)
 #endif
 			{
-				return m_rootBehavior.Tick();
+				status = m_rootBehavior.Tick();
 			}
+
+			Profiler.EndSample();
+
+			return status;
 		}
 
 #if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
@@ -59,12 +72,20 @@ namespace Zor.BehaviorTree.Core
 #endif
 		public Status Abort()
 		{
+			Profiler.BeginSample("TreeRoot.Abort");
+
+			Status status;
+
 #if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 			lock (m_blackboard)
 #endif
 			{
-				return m_rootBehavior.Abort();
+				status = m_rootBehavior.Abort();
 			}
+
+			Profiler.EndSample();
+
+			return status;
 		}
 
 #if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
@@ -72,13 +93,22 @@ namespace Zor.BehaviorTree.Core
 #endif
 		public void Dispose()
 		{
+			Profiler.BeginSample("TreeRoot.Dispose call");
+
 #if BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 			lock (m_blackboard)
 #endif
 			{
+				Profiler.BeginSample("TreeRoot.Abort");
 				m_rootBehavior.Abort();
+				Profiler.EndSample();
+
+				Profiler.BeginSample("TreeRoot.Dispose");
 				m_rootBehavior.Dispose();
+				Profiler.EndSample();
 			}
+
+			Profiler.EndSample();
 		}
 	}
 }

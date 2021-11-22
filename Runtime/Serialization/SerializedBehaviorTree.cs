@@ -1,9 +1,9 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Zor.BehaviorTree.Builder;
 using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Composites;
@@ -31,16 +31,24 @@ namespace Zor.BehaviorTree.Serialization
 
 		private TreeBuilder m_treeBuilder;
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		[Pure]
 		public override TreeRoot CreateTree(Blackboard blackboard)
 		{
+			Profiler.BeginSample("SerializedBehaviorTree.CreateTree(Blackboard)");
+			Profiler.BeginSample(name);
+
 			if (m_treeBuilder == null)
 			{
 				m_treeBuilder = new TreeBuilder();
 				Deserialize(m_RootNode);
 			}
 
-			return m_treeBuilder.Build(blackboard);
+			TreeRoot treeRoot = m_treeBuilder.Build(blackboard);
+
+			Profiler.EndSample();
+			Profiler.EndSample();
+
+			return treeRoot;
 		}
 
 		private void Deserialize(int index)
