@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
+using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Zor.BehaviorTree.Core;
@@ -9,6 +10,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 {
 	internal sealed class LeafBuilder<TLeaf> : LeafBuilder where TLeaf : Leaf, INotSetupable, new()
 	{
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
@@ -23,6 +30,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 		public LeafBuilder(TArg arg)
 		{
 			m_arg = arg;
+		}
+
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -44,6 +57,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg1 = arg1;
 		}
 
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
@@ -63,6 +82,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg0 = arg0;
 			m_arg1 = arg1;
 			m_arg2 = arg2;
+		}
+
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -88,6 +113,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg3 = arg3;
 		}
 
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
@@ -111,6 +142,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg2 = arg2;
 			m_arg3 = arg3;
 			m_arg4 = arg4;
+		}
+
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -141,6 +178,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg5 = arg5;
 		}
 
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{
@@ -169,6 +212,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg4 = arg4;
 			m_arg5 = arg5;
 			m_arg6 = arg6;
+		}
+
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -203,6 +252,12 @@ namespace Zor.BehaviorTree.Builder.GenericBuilders
 			m_arg5 = arg5;
 			m_arg6 = arg6;
 			m_arg7 = arg7;
+		}
+
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(TLeaf);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]

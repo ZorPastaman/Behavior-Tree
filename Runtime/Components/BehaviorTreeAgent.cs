@@ -2,7 +2,9 @@
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Zor.BehaviorTree.Core;
+using Zor.BehaviorTree.Debugging;
 using Zor.BehaviorTree.Serialization;
 using Zor.SimpleBlackboard.Components;
 
@@ -21,13 +23,32 @@ namespace Zor.BehaviorTree.Components
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Tick()
 		{
-			return m_treeRoot.Tick();
+			Profiler.BeginSample(gameObject.name);
+
+			Status status = m_treeRoot.Tick();
+
+#if DEBUG
+			if (status == Status.Error)
+			{
+				BehaviorTreeDebug.LogError(this, $"[BehaviorTreeAgent] Behavior tree at {gameObject.name} finished a tick with an error");
+			}
+#endif
+
+			Profiler.EndSample();
+
+			return status;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), ContextMenu("Abort")]
 		public Status Abort()
 		{
-			return m_treeRoot.Abort();
+			Profiler.BeginSample(gameObject.name);
+
+			Status status = m_treeRoot.Abort();
+
+			Profiler.EndSample();
+
+			return status;
 		}
 
 		private void Awake()

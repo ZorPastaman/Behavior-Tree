@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
 using JetBrains.Annotations;
 using UnityEngine.Profiling;
 using Zor.BehaviorTree.Builder.ActivatorBuilders;
@@ -11,6 +12,7 @@ using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Composites;
 using Zor.BehaviorTree.Core.Decorators;
 using Zor.BehaviorTree.Core.Leaves;
+using Zor.BehaviorTree.Debugging;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Builder
@@ -473,7 +475,7 @@ namespace Zor.BehaviorTree.Builder
 				Profiler.EndSample();
 				Profiler.EndSample();
 
-				throw new Exception();
+				throw new ArgumentException($"{nodeType} isn't a subclass of {nameof(Leaf)}, {nameof(Decorator)} or {nameof(Composite)}.", nameof(nodeType));
 			}
 
 			AddBehaviorBuilder(behaviorBuilder);
@@ -509,7 +511,7 @@ namespace Zor.BehaviorTree.Builder
 				Profiler.EndSample();
 				Profiler.EndSample();
 
-				throw new Exception();
+				throw new ArgumentException($"{nodeType} isn't a subclass of {nameof(Leaf)}, {nameof(Decorator)} or {nameof(Composite)}.", nameof(nodeType));
 			}
 
 			AddBehaviorBuilder(behaviorBuilder);
@@ -525,11 +527,28 @@ namespace Zor.BehaviorTree.Builder
 		{
 			Profiler.BeginSample("TreeBuilder.Complete");
 
+			BehaviorTreeDebug.Log($"[TreeBuilder] Complete a behavior at level {m_currentBuilderIndices.Count - 1}");
+
+#if DEBUG
+			if (m_currentBuilderIndices.Count == 0)
+			{
+				throw new InvalidOperationException(
+					$"{nameof(Complete)} is called more than {nameof(AddBehavior)} or its generic variations.");
+			}
+#endif
+
 			m_currentBuilderIndices.Pop();
 
 			Profiler.EndSample();
 
 			return this;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Clear()
+		{
+			m_behaviorBuilders.Clear();
+			m_currentBuilderIndices.Clear();
 		}
 
 		[NotNull, Pure]
@@ -549,8 +568,12 @@ namespace Zor.BehaviorTree.Builder
 		{
 			Profiler.BeginSample("TreeBuilder.Build(Blackboard)");
 
+			BehaviorTreeDebug.Log("Start building a tree");
+
 			Behavior rootBehavior = BuildBehavior(0);
 			var treeRoot = new TreeRoot(blackboard, rootBehavior);
+
+			BehaviorTreeDebug.Log("Finish building a tree");
 
 			Profiler.EndSample();
 
@@ -561,20 +584,29 @@ namespace Zor.BehaviorTree.Builder
 		{
 			int index = m_behaviorBuilders.Count;
 
+			BehaviorTreeDebug.Log($"[TreeBuilder] Add a behavior of type {behaviorBuilder.behaviorType} at index {index} at level {m_currentBuilderIndices.Count}");
+
 			if (index > 0)
 			{
+#if DEBUG
+				if (m_currentBuilderIndices.Count == 0)
+				{
+					throw new InvalidOperationException($"Failed to add a behavior of type {behaviorBuilder.behaviorType} as a root because the tree builder already has a root.");
+				}
+#endif
+
 				BehaviorBuilder currentBuilder = m_behaviorBuilders[m_currentBuilderIndices.Peek()];
 
 				switch (currentBuilder)
 				{
 					case CompositeBuilder compositeBuilder:
-						compositeBuilder.AddChildIndex(index);
+						AddCompositeBuilder(compositeBuilder, index);
 						break;
 					case DecoratorBuilder decoratorBuilder:
-						decoratorBuilder.childIndex = index;
+						AddDecoratorBuilder(decoratorBuilder, index);
 						break;
 					default:
-						throw new Exception();
+						throw new InvalidOperationException($"Failed to add a child to a {nameof(Leaf)}. Only {nameof(Composite)} and {nameof(Decorator)} support children.");
 				}
 			}
 
@@ -582,22 +614,58 @@ namespace Zor.BehaviorTree.Builder
 			m_currentBuilderIndices.Push(index);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void AddCompositeBuilder([NotNull] CompositeBuilder compositeBuilder, int index)
+		{
+			compositeBuilder.AddChildIndex(index);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void AddDecoratorBuilder([NotNull] DecoratorBuilder decoratorBuilder, int index)
+		{
+#if DEBUG
+			if (decoratorBuilder.childIndex >= 0)
+			{
+				throw new InvalidOperationException($"Failed to set a child to a {nameof(Decorator)}. It already has a child at index {decoratorBuilder.childIndex}.");
+			}
+#endif
+
+			decoratorBuilder.childIndex = index;
+		}
+
 		[NotNull, Pure]
 		private Behavior BuildBehavior(int index)
 		{
+#if DEBUG
+			if (index < 0 || index >= m_behaviorBuilders.Count)
+			{
+				throw new InvalidOperationException($"Failed to build a behavior tree. There's no behavior at index {index}.");
+			}
+#endif
+
 			BehaviorBuilder behaviorBuilder = m_behaviorBuilders[index];
+			Behavior result;
+
+			BehaviorTreeDebug.Log($"[TreeBuilder] Start building a behavior of type {behaviorBuilder.behaviorType} at index {index}");
 
 			switch (behaviorBuilder)
 			{
 				case LeafBuilder leafBuilder:
-					return BuildLeaf(leafBuilder);
+					result = BuildLeaf(leafBuilder);
+					break;
 				case DecoratorBuilder decoratorBuilder:
-					return BuildDecorator(decoratorBuilder);
+					result = BuildDecorator(decoratorBuilder);
+					break;
 				case CompositeBuilder compositeBuilder:
-					return BuildComposite(compositeBuilder);
+					result = BuildComposite(compositeBuilder);
+					break;
 				default:
-					throw new Exception();
+					throw new InvalidOperationException($"Failed to build a behavior at index {index} due to an unsupported builder. Is it possible?");
 			}
+
+			BehaviorTreeDebug.Log($"[TreeBuilder] Finish building a behavior of type {behaviorBuilder.behaviorType} at index {index}");
+
+			return result;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
@@ -609,6 +677,13 @@ namespace Zor.BehaviorTree.Builder
 		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
 		private Decorator BuildDecorator([NotNull] DecoratorBuilder decoratorBuilder)
 		{
+#if DEBUG
+			if (decoratorBuilder.childIndex < 0)
+			{
+				throw new InvalidOperationException($"Failed to build a {nameof(Decorator)}. It doesn't have a child.");
+			}
+#endif
+
 			Behavior child = BuildBehavior(decoratorBuilder.childIndex);
 			return decoratorBuilder.Build(child);
 		}
@@ -617,6 +692,19 @@ namespace Zor.BehaviorTree.Builder
 		private Behavior BuildComposite([NotNull] CompositeBuilder compositeBuilder)
 		{
 			int childCount = compositeBuilder.childCount;
+
+#if DEBUG
+			if (childCount == 0)
+			{
+				throw new InvalidOperationException($"Failed to build a {nameof(Composite)}. It doesn't have children.");
+			}
+
+			if (childCount < 2)
+			{
+				BehaviorTreeDebug.LogWarning($"[TreeBuilder] Composite of type {compositeBuilder.behaviorType} has less than 2 children");
+			}
+#endif
+
 			var behaviors = new Behavior[childCount];
 
 			for (int i = 0; i < childCount; ++i)
@@ -626,6 +714,42 @@ namespace Zor.BehaviorTree.Builder
 			}
 
 			return compositeBuilder.Build(behaviors);
+		}
+
+		public override string ToString()
+		{
+			var stringBuilder = new StringBuilder("TreeBuilder:\n");
+			BehaviorToString(stringBuilder, 0, 0);
+
+			return stringBuilder.ToString();
+		}
+
+		private void BehaviorToString([NotNull] StringBuilder stringBuilder, int index, int level)
+		{
+			for (int i = 0; i < level; ++i)
+			{
+				stringBuilder.Append('\t');
+			}
+
+			BehaviorBuilder behaviorBuilder = m_behaviorBuilders[index];
+			stringBuilder.AppendLine(behaviorBuilder.behaviorType.ToString());
+
+			switch (behaviorBuilder)
+			{
+				case DecoratorBuilder decoratorBuilder:
+					if (decoratorBuilder.childIndex >= 0)
+					{
+						BehaviorToString(stringBuilder, decoratorBuilder.childIndex, level + 1);
+					}
+					break;
+				case CompositeBuilder compositeBuilder:
+					for (int i = 0, count = compositeBuilder.childCount; i < count; ++i)
+					{
+						int child = compositeBuilder.GetChildIndex(i);
+						BehaviorToString(stringBuilder, child, level + 1);
+					}
+					break;
+			}
 		}
 	}
 }

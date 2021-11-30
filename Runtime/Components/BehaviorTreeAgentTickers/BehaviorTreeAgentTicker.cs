@@ -3,6 +3,8 @@
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
+using Zor.BehaviorTree.Core;
+using Zor.BehaviorTree.Debugging;
 
 namespace Zor.BehaviorTree.Components.BehaviorTreeAgentTickers
 {
@@ -10,6 +12,7 @@ namespace Zor.BehaviorTree.Components.BehaviorTreeAgentTickers
 	{
 #pragma warning disable CS0649
 		[SerializeField] private BehaviorTreeAgent m_BehaviorTreeAgent;
+		[SerializeField] private bool m_DisableOnError = true;
 #pragma warning restore CS0649
 
 		[NotNull]
@@ -24,13 +27,21 @@ namespace Zor.BehaviorTree.Components.BehaviorTreeAgentTickers
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected void Tick()
 		{
-			m_BehaviorTreeAgent.Tick();
+			Status status = m_BehaviorTreeAgent.Tick();
+
+#if DEBUG
+			if (m_DisableOnError && status == Status.Error)
+			{
+				enabled = false;
+			}
+#endif
 		}
 
 		protected virtual void OnEnable()
 		{
 			if (m_BehaviorTreeAgent == null)
 			{
+				BehaviorTreeDebug.LogWarning(this, $"[BehaviorTreeAgentTicker] Null behavior tree agent at {gameObject.name}");
 				enabled = false;
 			}
 		}

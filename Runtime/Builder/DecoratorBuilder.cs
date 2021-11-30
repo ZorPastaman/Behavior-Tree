@@ -9,7 +9,7 @@ namespace Zor.BehaviorTree.Builder
 {
 	internal abstract class DecoratorBuilder : BehaviorBuilder
 	{
-		private int m_childIndex;
+		private int m_childIndex = -1;
 
 		public int childIndex
 		{

@@ -18,6 +18,12 @@ namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 			m_customData = customData;
 		}
 
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_nodeType;
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Leaf Build()
 		{

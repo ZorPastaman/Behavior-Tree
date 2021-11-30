@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine.Profiling;
+using Zor.BehaviorTree.Debugging;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core
@@ -47,6 +48,13 @@ namespace Zor.BehaviorTree.Core
 				End();
 				Profiler.EndSample();
 			}
+
+#if DEBUG
+			if (m_status != Status.Success & m_status != Status.Running & m_status != Status.Failure & m_status != Status.Error)
+			{
+				BehaviorTreeDebug.LogError($"Behavior of type {GetType()} returned {m_status} as a result of Execute. But only {Status.Success}, {Status.Running}, {Status.Failure} and {Status.Error} are acceptable");
+			}
+#endif
 
 			Profiler.EndSample();
 
@@ -159,7 +167,7 @@ namespace Zor.BehaviorTree.Core
 					baseSetupableType = typeof(ISetupable<,,,,,,,>);
 					break;
 				default:
-					throw new Exception();
+					throw new ArgumentException($"Failed to setup a behavior of type {behaviorType}. Too many parameters are passed. It supports up to 8 parameters.");
 			}
 
 			for (int i = 0, iCount = interfaceTypes.Length; i < iCount; ++i)

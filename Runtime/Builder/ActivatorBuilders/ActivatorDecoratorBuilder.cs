@@ -17,6 +17,12 @@ namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 			m_nodeType = nodeType;
 		}
 
+		public override Type behaviorType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_nodeType;
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override Decorator Build(Behavior child)
 		{

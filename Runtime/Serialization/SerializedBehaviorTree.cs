@@ -9,6 +9,7 @@ using Zor.BehaviorTree.Core;
 using Zor.BehaviorTree.Core.Composites;
 using Zor.BehaviorTree.Core.Decorators;
 using Zor.BehaviorTree.Core.Leaves;
+using Zor.BehaviorTree.Debugging;
 using Zor.BehaviorTree.Serialization.SerializedBehaviors;
 using Zor.SimpleBlackboard.Core;
 using Object = UnityEngine.Object;
@@ -24,7 +25,7 @@ namespace Zor.BehaviorTree.Serialization
 	{
 		[SerializeField] private SerializedBehaviorData[] m_SerializedBehaviorData;
 		[SerializeField] private int m_RootNode = -1;
-		[SerializeField] private NodeGraphInfo m_RootGraphInfo = new NodeGraphInfo
+		[SerializeField, UsedImplicitly] private NodeGraphInfo m_RootGraphInfo = new NodeGraphInfo
 		{
 			position = new Vector2(100f, 450f)
 		};
@@ -37,13 +38,13 @@ namespace Zor.BehaviorTree.Serialization
 			Profiler.BeginSample("SerializedBehaviorTree.CreateTree(Blackboard)");
 			Profiler.BeginSample(name);
 
-			if (m_treeBuilder == null)
-			{
-				m_treeBuilder = new TreeBuilder();
-				Deserialize(m_RootNode);
-			}
+			BehaviorTreeDebug.Log($"Start creating a behavior tree {name}");
+
+			Deserialize();
 
 			TreeRoot treeRoot = m_treeBuilder.Build(blackboard);
+
+			BehaviorTreeDebug.Log($"Finish creating a behavior tree {name}");
 
 			Profiler.EndSample();
 			Profiler.EndSample();
@@ -51,8 +52,29 @@ namespace Zor.BehaviorTree.Serialization
 			return treeRoot;
 		}
 
+		private void Deserialize()
+		{
+			if (m_treeBuilder == null)
+			{
+				BehaviorTreeDebug.Log("Start deserializing a tree builder");
+
+				m_treeBuilder = new TreeBuilder();
+				Deserialize(m_RootNode);
+
+				BehaviorTreeDebug.Log("Finish deserializing a tree builder");
+			}
+		}
+
 		private void Deserialize(int index)
 		{
+#if DEBUG
+			if (index < 0 || index >= m_SerializedBehaviorData.Length)
+			{
+				m_treeBuilder = null;
+				throw new InvalidOperationException($"Failed to get a serialized behavior at index {index}.");
+			}
+#endif
+
 			SerializedBehaviorData data = m_SerializedBehaviorData[index];
 			data.serializedBehavior.AddBehavior(m_treeBuilder);
 
@@ -67,6 +89,13 @@ namespace Zor.BehaviorTree.Serialization
 			}
 
 			m_treeBuilder.Complete();
+		}
+
+		[ContextMenu("Log")]
+		private void Log()
+		{
+			Deserialize();
+			Debug.Log($"SerializedBehaviorTree {name}\n{m_treeBuilder}");
 		}
 
 #if UNITY_EDITOR
