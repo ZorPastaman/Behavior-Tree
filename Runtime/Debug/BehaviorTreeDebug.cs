@@ -1,14 +1,28 @@
-﻿using System.Diagnostics;
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace Zor.BehaviorTree.Debugging
 {
+	/// <summary>
+	/// Class for logging the behavior tree system.
+	/// </summary>
 	public static class BehaviorTreeDebug
 	{
+		/// <summary>
+		/// If it's defined, the behavior tree system's logs are logged.
+		/// </summary>
 		public const string LogDefine = "BEHAVIOR_TREE_LOG";
+		/// <summary>
+		/// If it's defined, the behavior tree system's warnings are logged.
+		/// </summary>
 		public const string WarningDefine = "BEHAVIOR_TREE_WARNING";
+		/// <summary>
+		/// If it's defined, the behavior tree system's errors are logged.
+		/// </summary>
 		public const string ErrorDefine = "BEHAVIOR_TREE_ERROR";
 
 		private const string Format = "[BehaviorTree] {0}.";

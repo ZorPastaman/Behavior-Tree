@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -7,6 +7,55 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Matches an animator target. This <see cref="Action"/> uses
+	/// <see cref="Animator.MatchTarget(Vector3, Quaternion, AvatarTarget, MatchTargetWeightMask, float)"/>
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if there's all the data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of an animator of type <see cref="Animator"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a position of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a rotation of type <see cref="Quaternion"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Avatar target of type <see cref="AvatarTarget"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Match target weight mask of type <see cref="MatchTargetWeightMask"/>.</description>
+	/// 	</item>
+	/// 		<item>
+	/// 		<description>Property name of an avoided of type <see cref="Transform"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Start normalized time of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class MatchAnimatorTarget : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, AvatarTarget,
 			MatchTargetWeightMask, float>,

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -8,13 +8,21 @@ using Zor.BehaviorTree.Debugging;
 
 namespace Zor.BehaviorTree.Components.BehaviorTreeAgentTickers
 {
+	/// <summary>
+	/// Base class for a <see cref="BehaviorTreeAgent"/> ticker .
+	/// </summary>
 	public abstract class BehaviorTreeAgentTicker : MonoBehaviour
 	{
 #pragma warning disable CS0649
-		[SerializeField] private BehaviorTreeAgent m_BehaviorTreeAgent;
-		[SerializeField] private bool m_DisableOnError = true;
+		[SerializeField, Tooltip("Ticked behavior tree agent.")]
+		private BehaviorTreeAgent m_BehaviorTreeAgent;
+		[SerializeField, Tooltip("If true, it disables itself if a tick returns Error.\nWorks only in Debug.")]
+		private bool m_DisableOnError = true;
 #pragma warning restore CS0649
 
+		/// <summary>
+		/// Ticked <see cref="BehaviorTreeAgent"/>.
+		/// </summary>
 		[NotNull]
 		public BehaviorTreeAgent behaviorTreeAgent
 		{
@@ -24,17 +32,23 @@ namespace Zor.BehaviorTree.Components.BehaviorTreeAgentTickers
 			set => m_BehaviorTreeAgent = value;
 		}
 
+		/// <summary>
+		/// Ticks a <see cref="BehaviorTreeAgent"/> and returns its result.
+		/// </summary>
+		/// <returns>Result of the tick.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected void Tick()
+		protected Status Tick()
 		{
 			Status status = m_BehaviorTreeAgent.Tick();
 
 #if DEBUG
-			if (m_DisableOnError && status == Status.Error)
+			if (m_DisableOnError & status == Status.Error)
 			{
 				enabled = false;
 			}
 #endif
+
+			return status;
 		}
 
 		protected virtual void OnEnable()

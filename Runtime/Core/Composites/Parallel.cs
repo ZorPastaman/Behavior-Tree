@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using System.Runtime.CompilerServices;
@@ -6,6 +6,29 @@ using Zor.BehaviorTree.DrawingAttributes;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
+	/// <summary>
+	/// <para>
+	/// This <see cref="Composite"/> ticks all its children, that are in <see cref="Status.Running"/> state,
+	/// in its tick. Returned <see cref="Status"/> rules depend on set <see cref="Mode"/>.
+	/// The <see cref="Mode"/> may be set the same or different for
+	/// <see cref="Status.Success"/> and <see cref="Status.Failure"/> rules.
+	/// </para>
+	/// <para>
+	/// Statuses <see cref="Status.Success"/> and <see cref="Status.Failure"/> in this <see cref="Composite"/> tick are
+	/// dependent on their <see cref="Mode"/>.
+	/// If none of the <see cref="Mode"/> rules is triggered,
+	/// this <see cref="Composite"/> ticks with <see cref="Status.Running"/>.
+	/// If any child ticks with <see cref="Status.Error"/>,
+	/// this <see cref="Composite"/> ticks with <see cref="Status.Error"/> too.
+	/// </para>
+	/// <para>
+	/// Every end, this <see cref="Composite"/> aborts all its children.
+	/// </para>
+	/// </summary>
+	/// <remarks>
+	/// On a first tick, this <see cref="Composite"/> ticks all the children.
+	/// </remarks>
+	/// <seealso cref="Concurrent"/>
 	public sealed class Parallel : Composite, ISetupable<Parallel.Mode>, ISetupable<Parallel.Mode, Parallel.Mode>
 	{
 		private int m_successes;
@@ -112,10 +135,20 @@ namespace Zor.BehaviorTree.Core.Composites
 			base.End();
 		}
 
+		/// <summary>
+		/// <see cref="Status.Success"/> and <see cref="Status.Failure"/> rule.
+		/// </summary>
 		[Flags]
 		public enum Mode : byte
 		{
+			/// <summary>
+			/// At least one child ticking with <see cref="Status.Success"/> or <see cref="Status.Failure"/>
+			/// is required.
+			/// </summary>
 			Any = 1 << 0,
+			/// <summary>
+			/// All the children ticking with <see cref="Status.Success"/> or <see cref="Status.Failure"/> are required.
+			/// </summary>
 			All = 1 << 1
 		}
 	}

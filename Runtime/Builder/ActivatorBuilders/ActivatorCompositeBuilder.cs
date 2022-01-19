@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using System.Runtime.CompilerServices;
@@ -8,15 +8,26 @@ using Zor.BehaviorTree.Core.Composites;
 
 namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 {
+	/// <summary>
+	/// <see cref="Composite"/> builder using <see cref="Type"/>.
+	/// </summary>
+	/// <seealso cref="CustomActivatorCompositeBuilder"/>
 	internal sealed class ActivatorCompositeBuilder : CompositeBuilder
 	{
+		/// <summary>
+		/// <see cref="Composite"/> built type.
+		/// </summary>
 		[NotNull] private readonly Type m_nodeType;
 
+		/// <param name="nodeType"><see cref="Composite"/> built type.</param>
 		public ActivatorCompositeBuilder([NotNull] Type nodeType)
 		{
 			m_nodeType = nodeType;
 		}
 
+		/// <summary>
+		/// <see cref="Composite"/> built type.
+		/// </summary>
 		public override Type behaviorType
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]

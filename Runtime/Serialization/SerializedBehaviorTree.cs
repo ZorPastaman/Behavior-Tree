@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using JetBrains.Annotations;
@@ -16,6 +16,9 @@ using Object = UnityEngine.Object;
 
 namespace Zor.BehaviorTree.Serialization
 {
+	/// <summary>
+	/// Serialized behavior tree.
+	/// </summary>
 	[CreateAssetMenu(
 		menuName = "Behavior Tree/Serialized Behavior Tree",
 		fileName = "SerializedBehaviorTree",
@@ -23,24 +26,44 @@ namespace Zor.BehaviorTree.Serialization
 	)]
 	public sealed class SerializedBehaviorTree : SerializedBehaviorTree_Base
 	{
+		/// <summary>
+		/// Serialized behaviors.
+		/// </summary>
 		[SerializeField] private SerializedBehaviorData[] m_SerializedBehaviorData;
+		/// <summary>
+		/// Root behavior index.
+		/// </summary>
 		[SerializeField] private int m_RootNode = -1;
+		/// <summary>
+		/// Node graph info for drawing a root node in a behavior tree graph view.
+		/// </summary>
 		[SerializeField, UsedImplicitly] private NodeGraphInfo m_RootGraphInfo = new NodeGraphInfo
 		{
 			position = new Vector2(100f, 450f)
 		};
 
+		/// <summary>
+		/// Behavior tree builder cache.
+		/// </summary>
 		private TreeBuilder m_treeBuilder;
 
+		/// <summary>
+		/// Creates a behavior tree out of its serialized data.
+		/// </summary>
+		/// <param name="blackboard">Behavior tree blackboard.</param>
+		/// <returns>Root of the created behavior tree.</returns>
+		/// <remarks>
+		/// On first call, it deserializes serialized data and caches it for later usage.
+		/// </remarks>
 		[Pure]
 		public override TreeRoot CreateTree(Blackboard blackboard)
 		{
 			Profiler.BeginSample("SerializedBehaviorTree.CreateTree(Blackboard)");
 			Profiler.BeginSample(name);
 
-			BehaviorTreeDebug.Log($"Start creating a behavior tree {name}");
-
 			Deserialize();
+
+			BehaviorTreeDebug.Log($"Start creating a behavior tree {name}");
 
 			TreeRoot treeRoot = m_treeBuilder.Build(blackboard);
 
@@ -52,6 +75,12 @@ namespace Zor.BehaviorTree.Serialization
 			return treeRoot;
 		}
 
+		/// <summary>
+		/// Deserializes a whole tree.
+		/// </summary>
+		/// <remarks>
+		/// On first call, it deserializes serialized data and caches it for later usage.
+		/// </remarks>
 		private void Deserialize()
 		{
 			if (m_treeBuilder == null)
@@ -65,6 +94,16 @@ namespace Zor.BehaviorTree.Serialization
 			}
 		}
 
+		/// <summary>
+		/// Deserializes data at index <paramref name="index"/>.
+		/// </summary>
+		/// <param name="index">Data index.</param>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when there's no data at index <paramref name="index"/>.
+		/// </exception>
+		/// <remarks>
+		/// The method automatically deserializes children.
+		/// </remarks>
 		private void Deserialize(int index)
 		{
 #if DEBUG

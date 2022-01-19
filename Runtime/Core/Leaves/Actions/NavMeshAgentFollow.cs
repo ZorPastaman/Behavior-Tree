@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -8,6 +8,65 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Follows a <see cref="Transform"/>. It simply always sets a destination to the target.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Running"/> </term>
+	/// 		<description>all the time when the data is correct and a path to the target exists.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the agent can't follow the target.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of an agent of type <see cref="NavMeshAgent"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a target of type <see cref="Transform"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Recalculate tolerance; if the distance between the target and a current destination is more than this,
+	/// 		the path is recalculated.
+	/// 		</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Reach distance; if the distance between the target and the agent is less than this,
+	/// 		the agent is stopped.
+	/// 		</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name of a movement holder of type <see cref="uint"/>;
+	/// 		it must be the same in all behaviors controlling the same <see cref="NavMeshAgent"/>.
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
+	/// <remarks>
+	/// This <see cref="Action"/> automatically resets a path of the <see cref="NavMeshAgent"/> on its end
+	/// if it still controls the movement.
+	/// </remarks>
 	public sealed class NavMeshAgentFollow : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, float, float, BlackboardPropertyName>,
 		ISetupable<string, string, float, float, string>

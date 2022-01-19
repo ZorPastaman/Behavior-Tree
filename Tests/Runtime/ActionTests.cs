@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using System.Collections;
@@ -2642,7 +2642,7 @@ namespace Zor.BehaviorTree.Tests
 			var resultProperty = new BlackboardPropertyName("result");
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<InstantiateObjectInParentAndPosition, BlackboardPropertyName, BlackboardPropertyName,
+			treeBuilder.AddLeaf<InstantiateObjectInParentAndPose, BlackboardPropertyName, BlackboardPropertyName,
 				BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>(prefabProperty,
 				parentProperty, positionProperty, rotationProperty, resultProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
@@ -2704,7 +2704,7 @@ namespace Zor.BehaviorTree.Tests
 			var resultProperty = new BlackboardPropertyName("result");
 			var blackboard = new Blackboard();
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<InstantiateObjectInPosition, BlackboardPropertyName, BlackboardPropertyName,
+			treeBuilder.AddLeaf<InstantiateObjectInPose, BlackboardPropertyName, BlackboardPropertyName,
 				BlackboardPropertyName, BlackboardPropertyName>(prefabProperty, positionProperty, rotationProperty,
 				resultProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);

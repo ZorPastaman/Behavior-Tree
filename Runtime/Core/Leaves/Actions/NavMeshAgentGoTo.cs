@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -8,6 +8,64 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Goes to a destination of type <see cref="Vector3"/> using <see cref="NavMeshAgent.SetDestination"/>.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>when the agent's successfully reached the destination.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Running"/> </term>
+	/// 		<description>if the agent is going to the destination.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the agent can't go to the destination.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of an agent of type <see cref="NavMeshAgent"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a destination of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name of a movement holder of type <see cref="uint"/>;
+	/// 		it must be the same in all behaviors controlling the same <see cref="NavMeshAgent"/>.
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This <see cref="Action"/> automatically resets a path of the <see cref="NavMeshAgent"/> on its end
+	/// if it still controls the movement.
+	/// </para>
+	/// <para>
+	/// The agent's reach is determined by the expression
+	/// <see cref="NavMeshAgent.remainingDistance"/> &lt;= <see cref="NavMeshAgent.stoppingDistance"/>.
+	/// If it's true, the agent's reached its destination.
+	/// </para>
+	/// </remarks>
 	public sealed class NavMeshAgentGoTo : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>,
 		ISetupable<string, string, string>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -7,6 +7,17 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Gets <see cref="Cursor.visible"/> and sets it into the <see cref="Blackboard"/>.
+	/// </para>
+	/// <para>
+	/// Always returns <see cref="Status.Success"/> in its tick.
+	/// </para>
+	/// <para>
+	/// The property name for the result of type <see cref="bool"/> is set in the setup method.
+	/// </para>
+	/// </summary>
 	public sealed class GetCursorVisible : Action, ISetupable<BlackboardPropertyName>, ISetupable<string>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_visiblePropertyName;

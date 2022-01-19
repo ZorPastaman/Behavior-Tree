@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using System.Collections.Generic;
@@ -17,11 +17,45 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Builder
 {
+	/// <summary>
+	/// Behavior tree builder. The builder helps to create behavior trees in the easy way.
+	/// </summary>
+	/// <example>
+	/// <code>
+	/// var treeBuilder = new TreeBuilder();
+	/// treeBuilder.AddComposite&lt;Sequence&gt;()
+	///		.AddDecorator&lt;Inverter&gt;()
+	///			.AddLeaf&lt;CheckBox, string, string, string, LayerMask&gt;(centerPropertyName, halfExtentsPropertyName, orientationPropertyName, layerMask).Complete()
+	///		.Complete()
+	///		.AddLeaf&lt;DestroyObject, string&gt;(objectPropertyName).Complete()
+	/// .Complete();
+	/// TreeRoot treeRoot = treeBuilder.Build();
+	/// </code>
+	/// </example>
 	public sealed class TreeBuilder
 	{
+		/// <summary>
+		/// List of all behaviors added to the builder.
+		/// </summary>
 		private readonly List<BehaviorBuilder> m_behaviorBuilders = new List<BehaviorBuilder>();
+		/// <summary>
+		/// Path to the last added behavior consisting of indices.
+		/// </summary>
 		private readonly Stack<int> m_currentBuilderIndices = new Stack<int>();
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that doesn't have a setup method.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf>() where TLeaf : Leaf, INotSetupable, new()
 		{
@@ -36,6 +70,21 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that has a setup method with the argument of type <typeparamref name="TArg"/>.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <typeparam name="TArg">Argument in a setup method type.</typeparam>
+		/// <param name="arg">Argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg>(TArg arg) where TLeaf : Leaf, ISetupable<TArg>, new()
 		{
@@ -50,6 +99,24 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/> and
+		/// <typeparamref name="TArg1"/>.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1>, new()
@@ -65,6 +132,26 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/> and <typeparamref name="TArg2"/>.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2>(TArg0 arg0, TArg1 arg1, TArg2 arg2)
 			where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2>, new()
@@ -80,6 +167,28 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/> and <typeparamref name="TArg3"/>.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3)
@@ -96,6 +205,31 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/> and
+		/// <typeparamref name="TArg4"/>.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
@@ -113,6 +247,33 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/> and <typeparamref name="TArg5"/>.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
@@ -130,6 +291,35 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/>, <typeparamref name="TArg5"/> and <typeparamref name="TArg6"/>.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <param name="arg6">Seventh argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
@@ -147,6 +337,38 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Leaf"/> behavior of type <typeparamref name="TLeaf"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/>, <typeparamref name="TArg5"/>, <typeparamref name="TArg6"/> and
+		/// <typeparamref name="TArg7"/>.
+		/// </summary>
+		/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg7">Eighth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <param name="arg6">Seventh argument in a setup method.</param>
+		/// <param name="arg7">Eighth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after this method.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
@@ -164,6 +386,19 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that doesn't have a setup method.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator>() where TDecorator : Decorator, INotSetupable, new()
 		{
@@ -178,6 +413,21 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that has a setup method with the argument of type <typeparamref name="TArg"/>.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <typeparam name="TArg">Argument in a setup method type.</typeparam>
+		/// <param name="arg">Argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg>(TArg arg)
 			where TDecorator : Decorator, ISetupable<TArg>, new()
@@ -193,6 +443,24 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/> and
+		/// <typeparamref name="TArg1"/>.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1>, new()
@@ -208,6 +476,26 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/> and <typeparamref name="TArg2"/>.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2>(TArg0 arg0, TArg1 arg1, TArg2 arg2)
 			where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2>, new()
@@ -223,6 +511,28 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/> and <typeparamref name="TArg3"/>.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3)
@@ -239,6 +549,31 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/> and
+		/// <typeparamref name="TArg4"/>.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
@@ -256,6 +591,33 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/> and <typeparamref name="TArg5"/>.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
@@ -273,6 +635,35 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/>, <typeparamref name="TArg5"/> and <typeparamref name="TArg6"/>.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <param name="arg6">Seventh argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
@@ -290,6 +681,38 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Decorator"/> behavior of type <typeparamref name="TDecorator"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/>, <typeparamref name="TArg5"/>, <typeparamref name="TArg6"/> and
+		/// <typeparamref name="TArg7"/>.
+		/// </summary>
+		/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg7">Eighth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <param name="arg6">Seventh argument in a setup method.</param>
+		/// <param name="arg7">Eighth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added a child to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
@@ -307,6 +730,19 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that doesn't have a setup method.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite>() where TComposite : Composite, INotSetupable, new()
 		{
@@ -321,6 +757,21 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that has a setup method with the argument of type <typeparamref name="TArg"/>.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <typeparam name="TArg">Argument in a setup method type.</typeparam>
+		/// <param name="arg">Argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg>(TArg arg)
 			where TComposite : Composite, ISetupable<TArg>, new()
@@ -336,6 +787,24 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/> and
+		/// <typeparamref name="TArg1"/>.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1>(TArg0 arg0, TArg1 arg1)
 			where TComposite : Composite, ISetupable<TArg0, TArg1>, new()
@@ -351,6 +820,26 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/> and <typeparamref name="TArg2"/>.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2>(TArg0 arg0, TArg1 arg1, TArg2 arg2)
 			where TComposite : Composite, ISetupable<TArg0, TArg1, TArg2>, new()
@@ -366,6 +855,28 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/> and <typeparamref name="TArg3"/>.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3)
@@ -382,6 +893,31 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/> and
+		/// <typeparamref name="TArg4"/>.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
@@ -399,6 +935,33 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/> and <typeparamref name="TArg5"/>.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
@@ -416,6 +979,35 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/>, <typeparamref name="TArg5"/> and <typeparamref name="TArg6"/>.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <param name="arg6">Seventh argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
@@ -433,6 +1025,38 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Composite"/> behavior of type <typeparamref name="TComposite"/>
+		/// that has a setup method with the arguments of types <typeparamref name="TArg0"/>,
+		/// <typeparamref name="TArg1"/>, <typeparamref name="TArg2"/>, <typeparamref name="TArg3"/>,
+		/// <typeparamref name="TArg4"/>, <typeparamref name="TArg5"/>, <typeparamref name="TArg6"/> and
+		/// <typeparamref name="TArg7"/>.
+		/// </summary>
+		/// <typeparam name="TComposite"><see cref="Composite"/> type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg7">Eighth argument in a setup method type.</typeparam>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <param name="arg6">Seventh argument in a setup method.</param>
+		/// <param name="arg7">Eighth argument in a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddComposite<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 			TArg0 arg0, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6, TArg7 arg7)
@@ -450,6 +1074,22 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Behavior"/> of type <paramref name="nodeType"/> that doesn't have a setup method.
+		/// </summary>
+		/// <param name="nodeType"><see cref="Behavior"/> type.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown when <paramref name="nodeType"/> isn't a subclass of <see cref="Leaf"/>, <see cref="Decorator"/>
+		/// or <see cref="Composite"/>.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddBehavior([NotNull] Type nodeType)
 		{
@@ -486,6 +1126,24 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Adds a new <see cref="Behavior"/> of type <paramref name="nodeType"/> that has a setup method with
+		/// arguments of types of <paramref name="customData"/> elements.
+		/// </summary>
+		/// <param name="nodeType"><see cref="Behavior"/> type.</param>
+		/// <param name="customData">Arguments for a setup method.</param>
+		/// <returns>Itself.</returns>
+		/// <exception cref="ArgumentException">
+		/// Thrown when <paramref name="nodeType"/> isn't a subclass of <see cref="Leaf"/>, <see cref="Decorator"/>
+		/// or <see cref="Composite"/>.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
+		/// <remarks>
+		/// Call <see cref="Complete"/> after you have added all children to this behavior.
+		/// </remarks>
 		[NotNull]
 		public TreeBuilder AddBehavior([NotNull] Type nodeType, [NotNull, ItemCanBeNull] params object[] customData)
 		{
@@ -522,6 +1180,12 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Marks a current behavior complete and sets a pointer to its parent if it's not a root.
+		/// </summary>
+		/// <returns>Itself.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when called more than
+		/// <see cref="AddBehavior(System.Type)"/> or its variations.</exception>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull]
 		public TreeBuilder Complete()
 		{
@@ -544,6 +1208,9 @@ namespace Zor.BehaviorTree.Builder
 			return this;
 		}
 
+		/// <summary>
+		/// Clears all the tree.
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Clear()
 		{
@@ -551,6 +1218,16 @@ namespace Zor.BehaviorTree.Builder
 			m_currentBuilderIndices.Clear();
 		}
 
+		/// <summary>
+		/// Builds a new behavior tree based on the added behaviors and its connections.
+		/// </summary>
+		/// <returns><see cref="TreeRoot"/> of the built behavior tree.</returns>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when you try to build an incomplete behavior tree.
+		/// </exception>
+		/// <remarks>
+		/// This method creates a new <see cref="Blackboard"/> and sets it to the built behavior tree.
+		/// </remarks>
 		[NotNull, Pure]
 		public TreeRoot Build()
 		{
@@ -563,6 +1240,14 @@ namespace Zor.BehaviorTree.Builder
 			return treeRoot;
 		}
 
+		/// <summary>
+		/// Builds a new behavior tree based on the added behaviors and its connections.
+		/// </summary>
+		/// <param name="blackboard"><see cref="Blackboard"/> that is set to the built behavior tree.</param>
+		/// <returns><see cref="TreeRoot"/> of the built behavior tree.</returns>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when you try to build an incomplete behavior tree.
+		/// </exception>
 		[NotNull, Pure]
 		public TreeRoot Build([NotNull] Blackboard blackboard)
 		{
@@ -580,6 +1265,15 @@ namespace Zor.BehaviorTree.Builder
 			return treeRoot;
 		}
 
+		/// <summary>
+		/// Adds <paramref name="behaviorBuilder"/> as a child to the current behavior
+		/// or sets it as a root if it's first.
+		/// </summary>
+		/// <param name="behaviorBuilder">Added <see cref="BehaviorBuilder"/>.</param>
+		/// <exception cref="InvalidOperationException">Thrown when you try to add a second root behavior.</exception>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when tou try to add a child to a <see cref="Leaf"/>.
+		/// </exception>
 		private void AddBehaviorBuilder([NotNull] BehaviorBuilder behaviorBuilder)
 		{
 			int index = m_behaviorBuilders.Count;
@@ -600,10 +1294,10 @@ namespace Zor.BehaviorTree.Builder
 				switch (currentBuilder)
 				{
 					case CompositeBuilder compositeBuilder:
-						AddCompositeBuilder(compositeBuilder, index);
+						AddCompositeChild(compositeBuilder, index);
 						break;
 					case DecoratorBuilder decoratorBuilder:
-						AddDecoratorBuilder(decoratorBuilder, index);
+						AddDecoratorChild(decoratorBuilder, index);
 						break;
 					default:
 						throw new InvalidOperationException($"Failed to add a child to a {nameof(Leaf)}. Only {nameof(Composite)} and {nameof(Decorator)} support children.");
@@ -614,14 +1308,29 @@ namespace Zor.BehaviorTree.Builder
 			m_currentBuilderIndices.Push(index);
 		}
 
+		/// <summary>
+		/// Adds a child by its <paramref name="childIndex"/>
+		/// to a <see cref="Composite"/> of <paramref name="compositeBuilder"/>.
+		/// </summary>
+		/// <param name="compositeBuilder"><see cref="CompositeBuilder"/>.</param>
+		/// <param name="childIndex">Child index.</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static void AddCompositeBuilder([NotNull] CompositeBuilder compositeBuilder, int index)
+		private static void AddCompositeChild([NotNull] CompositeBuilder compositeBuilder, int childIndex)
 		{
-			compositeBuilder.AddChildIndex(index);
+			compositeBuilder.AddChildIndex(childIndex);
 		}
 
+		/// <summary>
+		/// Adds a child by its <paramref name="childIndex"/>
+		/// to a <see cref="Decorator"/> of <paramref name="decoratorBuilder"/>.
+		/// </summary>
+		/// <param name="decoratorBuilder"><see cref="DecoratorBuilder"/>.</param>
+		/// <param name="childIndex">Child index.</param>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when <paramref name="decoratorBuilder"/> already has a child.
+		/// </exception>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static void AddDecoratorBuilder([NotNull] DecoratorBuilder decoratorBuilder, int index)
+		private static void AddDecoratorChild([NotNull] DecoratorBuilder decoratorBuilder, int childIndex)
 		{
 #if DEBUG
 			if (decoratorBuilder.childIndex >= 0)
@@ -630,9 +1339,17 @@ namespace Zor.BehaviorTree.Builder
 			}
 #endif
 
-			decoratorBuilder.childIndex = index;
+			decoratorBuilder.childIndex = childIndex;
 		}
 
+		/// <summary>
+		/// Builds a <see cref="Behavior"/> at index <paramref name="index"/>.
+		/// </summary>
+		/// <param name="index">Index of the built <see cref="Behavior"/>.</param>
+		/// <returns>Built <see cref="Behavior"/>.</returns>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when there's no behavior at index <paramref name="index"/>.
+		/// </exception>
 		[NotNull, Pure]
 		private Behavior BuildBehavior(int index)
 		{
@@ -668,12 +1385,25 @@ namespace Zor.BehaviorTree.Builder
 			return result;
 		}
 
+		/// <summary>
+		/// Builds a <see cref="Leaf"/> with the <paramref name="leafBuilder"/>.
+		/// </summary>
+		/// <param name="leafBuilder">Used <see cref="LeafBuilder"/>.</param>
+		/// <returns>Built <see cref="Leaf"/>.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
 		private static Leaf BuildLeaf([NotNull] LeafBuilder leafBuilder)
 		{
 			return leafBuilder.Build();
 		}
 
+		/// <summary>
+		/// Builds a <see cref="Decorator"/> with the <paramref name="decoratorBuilder"/>.
+		/// </summary>
+		/// <param name="decoratorBuilder">Used <see cref="DecoratorBuilder"/>.</param>
+		/// <returns>Built <see cref="Decorator"/>.</returns>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when you try to build a <see cref="Decorator"/> without a child.
+		/// </exception>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
 		private Decorator BuildDecorator([NotNull] DecoratorBuilder decoratorBuilder)
 		{
@@ -688,6 +1418,14 @@ namespace Zor.BehaviorTree.Builder
 			return decoratorBuilder.Build(child);
 		}
 
+		/// <summary>
+		/// Builds a <see cref="Composite"/> with the <paramref name="compositeBuilder"/>.
+		/// </summary>
+		/// <param name="compositeBuilder">Used <see cref="CompositeBuilder"/>.</param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException">
+		/// Thrown when you try to build a <see cref="Composite"/> without children.
+		/// </exception>
 		[NotNull, Pure]
 		private Behavior BuildComposite([NotNull] CompositeBuilder compositeBuilder)
 		{
@@ -726,6 +1464,11 @@ namespace Zor.BehaviorTree.Builder
 
 		private void BehaviorToString([NotNull] StringBuilder stringBuilder, int index, int level)
 		{
+			if (index < 0 | index >= m_behaviorBuilders.Count)
+			{
+				return;
+			}
+
 			for (int i = 0; i < level; ++i)
 			{
 				stringBuilder.Append('\t');

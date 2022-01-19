@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using System.Runtime.CompilerServices;
@@ -8,13 +8,28 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core
 {
+	/// <summary>
+	/// Root of a behavior tree.
+	/// </summary>
 	public sealed class TreeRoot : IDisposable
 	{
+		/// <summary>
+		/// Necessary define if it's possible to access a <see cref="Blackboard"/>
+		/// of a behavior tree from different threads.
+		/// </summary>
 		public const string MultithreadingDefine = "BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING";
 
+		/// <summary>
+		/// <see cref="Blackboard"/> of the behavior tree.
+		/// </summary>
 		[NotNull] private readonly Blackboard m_blackboard;
+		/// <summary>
+		/// Root <see cref="Behavior"/>.
+		/// </summary>
 		[NotNull] private readonly Behavior m_rootBehavior;
 
+		/// <param name="blackboard"><see cref="Blackboard"/> of the behavior tree.</param>
+		/// <param name="rootBehavior">Root <see cref="Behavior"/>.</param>
 		public TreeRoot([NotNull] Blackboard blackboard, [NotNull] Behavior rootBehavior)
 		{
 			m_blackboard = blackboard;
@@ -22,6 +37,9 @@ namespace Zor.BehaviorTree.Core
 			m_rootBehavior.SetBlackboard(m_blackboard);
 		}
 
+		/// <summary>
+		/// <see cref="Blackboard"/> of the behavior tree.
+		/// </summary>
 		[NotNull]
 		public Blackboard blackboard
 		{
@@ -29,6 +47,12 @@ namespace Zor.BehaviorTree.Core
 			get => m_blackboard;
 		}
 
+		/// <summary>
+		/// Initializes the behavior tree.
+		/// </summary>
+		/// <remarks>
+		/// You must call it before a first tick.
+		/// </remarks>
 #if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -46,6 +70,13 @@ namespace Zor.BehaviorTree.Core
 			Profiler.EndSample();
 		}
 
+		/// <summary>
+		/// Ticks the behavior tree and returns its result.
+		/// </summary>
+		/// <returns>Result of the tick.</returns>
+		/// <remarks>
+		/// You must call <see cref="Initialize"/> before a first tick.
+		/// </remarks>
 #if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -67,6 +98,18 @@ namespace Zor.BehaviorTree.Core
 			return status;
 		}
 
+		/// <summary>
+		/// Aborts a behavior tree if it's in <see cref="Status.Running"/> state.
+		/// </summary>
+		/// <returns>
+		/// <para>
+		/// New state (<see cref="Status.Abort"/>) if the behavior tree was in <see cref="Status.Running"/> state
+		/// before the call.
+		/// </para>
+		/// <para>
+		/// Current state if the behavior tree wasn't in <see cref="Status.Running"/> state before the call.
+		/// </para>
+		/// </returns>
 #if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -88,6 +131,13 @@ namespace Zor.BehaviorTree.Core
 			return status;
 		}
 
+		/// <summary>
+		/// Disposes the behavior tree.
+		/// </summary>
+		/// <remarks>
+		/// <para>You must call it before it's destroyed.</para>
+		/// <para>The method automatically calls <see cref="Abort"/>.</para>
+		/// </remarks>
 #if !BEHAVIOR_TREE_BLACKBOARD_MULTITHREADING
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif

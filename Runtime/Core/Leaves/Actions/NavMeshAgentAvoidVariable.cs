@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -8,6 +8,80 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+		/// <summary>
+	/// <para>
+	/// Avoids a <see cref="Transform"/>. It simply moves a <see cref="NavMeshAgent"/> away from it.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>when the agent's successfully avoided the target.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Running"/> </term>
+	/// 		<description>if the agent is avoiding the target.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the agent can't avoid the target.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of an agent of type <see cref="NavMeshAgent"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of an avoided of type <see cref="Transform"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name of a minimal distance to avoided of type <see cref="float"/>;
+	/// 		if the distance between the agent and the avoided exceeds this value,
+	/// 		it means <see cref="Status.Success"/>;
+	/// 		also it's used in finding a target point.
+	/// 		</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name of a minimal dot between a distance point to the agent and
+	/// 		a distance point to the avoided of type <see cref="float"/>;
+	/// 		if the dot is less than this value, this <see cref="Action"/> recalculates a path.
+	/// 		The fifth argument in the setup method is an avoid distance of type <see cref="float"/>;
+	/// 		this determines how far a calculated destination should be from the avoided.
+	/// 		</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name of an avoid distance of type <see cref="float"/>;
+	/// 		this determines how far a calculated destination should be from the avoided.
+	/// 		</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name of a movement holder of type <see cref="uint"/>;
+	/// 		it must be the same in all behaviors controlling the same <see cref="NavMeshAgent"/>.
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
+	/// <remarks>
+	/// This <see cref="Action"/> automatically resets a path of the <see cref="NavMeshAgent"/> on its end
+	/// if it still controls the movement.
+	/// </remarks>
 	public sealed class NavMeshAgentAvoidVariable : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
 			BlackboardPropertyName, BlackboardPropertyName>,

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using Zor.BehaviorTree.DrawingAttributes;
@@ -6,6 +6,18 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Decorators
 {
+	/// <summary>
+	/// <para>
+	/// This <see cref="Decorator"/> ticks its child and returns its result.
+	/// </para>
+	/// <para>
+	/// This decorator returns <see cref="Status.Success"/> as <see cref="Status.Running"/> for variable times.
+	/// </para>
+	/// <para>
+	/// The property of how many times this <see cref="Decorator"/> returns <see cref="Status.Running"/> instead of
+	/// <see cref="Status.Success"/> is set in the setup method. The property type is <see cref="uint"/>.
+	/// </para>
+	/// </summary>
 	public sealed class RepeaterVariable : Decorator, ISetupable<BlackboardPropertyName>, ISetupable<string>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_repeatsPropertyName;

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using Zor.BehaviorTree.DrawingAttributes;
@@ -6,6 +6,33 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Decorators
 {
+	/// <summary>
+	/// <para>
+	/// This <see cref="Decorator"/> ticks its child and returns its result
+	/// but it allows to be in <see cref="Status.Running"/> state for a set duration.
+	/// </para>
+	/// <para>
+	/// If the elapsed frames since begin exceed the set duration,
+	/// this <see cref="Decorator"/> ticks with <see cref="Status.Failure"/> and aborts its child.
+	/// </para>
+	/// <para>
+	/// This <see cref="Decorator"/> uses a <see cref="Blackboard"/> property of type <see cref="int"/>
+	/// as a frame counter.
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a frame counter of type <see cref="int"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Duration of type <see cref="int"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class LimitOfFramesBlackboard : Decorator,
 		ISetupable<BlackboardPropertyName, int>, ISetupable<string, int>
 	{

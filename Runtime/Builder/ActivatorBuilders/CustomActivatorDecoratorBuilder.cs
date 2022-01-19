@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using System.Runtime.CompilerServices;
@@ -8,17 +8,32 @@ using Zor.BehaviorTree.Core.Decorators;
 
 namespace Zor.BehaviorTree.Builder.ActivatorBuilders
 {
+	/// <summary>
+	/// <see cref="Decorator"/> with a setup builder using <see cref="Type"/>.
+	/// </summary>
+	/// <seealso cref="ActivatorDecoratorBuilder"/>
 	internal sealed class CustomActivatorDecoratorBuilder : DecoratorBuilder
 	{
+		/// <summary>
+		/// <see cref="Decorator"/> built type.
+		/// </summary>
 		[NotNull] private readonly Type m_nodeType;
+		/// <summary>
+		/// Custom data used in a setup method.
+		/// </summary>
 		[NotNull] private readonly object[] m_customData;
 
+		/// <param name="nodeType"><see cref="Decorator"/> built type.</param>
+		/// <param name="customData">Custom data used in a setup method.</param>
 		public CustomActivatorDecoratorBuilder([NotNull] Type nodeType, [NotNull] object[] customData)
 		{
 			m_nodeType = nodeType;
 			m_customData = customData;
 		}
 
+		/// <summary>
+		/// <see cref="Decorator"/> built type.
+		/// </summary>
 		public override Type behaviorType
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]

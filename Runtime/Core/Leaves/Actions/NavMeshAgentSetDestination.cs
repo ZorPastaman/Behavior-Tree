@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -8,6 +8,56 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Sets a destination of type <see cref="Vector3"/> using <see cref="NavMeshAgent.SetDestination"/>.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if the destination is set.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the the destination is failed to set.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of an agent of type <see cref="NavMeshAgent"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a destination of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name of a movement holder of type <see cref="uint"/>;
+	/// 		it must be the same in all behaviors controlling the same <see cref="NavMeshAgent"/>.
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This <see cref="Action"/> doesn't automatically reset a path of the <see cref="NavMeshAgent"/> on its end.
+	/// It uses a movement holder only to increase it on begin
+	/// so that aborted movement behaviors don't cancel its movement.
+	/// </para>
+	/// </remarks>
 	public sealed class NavMeshAgentSetDestination : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>,
 		ISetupable<string, string, string>

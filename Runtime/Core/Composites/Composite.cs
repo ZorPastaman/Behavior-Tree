@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using JetBrains.Annotations;
@@ -7,10 +7,23 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Composites
 {
+	/// <summary>
+	/// Composite behavior. It has children behaviors.
+	/// </summary>
+	/// <remarks>
+	/// Inheritors must have a default constructor only.
+	/// They must use <see cref="ISetupable{TArg}"/> or other setup interfaces to get a constructor functionality.
+	/// </remarks>
 	public abstract class Composite : Behavior
 	{
+		/// <summary>
+		/// Children behaviors.
+		/// </summary>
 		protected Behavior[] children;
 
+		/// <summary>
+		/// Initializes itself and all the children.
+		/// </summary>
 		internal sealed override void Initialize()
 		{
 			base.Initialize();
@@ -21,6 +34,9 @@ namespace Zor.BehaviorTree.Core.Composites
 			}
 		}
 
+		/// <summary>
+		/// Disposes all the children and itself.
+		/// </summary>
 		internal sealed override void Dispose()
 		{
 			for (int i = 0, count = children.Length; i < count; ++i)
@@ -51,6 +67,12 @@ namespace Zor.BehaviorTree.Core.Composites
 			base.OnAbortInternal();
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite>([NotNull, ItemNotNull] Behavior[] children)
 			where TComposite : Composite, INotSetupable, new()
@@ -67,6 +89,14 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="arg">Setup method argument.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <typeparam name="TArg">Setup method argument type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite, TArg>([NotNull, ItemNotNull] Behavior[] children, TArg arg)
 			where TComposite : Composite, ISetupable<TArg>, new()
@@ -88,6 +118,16 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="arg0">First method argument.</param>
+		/// <param name="arg1">Second method argument.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <typeparam name="TArg0">Fist method argument type.</typeparam>
+		/// <typeparam name="TArg1">Second method argument type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite, TArg0, TArg1>([NotNull, ItemNotNull] Behavior[] children,
 			TArg0 arg0, TArg1 arg1)
@@ -110,6 +150,18 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite, TArg0, TArg1, TArg2>([NotNull, ItemNotNull] Behavior[] children,
 			TArg0 arg0, TArg1 arg1, TArg2 arg2)
@@ -132,6 +184,20 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite, TArg0, TArg1, TArg2, TArg3>(
 			[NotNull, ItemNotNull] Behavior[] children,
@@ -155,6 +221,22 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4>(
 			[NotNull, ItemNotNull] Behavior[] children,
@@ -178,6 +260,24 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>(
 			[NotNull, ItemNotNull] Behavior[] children,
@@ -201,6 +301,26 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <param name="arg6">Seventh argument in a setup method.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(
 			[NotNull, ItemNotNull] Behavior[] children,
@@ -224,6 +344,28 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior.
+		/// </summary>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="arg0">First argument in a setup method.</param>
+		/// <param name="arg1">Second argument in a setup method.</param>
+		/// <param name="arg2">Third argument in a setup method.</param>
+		/// <param name="arg3">Fourth argument in a setup method.</param>
+		/// <param name="arg4">Fifth argument in a setup method.</param>
+		/// <param name="arg5">Sixth argument in a setup method.</param>
+		/// <param name="arg6">Seventh argument in a setup method.</param>
+		/// <param name="arg7">Eighth argument in a setup method.</param>
+		/// <typeparam name="TComposite">Composite type.</typeparam>
+		/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+		/// <typeparam name="TArg7">Eighth argument in a setup method type.</typeparam>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static TComposite Create<TComposite, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(
 			[NotNull, ItemNotNull] Behavior[] children,
@@ -247,6 +389,12 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior without a setup method..
+		/// </summary>
+		/// <param name="compositeType">Composite type. Must be derived from <see cref="Composite"/>.</param>
+		/// <param name="children">Children behaviors.</param>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static Composite Create([NotNull] Type compositeType, [NotNull, ItemNotNull] Behavior[] children)
 		{
@@ -262,9 +410,16 @@ namespace Zor.BehaviorTree.Core.Composites
 			return composite;
 		}
 
+		/// <summary>
+		/// Creates a composite behavior with a setup method.
+		/// </summary>
+		/// <param name="compositeType">Composite type. Must be derived from <see cref="Composite"/>.</param>
+		/// <param name="children">Children behaviors.</param>
+		/// <param name="parameters">Setup method arguments.</param>
+		/// <returns>Created composite.</returns>
 		[NotNull, Pure]
 		public static Composite Create([NotNull] Type compositeType, [NotNull, ItemNotNull] Behavior[] children,
-			[NotNull] params object[] parameters)
+			[NotNull, ItemCanBeNull] params object[] parameters)
 		{
 			Profiler.BeginSample("Composite.Create");
 			Profiler.BeginSample(compositeType.FullName);
