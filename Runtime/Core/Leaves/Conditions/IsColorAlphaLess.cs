@@ -8,6 +8,43 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
+	/// <summary>
+	/// <para>
+	/// Checks if a <see cref="Color.a"/> is less than a specified value.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if the color alpha is less than the specified alpha.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the color alpha isn't less than the specified alpha.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a color of type <see cref="Color"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Alpha of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class IsColorAlphaLess : Condition,
 		ISetupable<BlackboardPropertyName, float>, ISetupable<string, float>
 	{

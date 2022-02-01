@@ -6,6 +6,25 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Removes a class value from the <see cref="Blackboard"/>.
+	/// </para>
+	/// <para>
+	/// This behavior always returns <see cref="Status.Success"/> in its tick.
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a class of type <typeparamref name="T"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
+	/// <typeparam name="T">Class type.</typeparam>
 	public sealed class RemoveClassValue<T> : Action, ISetupable<BlackboardPropertyName>, ISetupable<string>
 		where T : class
 	{

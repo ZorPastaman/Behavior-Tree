@@ -8,6 +8,46 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
+	/// <summary>
+	/// <para>
+	/// Checks if a dot between vectors is greater than a specified value.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if the dot is greater than the specified dot.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the dot isn't greater than the specified dot.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a first operand of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a second operand of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a dot of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class IsVector3DotGreaterVariable : Condition,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>, 
 		ISetupable<string, string, string>

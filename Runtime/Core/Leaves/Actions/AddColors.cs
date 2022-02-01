@@ -10,7 +10,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 	/// <summary>
 	/// <para>
 	/// Adds colors. This takes operands from its <see cref="Blackboard"/>
-	/// and set a result into its <see cref="Blackboard"/>.
+	/// and sets a result into its <see cref="Blackboard"/>.
 	/// </para>
 	/// <para>
 	/// <list type="bullet">

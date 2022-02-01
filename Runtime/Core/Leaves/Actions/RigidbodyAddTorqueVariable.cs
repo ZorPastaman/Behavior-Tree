@@ -7,6 +7,42 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Adds a torque to a <see cref="Rigidbody"/>.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if there's all the data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a rigidbody of type <see cref="Rigidbody"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a torque of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a force mode of type <see cref="ForceMode"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class RigidbodyAddTorqueVariable : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>,
 		ISetupable<string, string, string>

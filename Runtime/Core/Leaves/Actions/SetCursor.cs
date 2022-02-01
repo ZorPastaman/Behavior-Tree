@@ -6,6 +6,30 @@ using Zor.BehaviorTree.DrawingAttributes;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Sets a cursor using <see cref="Cursor.SetCursor"/>.
+	/// </para>
+	/// <para>
+	/// Always returns <see cref="Status.Success"/> in its tick.
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Texture of type <see cref="Texture2D"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Hotspot of type <see cref="Vector2"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Cursor mode of type <see cref="CursorMode"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class SetCursor : Action, ISetupable<Texture2D, Vector2, CursorMode>
 	{
 		[BehaviorInfo] private Texture2D m_texture;

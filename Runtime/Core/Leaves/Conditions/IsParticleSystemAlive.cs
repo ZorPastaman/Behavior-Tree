@@ -8,6 +8,43 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
+	/// <summary>
+	/// <para>
+	/// Checks if a <see cref="ParticleSystem"/> is alive.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if the <see cref="ParticleSystem"/> is alive.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the <see cref="ParticleSystem"/> isn't alive.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a particle system of type <see cref="ParticleSystem"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>WithChildren argument of type <see cref="bool"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class IsParticleSystemAlive : Condition,
 		ISetupable<BlackboardPropertyName, bool>, ISetupable<string, bool>
 	{

@@ -7,6 +7,44 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Stops a <see cref="ParticleSystem"/>.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if there's all the data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a particle system of type <see cref="ParticleSystem"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>WithChildren argument of type <see cref="bool"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name of a stop behavior of type <see cref="ParticleSystemStopBehavior"/>.
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class StopParticleSystem : Action,
 		ISetupable<BlackboardPropertyName, bool, ParticleSystemStopBehavior>,
 		ISetupable<string, bool, ParticleSystemStopBehavior>

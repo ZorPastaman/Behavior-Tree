@@ -8,6 +8,46 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
+	/// <summary>
+	/// <para>
+	/// Checks if a distance between a bounds and a point is less than a specified value.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if the distance is less than the specified value.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the distance isn't less than the specified value.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a bounds of type <see cref="Bounds"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a point of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Value of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class IsBoundsDistanceLess : Condition,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, float>,
 		ISetupable<string, string, float>
@@ -44,9 +84,9 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		{
 			bool hasValues = blackboard.TryGetStructValue(m_boundsPropertyName, out Bounds bounds) &
 				blackboard.TryGetStructValue(m_pointPropertyName, out Vector3 point);
-			bool isGreater = bounds.SqrDistance(point) < m_sqrDistance;
+			bool isless = bounds.SqrDistance(point) < m_sqrDistance;
 
-			return StateToStatusHelper.ConditionToStatus(isGreater, hasValues);
+			return StateToStatusHelper.ConditionToStatus(isless, hasValues);
 		}
 	}
 }

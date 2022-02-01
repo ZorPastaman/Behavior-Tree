@@ -9,6 +9,10 @@ using Zor.BehaviorTree.Core.Leaves;
 
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 {
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with no setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
 	public abstract class SerializedLeaf<TLeaf> : SerializedBehavior<TLeaf> where TLeaf : Leaf, INotSetupable, new()
 	{
 		public sealed override object[] serializedCustomData
@@ -23,6 +27,15 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+	/// <typeparam name="TArg">Argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedLeaf<TLeaf, TArg> : SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg>, new()
 	{
@@ -40,6 +53,16 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedLeaf<TLeaf, TArg0, TArg1> : SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1>, new()
 	{
@@ -58,6 +81,17 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedLeaf<TLeaf, TArg0, TArg1, TArg2> : SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2>, new()
 	{
@@ -77,6 +111,18 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3> : SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
 	{
@@ -97,6 +143,19 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4> : SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
 	{
@@ -118,6 +177,20 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5> : SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
 	{
@@ -141,6 +214,21 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> :
 		SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, new()
@@ -166,6 +254,22 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Leaves
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Leaf"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TLeaf"><see cref="Leaf"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg7">Eighth argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedLeaf<TLeaf, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> :
 		SerializedBehavior<TLeaf>
 		where TLeaf : Leaf, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, new()

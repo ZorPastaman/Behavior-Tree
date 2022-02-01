@@ -8,6 +8,43 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
+	/// <summary>
+	/// <para>
+	/// Checks if a <see cref="Quaternion.x"/> is greater than a specified value.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if the quaternion x is greater than the specified red.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the quaternion x isn't greater than the specified red.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a quaternion of type <see cref="Quaternion"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>X of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class IsQuaternionXGreater : Condition,
 		ISetupable<BlackboardPropertyName, float>, ISetupable<string, float>
 	{

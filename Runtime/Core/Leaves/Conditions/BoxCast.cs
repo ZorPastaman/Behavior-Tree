@@ -8,7 +8,58 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
-	public sealed class BoxCast : Condition, 
+	/// <summary>
+	/// <para>
+	/// Checks if a box cast has a hit.
+	/// This <see cref="Condition"/> uses
+	/// <see cref="Physics.BoxCast(Vector3, Vector3, Vector3, Quaternion, float, int)"/>.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if the hit exists.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the hit doesn't exist.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a center of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a half extents of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a direction of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of an orientation of type <see cref="Quaternion"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Max distance of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Layer mask of type <see cref="LayerMask"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
+	public sealed class BoxCast : Condition,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
 		float, LayerMask>,
 		ISetupable<string, string, string, string, float, LayerMask>

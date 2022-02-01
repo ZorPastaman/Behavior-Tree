@@ -7,6 +7,38 @@ using Zor.BehaviorTree.DrawingAttributes;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Waits for fixed duration returning <see cref="Status.Running"/> in its tick.
+	/// When the duration is expired, returns <see cref="Status.Success"/>.
+	/// This wait uses <see cref="Time.frameCount"/> as a frame counter.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>when the duration is expired.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Running"/> </term>
+	/// 		<description>when the duration isn't expired.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Duration in frames of type <see cref="int"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class WaitForFrames : Action, ISetupable<int>
 	{
 		[BehaviorInfo] private int m_duration;

@@ -7,6 +7,45 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Waits for fixed duration returning <see cref="Status.Running"/> in its tick.
+	/// When the duration is expired, returns <see cref="Status.Success"/>.
+	/// This wait uses a <see cref="Blackboard"/> property of type <see cref="float"/> as a time counter.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>when the duration is expired.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Running"/> </term>
+	/// 		<description>when the duration isn't expired.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a time counter of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a duration in seconds of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class WaitForSecondsVariableBlackboard : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName>, ISetupable<string, string>
 	{

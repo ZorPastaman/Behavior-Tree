@@ -8,6 +8,46 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Conditions
 {
+	/// <summary>
+	/// <para>
+	/// Checks if a <see cref="Collider"/> is raycast.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if the <see cref="Collider"/> is raycast.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Failure"/> </term>
+	/// 		<description>if the <see cref="Collider"/> isn't raycast.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a behavior of type <see cref="Collider"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of an origin of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a direction of type <see cref="Vector3"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class IsColliderRaycast : Condition,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>,
 		ISetupable<string, string, string>

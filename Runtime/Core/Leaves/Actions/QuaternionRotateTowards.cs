@@ -7,6 +7,50 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Rotates a from <see cref="Quaternion"/> to to <see cref="Quaternion"/>
+	/// and sets a result into the <see cref="Blackboard"/>.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if there's all the data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of a from of type <see cref="Quaternion"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name of a to of type <see cref="Quaternion"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Max degrees of type <see cref="float"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name for a result of type <see cref="Quaternion"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
+	/// <remarks>
+	/// The result is set into the <see cref="Blackboard"/> only if there's all the data and
+	/// this <see cref="Action"/> ticks with <see cref="Status.Success"/>.
+	/// </remarks>
 	public sealed class QuaternionRotateTowards : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName, float, BlackboardPropertyName>,
 		ISetupable<string, string, float, string>

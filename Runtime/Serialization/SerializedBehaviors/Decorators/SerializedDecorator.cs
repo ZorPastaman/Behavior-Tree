@@ -9,6 +9,10 @@ using Zor.BehaviorTree.Core.Decorators;
 
 namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 {
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with no setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
 	public abstract class SerializedDecorator<TDecorator> : SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, INotSetupable, new()
 	{
@@ -24,6 +28,15 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+	/// <typeparam name="TArg">Argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedDecorator<TDecorator, TArg> : SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg>, new()
 	{
@@ -41,6 +54,16 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedDecorator<TDecorator, TArg0, TArg1> : SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg0, TArg1>, new()
 	{
@@ -59,6 +82,17 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedDecorator<TDecorator, TArg0, TArg1, TArg2> : SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2>, new()
 	{
@@ -78,6 +112,18 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3> : SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3>, new()
 	{
@@ -98,6 +144,19 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4> :
 		SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4>, new()
@@ -121,6 +180,20 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5> :
 		SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5>, new()
@@ -145,6 +218,21 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> :
 		SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>, new()
@@ -170,6 +258,22 @@ namespace Zor.BehaviorTree.Serialization.SerializedBehaviors.Decorators
 		}
 	}
 
+	/// <summary>
+	/// Serialized <see cref="Decorator"/> with a setup method.
+	/// </summary>
+	/// <typeparam name="TDecorator"><see cref="Decorator"/> type.</typeparam>
+	/// <typeparam name="TArg0">First argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg1">Second argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg2">Third argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg3">Fourth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg4">Fifth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg5">Sixth argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg6">Seventh argument in a setup method type.</typeparam>
+	/// <typeparam name="TArg7">Eighth argument in a setup method type.</typeparam>
+	/// <remarks>
+	/// Use <see cref="Zor.BehaviorTree.DrawingAttributes.NameOverrideAttribute"/> to give the serialized arguments
+	/// custom names. The index in the attribute matches the index of the argument.
+	/// </remarks>
 	public abstract class SerializedDecorator<TDecorator, TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7> :
 		SerializedBehavior<TDecorator>
 		where TDecorator : Decorator, ISetupable<TArg0, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>, new()

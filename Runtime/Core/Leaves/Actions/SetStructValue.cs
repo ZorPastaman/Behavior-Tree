@@ -6,6 +6,40 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Sets a struct into the <see cref="Blackboard"/>.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if there's all the data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Struct value of type <typeparamref name="T"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>Property name for the struct.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
+	/// <typeparam name="T">Struct type.</typeparam>
 	public sealed class SetStructValue<T> : Action, ISetupable<T, BlackboardPropertyName>, ISetupable<T, string>
 		where T : struct
 	{

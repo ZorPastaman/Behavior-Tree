@@ -7,6 +7,41 @@ using Zor.SimpleBlackboard.Core;
 
 namespace Zor.BehaviorTree.Core.Leaves.Actions
 {
+	/// <summary>
+	/// <para>
+	/// Sets a trigger into an <see cref="Animator"/>.
+	/// </para>
+	/// <para>
+	/// <list type="bullet">
+	/// 	<listheader>
+	/// 		<term>Returns in its tick:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<term><see cref="Status.Success"/> </term>
+	/// 		<description>if there's all the data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<term><see cref="Status.Error"/> </term>
+	/// 		<description>if there's no data in the <see cref="Blackboard"/>.</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// <list type="number">
+	/// 	<listheader>
+	/// 		<term>Setup arguments:</term>
+	/// 	</listheader>
+	/// 	<item>
+	/// 		<description>Property name of an animator of type <see cref="Animator"/>.</description>
+	/// 	</item>
+	/// 	<item>
+	/// 		<description>
+	/// 		Property name or property id of type <see cref="string"/> or <see cref="int"/>.
+	/// 		</description>
+	/// 	</item>
+	/// </list>
+	/// </para>
+	/// </summary>
 	public sealed class SetAnimatorTriggerProperty : Action,
 		ISetupable<BlackboardPropertyName, int>, ISetupable<BlackboardPropertyName, string>,
 		ISetupable<string, int>, ISetupable<string, string>
