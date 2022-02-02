@@ -14,6 +14,9 @@ using Object = UnityEngine.Object;
 
 namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 {
+	/// <summary>
+	/// Serialized behavior tree graph view.
+	/// </summary>
 	public sealed class SerializedBehaviorTreeGraph : GraphView, IDisposable
 	{
 		[NotNull] private const string SerializedBehaviorDataPropertyName = "m_SerializedBehaviorData";

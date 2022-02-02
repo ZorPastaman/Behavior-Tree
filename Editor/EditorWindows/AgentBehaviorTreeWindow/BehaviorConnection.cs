@@ -2,6 +2,9 @@
 
 namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 {
+	/// <summary>
+	/// Connection between behavior tree nodes.
+	/// </summary>
 	public struct BehaviorConnection
 	{
 	}

@@ -12,6 +12,11 @@ namespace Zor.BehaviorTree.Helpers
 {
 	internal static class UIElementsHelper
 	{
+		/// <summary>
+		/// Creates a default (as an old inspector gui) gui of a <see cref="SerializedObject"/> on UI Elements.
+		/// </summary>
+		/// <param name="serializedObject">Object that requires a default gui.</param>
+		/// <param name="root"><see cref="VisualElement"/> that contains a default gui.</param>
 		public static void CreatePropertyElements([NotNull] SerializedObject serializedObject,
 			[NotNull] VisualElement root)
 		{

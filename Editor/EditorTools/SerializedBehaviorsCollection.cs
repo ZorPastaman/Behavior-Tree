@@ -9,9 +9,16 @@ using Zor.BehaviorTree.Serialization.SerializedBehaviors;
 
 namespace Zor.BehaviorTree.EditorTools
 {
+	/// <summary>
+	/// Collection of all the serialized behaviors of type <see cref="SerializedBehavior_Base"/>.
+	/// It's automatically filled.
+	/// </summary>
 	[InitializeOnLoad]
 	public static class SerializedBehaviorsCollection
 	{
+		/// <summary>
+		/// Dictionary of <see cref="Zor.BehaviorTree.Core.Behavior"/> to <see cref="SerializedBehavior_Base"/>.
+		/// </summary>
 		private static readonly Dictionary<Type, Type> s_serializedBehaviors;
 
 		static SerializedBehaviorsCollection()
@@ -39,18 +46,36 @@ namespace Zor.BehaviorTree.EditorTools
 			}
 		}
 
+		/// <summary>
+		/// Gets all <see cref="Zor.BehaviorTree.Core.Behavior"/> types.
+		/// </summary>
+		/// <returns><see cref="Zor.BehaviorTree.Core.Behavior"/> types.</returns>
 		[NotNull, Pure]
 		public static Type[] GetBehaviorTypes()
 		{
 			return s_serializedBehaviors.Keys.ToArray();
 		}
 
+		/// <summary>
+		/// Gets a serialized behavior type by a behavior type.
+		/// </summary>
+		/// <param name="behaviorType"><see cref="Zor.BehaviorTree.Core.Behavior"/> type.</param>
+		/// <param name="serializedBehaviorType"><see cref="SerializedBehavior_Base"/> type.</param>
+		/// <returns>
+		/// <see langword="true"/> if <paramref name="behaviorType"/> exists in the dictionary;
+		/// <see langword="false"/> otherwise.
+		/// </returns>
 		[Pure]
 		public static bool TryGetSerializedBehaviorType([NotNull] Type behaviorType, out Type serializedBehaviorType)
 		{
 			return s_serializedBehaviors.TryGetValue(behaviorType, out serializedBehaviorType);
 		}
 
+		/// <summary>
+		/// Get a behavior type out of a serialized behavior type.
+		/// </summary>
+		/// <param name="serializedBehaviorType">Serialized behavior type.</param>
+		/// <returns>Behavior type or <see langword="null"/> if the method can't extract a behavior.</returns>
 		[CanBeNull, Pure]
 		private static Type ExtractBehaviorType([NotNull] Type serializedBehaviorType)
 		{

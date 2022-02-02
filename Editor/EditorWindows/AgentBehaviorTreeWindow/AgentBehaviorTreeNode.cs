@@ -14,6 +14,9 @@ using Zor.BehaviorTree.Helpers;
 
 namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 {
+	/// <summary>
+	/// Runtime behavior tree node view.
+	/// </summary>
 	public sealed class AgentBehaviorTreeNode : Node
 	{
 		[NotNull] private readonly Behavior m_behavior;

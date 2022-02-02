@@ -18,6 +18,10 @@ using Action = Zor.BehaviorTree.Core.Leaves.Actions.Action;
 
 namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 {
+	/// <summary>
+	/// Search window provider for serialized behaviors.
+	/// This uses <see cref="SearchGroupAttribute"/> to place behaviors into correct folders.
+	/// </summary>
 	public sealed class SearchWindowProvider : ScriptableObject, ISearchWindowProvider
 	{
 		private static readonly Comparison<Type> s_behaviorTypeComparer = (left, right) =>

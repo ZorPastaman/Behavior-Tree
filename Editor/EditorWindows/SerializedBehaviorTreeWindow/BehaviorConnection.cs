@@ -2,6 +2,9 @@
 
 namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 {
+	/// <summary>
+	/// Connection between behavior tree nodes.
+	/// </summary>
 	public struct BehaviorConnection
 	{
 	}

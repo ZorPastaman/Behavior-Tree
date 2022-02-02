@@ -20,6 +20,15 @@ using Object = UnityEngine.Object;
 
 namespace Zor.BehaviorTree.EditorWindows
 {
+	/// <summary>
+	/// <para>
+	/// Behavior tree view window. It works for both serialized and runtime behavior trees.
+	/// </para>
+	/// <para>
+	/// The window uses <see cref="Selection.activeObject"/> to select a behavior tree. If the selected object has
+	/// multiple behavior trees, the window draws a selector.
+	/// </para>
+	/// </summary>
 	public sealed class BehaviorTreeWindow : EditorWindow
 	{
 		private const string TreeRootFieldName = "m_treeRoot";
@@ -43,10 +52,10 @@ namespace Zor.BehaviorTree.EditorWindows
 		private BehaviorTreeAgent[] m_selectedAgents;
 		private int m_selectedIndex;
 
-		[MenuItem("Window/Behavior Tree/Serialized Behavior Tree", priority = 2021)]
+		[MenuItem("Window/Behavior Tree/Behavior Tree Window", priority = 2021)]
 		private static void OpenWindow()
 		{
-			GetWindow<BehaviorTreeWindow>("Serialized Behavior Tree");
+			GetWindow<BehaviorTreeWindow>("Behavior Tree Window");
 		}
 
 		[OnOpenAsset(0)]

@@ -6,8 +6,16 @@ using JetBrains.Annotations;
 
 namespace Zor.BehaviorTree.Helpers
 {
+	/// <summary>
+	/// Helps to get a nice type name for ui.
+	/// </summary>
 	internal static class TypeHelper
 	{
+		/// <summary>
+		/// Transforms a type name. The method inserts spaces between words and adds generic argument types.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <returns>Transformed type name.</returns>
 		[NotNull]
 		public static string GetUIName([NotNull] Type type)
 		{

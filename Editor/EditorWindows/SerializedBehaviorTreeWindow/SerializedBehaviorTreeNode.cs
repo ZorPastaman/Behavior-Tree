@@ -12,6 +12,9 @@ using Zor.BehaviorTree.Serialization.SerializedBehaviors;
 
 namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 {
+	/// <summary>
+	/// Serialized behavior tree node view.
+	/// </summary>
 	public sealed class SerializedBehaviorTreeNode : Node
 	{
 		[NotNull] private readonly SerializedBehavior_Base m_dependedSerializedBehavior;

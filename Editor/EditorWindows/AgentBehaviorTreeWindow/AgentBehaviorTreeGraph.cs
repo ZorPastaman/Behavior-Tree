@@ -11,6 +11,9 @@ using Zor.BehaviorTree.Core;
 
 namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 {
+	/// <summary>
+	/// Runtime behavior tree graph view.
+	/// </summary>
 	public sealed class AgentBehaviorTreeGraph : GraphView, IDisposable
 	{
 		private const float DefaultSizeX = 150f;
@@ -25,6 +28,11 @@ namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 		[NotNull] public readonly TreeRoot treeRoot;
 		[NotNull] private readonly AgentBehaviorTreeNode[] m_nodes;
 
+		/// <summary>
+		/// Creates <see cref="AgentBehaviorTreeGraph"/>.
+		/// </summary>
+		/// <param name="behaviorInfos">Infos of all behaviors of <paramref name="treeRoot"/>.</param>
+		/// <param name="treeRoot">Tree root.</param>
 		public AgentBehaviorTreeGraph([NotNull] List<BehaviorInfo> behaviorInfos, [NotNull] TreeRoot treeRoot)
 		{
 			this.treeRoot = treeRoot;

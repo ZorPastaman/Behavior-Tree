@@ -7,6 +7,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.BehaviorTree.EditorWindows.SerializedBehaviorTreeWindow
 {
+	/// <summary>
+	/// UI root node. It's not a view of a <see cref="Behavior"/>. It's used to easily select a root node in ui.
+	/// </summary>
 	public sealed class RootNode : Node
 	{
 		private Edge m_outputEdge;

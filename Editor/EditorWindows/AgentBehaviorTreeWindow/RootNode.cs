@@ -4,9 +4,13 @@ using JetBrains.Annotations;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zor.BehaviorTree.Core;
 
 namespace Zor.BehaviorTree.EditorWindows.AgentBehaviorTreeWindow
 {
+	/// <summary>
+	/// UI root node. It's not a view of a <see cref="Behavior"/>. It's used to easily select a root node in ui.
+	/// </summary>
 	public sealed class RootNode : Node
 	{
 		public RootNode()

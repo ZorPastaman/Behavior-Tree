@@ -5,8 +5,16 @@ using JetBrains.Annotations;
 
 namespace Zor.BehaviorTree.Helpers
 {
+	/// <summary>
+	/// Edits field names.
+	/// </summary>
 	internal static class NameHelper
 	{
+		/// <summary>
+		/// Transforms a field name. The method removed _ or m_ at the start of the field name.
+		/// </summary>
+		/// <param name="fieldName">Field name.</param>
+		/// <returns>Transformed field name.</returns>
 		public static string GetNameForField([NotNull] string fieldName)
 		{
 			if (fieldName.StartsWith("m_"))
@@ -23,6 +31,11 @@ namespace Zor.BehaviorTree.Helpers
 			return GetNameWithSpaces(fieldName);
 		}
 
+		/// <summary>
+		/// Transforms a type name. The method inserts spaces before big letters except the first letter in the string.
+		/// </summary>
+		/// <param name="typeName">Type name.</param>
+		/// <returns>Transformed type name.</returns>
 		[NotNull]
 		public static string GetNameWithSpaces([NotNull] string typeName)
 		{
