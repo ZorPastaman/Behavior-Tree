@@ -1,8 +1,8 @@
 {
   "name": "com.zor.behavior-tree",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "displayName": "Behavior Tree",
-  "description": "Behavior Tree for Unity. WIP.",
+  "description": "Behavior Tree for Unity is an implementation of a classical behavior tree for Unity engine. Behavior trees allow you to easily set up a behavior switcher based on different conditions. Usually, it's used for game AI.",
   "unity": "2019.4",
   "keywords": [
     "ai",

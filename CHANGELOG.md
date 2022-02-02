@@ -7,4 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[unreleased]: https://github.com/ZorPastaman/Behavior-Tree
+## [1.0.0] - 2022-02-03
+
+### Added
+
+- Behavior tree core functionality.
+- Basic behaviors.
+- Unity components support.
+- Unity editor support.
+- Tests.
+
+[Unreleased]: https://github.com/ZorPastaman/Behavior-Tree/compare/v1.0.0..HEAD
+[1.0.0]: https://github.com/ZorPastaman/Behavior-Tree/releases/tag/v1.0.0
