@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -53,7 +53,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>.Setup(
-			BlackboardPropertyName transformPropertyName, BlackboardPropertyName targetPropertyName, 
+			BlackboardPropertyName transformPropertyName, BlackboardPropertyName targetPropertyName,
 			BlackboardPropertyName upPropertyName)
 		{
 			SetupInternal(transformPropertyName, targetPropertyName, upPropertyName);

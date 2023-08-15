@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -66,7 +66,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void SetupInternal(BlackboardPropertyName firstOperandPropertyName, 
+		private void SetupInternal(BlackboardPropertyName firstOperandPropertyName,
 			BlackboardPropertyName secondOperandPropertyName)
 		{
 			m_firstOperandPropertyName = firstOperandPropertyName;

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -63,7 +63,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, LayerMask>.
-			Setup(BlackboardPropertyName startPropertyName, BlackboardPropertyName endPropertyName, 
+			Setup(BlackboardPropertyName startPropertyName, BlackboardPropertyName endPropertyName,
 			BlackboardPropertyName radiusPropertyName, LayerMask layerMask)
 		{
 			SetupInternal(startPropertyName, endPropertyName, radiusPropertyName, layerMask);

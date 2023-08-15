@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -44,12 +44,12 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 	/// The result is set into the <see cref="Blackboard"/> only if there's all the data and
 	/// this <see cref="Action"/> ticks with <see cref="Status.Success"/>.
 	/// </remarks>
-	public sealed class GetColliderIsTrigger : Action, 
+	public sealed class GetColliderIsTrigger : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName>, ISetupable<string, string>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_colliderPropertyName;
 		[BehaviorInfo] private BlackboardPropertyName m_isTriggerPropertyName;
-		
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void ISetupable<BlackboardPropertyName, BlackboardPropertyName>.Setup(
 			BlackboardPropertyName colliderPropertyName, BlackboardPropertyName isTriggerPropertyName)
@@ -71,7 +71,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 			m_colliderPropertyName = colliderPropertyName;
 			m_isTriggerPropertyName = isTriggerPropertyName;
 		}
-		
+
 		protected override Status Execute()
 		{
 			if (blackboard.TryGetClassValue(m_colliderPropertyName, out Collider collider) & collider != null)

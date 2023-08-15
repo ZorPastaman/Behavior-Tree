@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System;
 using System.Collections;
@@ -121,7 +121,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void AddVector3Test()
 		{
@@ -286,7 +286,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void DivideVector2AndNumberTest()
 		{
@@ -352,7 +352,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void DivideVector3AndNumberTest()
 		{
@@ -858,7 +858,7 @@ namespace Zor.BehaviorTree.Tests
 					eulerProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Vector3>(eulerProperty));
 
@@ -867,10 +867,10 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(eulerProperty, out Vector3 euler));
 			Assert.AreEqual(quaternion.eulerAngles, euler);
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetQuaternionNormalizedTest()
 		{
@@ -884,7 +884,7 @@ namespace Zor.BehaviorTree.Tests
 					normalizedProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Quaternion>(normalizedProperty));
 
@@ -893,7 +893,7 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(normalizedProperty, out Quaternion normalized));
 			Assert.AreEqual(quaternion.normalized, normalized);
-			
+
 			treeRoot.Dispose();
 		}
 
@@ -1000,7 +1000,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetRaycastHitTest()
 		{
@@ -1160,7 +1160,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetRaycastHitPointTest()
 		{
@@ -1185,7 +1185,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetRaycastHitRigidbodyTest()
 		{
@@ -1223,7 +1223,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetRaycastHitTransformTest()
 		{
@@ -1274,7 +1274,7 @@ namespace Zor.BehaviorTree.Tests
 				positionProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var rigidbody = new GameObject().AddComponent<Rigidbody>();
@@ -1299,7 +1299,7 @@ namespace Zor.BehaviorTree.Tests
 				rotationProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var rigidbody = new GameObject().AddComponent<Rigidbody>();
@@ -1324,7 +1324,7 @@ namespace Zor.BehaviorTree.Tests
 				velocityProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var rigidbody = new GameObject().AddComponent<Rigidbody>();
@@ -1446,7 +1446,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetTransformPositionTest()
 		{
@@ -1477,7 +1477,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetTransformRightTest()
 		{
@@ -1508,7 +1508,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetTransformRotationTest()
 		{
@@ -1539,7 +1539,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetTransformUpTest()
 		{
@@ -1625,7 +1625,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetVector2NormalizedTest()
 		{
@@ -1700,7 +1700,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetVector3CoordinatesTest()
 		{
@@ -1711,7 +1711,7 @@ namespace Zor.BehaviorTree.Tests
 			var blackboard = new Blackboard();
 
 			var treeBuilder = new TreeBuilder();
-			treeBuilder.AddLeaf<GetVector3Coordinates, BlackboardPropertyName, BlackboardPropertyName, 
+			treeBuilder.AddLeaf<GetVector3Coordinates, BlackboardPropertyName, BlackboardPropertyName,
 				BlackboardPropertyName, BlackboardPropertyName>(vectorProperty, xProperty, yProperty, zProperty)
 				.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
@@ -1756,7 +1756,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetVector3NormalizedTest()
 		{
@@ -1831,7 +1831,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetVector3ZTest()
 		{
@@ -2095,14 +2095,14 @@ namespace Zor.BehaviorTree.Tests
 				.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(alphaProperty, out float alpha));
 			Assert.AreEqual(color.a, alpha);
-			
+
 			treeRoot.Dispose();
 		}
 
@@ -2145,14 +2145,14 @@ namespace Zor.BehaviorTree.Tests
 				.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(greenProperty, out float green));
 			Assert.AreEqual(color.g, green);
-			
+
 			treeRoot.Dispose();
 		}
 
@@ -2499,7 +2499,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetGameObjectTagTest()
 		{
@@ -2528,7 +2528,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void GetGameObjectTransformTest()
 		{
@@ -2831,7 +2831,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void LayerMaskOrTest()
 		{
@@ -2916,7 +2916,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void LayerMaskXorTest()
 		{
@@ -3256,7 +3256,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void MultiplyQuaternionAndPointTest()
 		{
@@ -3328,7 +3328,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void MultiplyVector2Test()
 		{
@@ -3364,7 +3364,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void MultiplyVector2AndNumberTest()
 		{
@@ -3455,7 +3455,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void MultiplyVector3AndNumberTest()
 		{
@@ -3560,7 +3560,7 @@ namespace Zor.BehaviorTree.Tests
 				BlackboardPropertyName>(leftProperty, rightProperty, angleProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
 
@@ -3579,7 +3579,7 @@ namespace Zor.BehaviorTree.Tests
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(angleProperty, out float angle));
 			Assert.AreEqual(Quaternion.Angle(left, right), angle);
-			
+
 			treeRoot.Dispose();
 		}
 
@@ -3618,7 +3618,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void QuaternionDotTest()
 		{
@@ -4310,7 +4310,7 @@ namespace Zor.BehaviorTree.Tests
 			var alphaProperty = new BlackboardPropertyName("alpha");
 			var resultProperty = new BlackboardPropertyName("result");
 			var blackboard = new Blackboard();
-			
+
 			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
 			const float alpha = 0.1f;
 
@@ -4320,10 +4320,10 @@ namespace Zor.BehaviorTree.Tests
 					colorProperty, alphaProperty, resultProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
@@ -4332,16 +4332,16 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(alphaProperty, alpha);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
 			color.a = alpha;
 			Assert.AreEqual(color, result);
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetColorBlueTest()
 		{
@@ -4377,7 +4377,7 @@ namespace Zor.BehaviorTree.Tests
 			var blueProperty = new BlackboardPropertyName("blue");
 			var resultProperty = new BlackboardPropertyName("result");
 			var blackboard = new Blackboard();
-			
+
 			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
 			const float blue = 0.1f;
 
@@ -4387,10 +4387,10 @@ namespace Zor.BehaviorTree.Tests
 					colorProperty, blueProperty, resultProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
@@ -4399,16 +4399,16 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(blueProperty, blue);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
 			color.b = blue;
 			Assert.AreEqual(color, result);
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetColorGreenTest()
 		{
@@ -4444,7 +4444,7 @@ namespace Zor.BehaviorTree.Tests
 			var greenProperty = new BlackboardPropertyName("green");
 			var resultProperty = new BlackboardPropertyName("result");
 			var blackboard = new Blackboard();
-			
+
 			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
 			const float green = 0.1f;
 
@@ -4454,10 +4454,10 @@ namespace Zor.BehaviorTree.Tests
 					colorProperty, greenProperty, resultProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
@@ -4466,16 +4466,16 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(greenProperty, green);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
 			color.g = green;
 			Assert.AreEqual(color, result);
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetColorRedTest()
 		{
@@ -4511,7 +4511,7 @@ namespace Zor.BehaviorTree.Tests
 			var redProperty = new BlackboardPropertyName("red");
 			var resultProperty = new BlackboardPropertyName("result");
 			var blackboard = new Blackboard();
-			
+
 			var color = new Color(0.3f, 0.4f, 0.5f, 0.9f);
 			const float red = 0.1f;
 
@@ -4521,10 +4521,10 @@ namespace Zor.BehaviorTree.Tests
 					colorProperty, redProperty, resultProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
@@ -4533,13 +4533,13 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(redProperty, red);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<Color>(resultProperty));
-			
+
 			blackboard.SetStructValue(colorProperty, color);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(resultProperty, out Color result));
 			color.r = red;
 			Assert.AreEqual(color, result);
-			
+
 			treeRoot.Dispose();
 		}
 
@@ -4794,7 +4794,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetGameObjectLayerTest()
 		{
@@ -4864,7 +4864,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetGameObjectTagTest()
 		{
@@ -5089,7 +5089,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetQuaternionXTest()
 		{
@@ -5151,7 +5151,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetQuaternionYTest()
 		{
@@ -5306,16 +5306,16 @@ namespace Zor.BehaviorTree.Tests
 				positionProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetClassValue<Transform>(transformProperty, null);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var position = new Vector3(30f, -50f, 70f);
 			blackboard.SetStructValue(positionProperty, position);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.RemoveObject<Transform>(transformProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
@@ -5323,10 +5323,10 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetClassValue(transformProperty, transform);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.AreEqual(position, transform.position);
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetTransformRotationTest()
 		{
@@ -5339,16 +5339,16 @@ namespace Zor.BehaviorTree.Tests
 				rotationProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetClassValue<Transform>(transformProperty, null);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			Quaternion rotation = Quaternion.Euler(30f, -50f, 70f);
 			blackboard.SetStructValue(rotationProperty, rotation);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.RemoveObject<Transform>(transformProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
@@ -5356,7 +5356,7 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetClassValue(transformProperty, transform);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.AreEqual(rotation, transform.rotation);
-			
+
 			treeRoot.Dispose();
 		}
 
@@ -5462,7 +5462,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetVector2YTest()
 		{
@@ -5527,7 +5527,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetVector3VariableTest()
 		{
@@ -5641,7 +5641,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SetVector3YTest()
 		{
@@ -5775,7 +5775,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SlerpQuaternionTest()
 		{
@@ -5930,7 +5930,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void SubtractVector3Test()
 		{
@@ -6004,7 +6004,7 @@ namespace Zor.BehaviorTree.Tests
 					fromProperty, toProperty, angleProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
 
@@ -6018,15 +6018,15 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.RemoveStruct<Vector2>(fromProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
-			
+
 			blackboard.SetStructValue(fromProperty, from);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(angleProperty, out float angle));
 			Assert.AreEqual(Vector2.Angle(from, to), angle);
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void Vector2DotTest()
 		{
@@ -6041,7 +6041,7 @@ namespace Zor.BehaviorTree.Tests
 					fromProperty, toProperty, dotProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
 
@@ -6055,15 +6055,15 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.RemoveStruct<Vector2>(fromProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
-			
+
 			blackboard.SetStructValue(fromProperty, from);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(dotProperty, out float dot));
 			Assert.AreEqual(Vector2.Dot(from, to), dot);
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void Vector3AngleTest()
 		{
@@ -6078,7 +6078,7 @@ namespace Zor.BehaviorTree.Tests
 					fromProperty, toProperty, angleProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
 
@@ -6092,15 +6092,15 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.RemoveStruct<Vector3>(fromProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(angleProperty));
-			
+
 			blackboard.SetStructValue(fromProperty, from);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(angleProperty, out float angle));
 			Assert.AreEqual(Vector3.Angle(from, to), angle);
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void Vector3DotTest()
 		{
@@ -6115,7 +6115,7 @@ namespace Zor.BehaviorTree.Tests
 					fromProperty, toProperty, dotProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
 
@@ -6129,12 +6129,12 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.RemoveStruct<Vector3>(fromProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 			Assert.IsFalse(blackboard.ContainsStructValue<float>(dotProperty));
-			
+
 			blackboard.SetStructValue(fromProperty, from);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.IsTrue(blackboard.TryGetStructValue(dotProperty, out float dot));
 			Assert.AreEqual(Vector3.Dot(from, to), dot);
-			
+
 			treeRoot.Dispose();
 		}
 

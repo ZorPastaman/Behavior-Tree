@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -49,7 +49,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 	/// </para>
 	/// </summary>
 	public sealed class IsVector3DotGreaterVariable : Condition,
-		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>, 
+		ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName>,
 		ISetupable<string, string, string>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_fromPropertyName;

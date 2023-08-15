@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.1] - 2023-08-15
+
+### Changed
+
+- Added icon.
+
 ## [1.0.0] - 2022-02-03
 
 ### Added
@@ -17,5 +23,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Unity editor support.
 - Tests.
 
-[Unreleased]: https://github.com/ZorPastaman/Behavior-Tree/compare/v1.0.0..HEAD
+[Unreleased]: https://github.com/ZorPastaman/Behavior-Tree/compare/v1.0.1..HEAD
+[1.0.1]: https://github.com/ZorPastaman/Behavior-Tree/releases/tag/v1.0.1
 [1.0.0]: https://github.com/ZorPastaman/Behavior-Tree/releases/tag/v1.0.0

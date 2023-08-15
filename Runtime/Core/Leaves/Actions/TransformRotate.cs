@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -40,14 +40,14 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 	/// </list>
 	/// </para>
 	/// </summary>
-	public sealed class TransformRotate : Action, 
+	public sealed class TransformRotate : Action,
 		ISetupable<BlackboardPropertyName, Vector3>, ISetupable<string, Vector3>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_transformPropertyName;
 		[BehaviorInfo] private Vector3 m_euler;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		void ISetupable<BlackboardPropertyName, Vector3>.Setup(BlackboardPropertyName transformPropertyName, 
+		void ISetupable<BlackboardPropertyName, Vector3>.Setup(BlackboardPropertyName transformPropertyName,
 			Vector3 euler)
 		{
 			SetupInternal(transformPropertyName, euler);
@@ -65,7 +65,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 			m_transformPropertyName = transformPropertyName;
 			m_euler = euler;
 		}
-		
+
 		protected override Status Execute()
 		{
 			if (blackboard.TryGetClassValue(m_transformPropertyName, out Transform transform) & transform != null)

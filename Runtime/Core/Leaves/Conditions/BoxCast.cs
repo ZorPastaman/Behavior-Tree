@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -70,10 +70,10 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		[BehaviorInfo] private BlackboardPropertyName m_orientationPropertyName;
 		[BehaviorInfo] private float m_maxDistance;
 		[BehaviorInfo] private LayerMask m_layerMask;
-		
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		void ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, 
-			float, LayerMask>.Setup(BlackboardPropertyName centerPropertyName, 
+		void ISetupable<BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName, BlackboardPropertyName,
+			float, LayerMask>.Setup(BlackboardPropertyName centerPropertyName,
 			BlackboardPropertyName halfExtentsPropertyName, BlackboardPropertyName directionPropertyName,
 			BlackboardPropertyName orientationPropertyName, float maxDistance, LayerMask layerMask)
 		{
@@ -82,7 +82,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Conditions
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		void ISetupable<string, string, string, string, float, LayerMask>.Setup(string centerPropertyName, 
+		void ISetupable<string, string, string, string, float, LayerMask>.Setup(string centerPropertyName,
 			string halfExtentsPropertyName, string directionPropertyName, string orientationPropertyName,
 			float maxDistance, LayerMask layerMask)
 		{

@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using NUnit.Framework;
 using UnityEngine;
@@ -1168,7 +1168,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsColorAlphaLessTest()
 		{
@@ -1223,7 +1223,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsColorBlueGreaterTest()
 		{
@@ -1278,7 +1278,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsColorBlueLessTest()
 		{
@@ -1333,7 +1333,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsColorGreenGreaterTest()
 		{
@@ -1388,7 +1388,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsColorGreenLessTest()
 		{
@@ -1443,7 +1443,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsColorRedGreaterTest()
 		{
@@ -1498,7 +1498,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsColorRedLessTest()
 		{
@@ -1647,7 +1647,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsLayerMaskEqualTest()
 		{
@@ -1804,7 +1804,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsQuaternionAngleLessTest()
 		{
@@ -1878,7 +1878,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsQuaternionDotGreaterTest()
 		{
@@ -1952,7 +1952,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsQuaternionDotLessTest()
 		{
@@ -2086,7 +2086,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsQuaternionWLessTest()
 		{
@@ -2519,7 +2519,7 @@ namespace Zor.BehaviorTree.Tests
 				.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var raycast = new RaycastHit { distance = 50f };
@@ -2529,10 +2529,10 @@ namespace Zor.BehaviorTree.Tests
 			raycast.distance = 10f;
 			blackboard.SetStructValue(raycastProperty, raycast);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsRaycastHitDistanceGreaterVariableTest()
 		{
@@ -2545,7 +2545,7 @@ namespace Zor.BehaviorTree.Tests
 					raycastProperty, distanceProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var raycast = new RaycastHit { distance = 50f };
@@ -2556,17 +2556,17 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(distanceProperty, distance);
 			blackboard.RemoveStruct<RaycastHit>(raycastProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(raycastProperty, raycast);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			raycast.distance = 10f;
 			blackboard.SetStructValue(raycastProperty, raycast);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsRaycastHitDistanceLessTest()
 		{
@@ -2579,7 +2579,7 @@ namespace Zor.BehaviorTree.Tests
 				.Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var raycast = new RaycastHit { distance = 50f };
@@ -2589,10 +2589,10 @@ namespace Zor.BehaviorTree.Tests
 			raycast.distance = 10f;
 			blackboard.SetStructValue(raycastProperty, raycast);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsRaycastHitDistanceLessVariableTest()
 		{
@@ -2605,7 +2605,7 @@ namespace Zor.BehaviorTree.Tests
 					raycastProperty, distanceProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var raycast = new RaycastHit { distance = 50f };
@@ -2616,14 +2616,14 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(distanceProperty, distance);
 			blackboard.RemoveStruct<RaycastHit>(raycastProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(raycastProperty, raycast);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			raycast.distance = 10f;
 			blackboard.SetStructValue(raycastProperty, raycast);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
 
@@ -2686,7 +2686,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsRigidbodyVelocityLessTest()
 		{
@@ -3003,7 +3003,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2AngleLessTest()
 		{
@@ -3084,7 +3084,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2DotGreaterTest()
 		{
@@ -3165,7 +3165,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2DotLessTest()
 		{
@@ -3272,7 +3272,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2MagnitudeGreaterVariableTest()
 		{
@@ -3295,7 +3295,7 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(magnitudeProperty, 40f);
 			blackboard.RemoveStruct<Vector2>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
@@ -3305,7 +3305,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2MagnitudeLessTest()
 		{
@@ -3331,7 +3331,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2MagnitudeLessVariableTest()
 		{
@@ -3354,7 +3354,7 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(magnitudeProperty, 50f);
 			blackboard.RemoveStruct<Vector2>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
@@ -3376,7 +3376,7 @@ namespace Zor.BehaviorTree.Tests
 			treeBuilder.AddLeaf<IsVector2XGreater, BlackboardPropertyName, float>(vectorProperty, x).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector2(100f, 200f);
@@ -3386,10 +3386,10 @@ namespace Zor.BehaviorTree.Tests
 			vector.x = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2XGreaterVariableTest()
 		{
@@ -3402,27 +3402,27 @@ namespace Zor.BehaviorTree.Tests
 				vectorProperty, xProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector2(100f, 200f);
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(xProperty, 50f);
 			blackboard.RemoveStruct<Vector2>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			vector.x = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2XLessTest()
 		{
@@ -3434,7 +3434,7 @@ namespace Zor.BehaviorTree.Tests
 			treeBuilder.AddLeaf<IsVector2XLess, BlackboardPropertyName, float>(vectorProperty, x).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector2(100f, 200f);
@@ -3444,10 +3444,10 @@ namespace Zor.BehaviorTree.Tests
 			vector.x = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2XLessVariableTest()
 		{
@@ -3460,27 +3460,27 @@ namespace Zor.BehaviorTree.Tests
 				vectorProperty, xProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector2(100f, 200f);
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(xProperty, 50f);
 			blackboard.RemoveStruct<Vector2>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			vector.x = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2YGreaterTest()
 		{
@@ -3492,7 +3492,7 @@ namespace Zor.BehaviorTree.Tests
 			treeBuilder.AddLeaf<IsVector2YGreater, BlackboardPropertyName, float>(vectorProperty, y).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector2(100f, 200f);
@@ -3502,10 +3502,10 @@ namespace Zor.BehaviorTree.Tests
 			vector.y = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2YGreaterVariableTest()
 		{
@@ -3518,27 +3518,27 @@ namespace Zor.BehaviorTree.Tests
 				vectorProperty, yProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector2(100f, 200f);
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(yProperty, 50f);
 			blackboard.RemoveStruct<Vector2>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			vector.y = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2YLessTest()
 		{
@@ -3550,7 +3550,7 @@ namespace Zor.BehaviorTree.Tests
 			treeBuilder.AddLeaf<IsVector2YLess, BlackboardPropertyName, float>(vectorProperty, y).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector2(100f, 200f);
@@ -3560,10 +3560,10 @@ namespace Zor.BehaviorTree.Tests
 			vector.y = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector2YLessVariableTest()
 		{
@@ -3576,27 +3576,27 @@ namespace Zor.BehaviorTree.Tests
 				vectorProperty, yProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector2(100f, 200f);
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(yProperty, 50f);
 			blackboard.RemoveStruct<Vector2>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			vector.y = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3AngleGreaterTest()
 		{
@@ -3677,7 +3677,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3AngleLessTest()
 		{
@@ -3758,7 +3758,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3DotGreaterTest()
 		{
@@ -3839,7 +3839,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3DotLessTest()
 		{
@@ -3946,7 +3946,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3MagnitudeGreaterVariableTest()
 		{
@@ -3969,7 +3969,7 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(magnitudeProperty, 40f);
 			blackboard.RemoveStruct<Vector3>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
@@ -3979,7 +3979,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3MagnitudeLessTest()
 		{
@@ -4005,7 +4005,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3MagnitudeLessVariableTest()
 		{
@@ -4028,7 +4028,7 @@ namespace Zor.BehaviorTree.Tests
 			blackboard.SetStructValue(magnitudeProperty, 50f);
 			blackboard.RemoveStruct<Vector3>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
@@ -4050,7 +4050,7 @@ namespace Zor.BehaviorTree.Tests
 			treeBuilder.AddLeaf<IsVector3XGreater, BlackboardPropertyName, float>(vectorProperty, x).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector3(100f, 200f);
@@ -4060,10 +4060,10 @@ namespace Zor.BehaviorTree.Tests
 			vector.x = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3XGreaterVariableTest()
 		{
@@ -4076,27 +4076,27 @@ namespace Zor.BehaviorTree.Tests
 				vectorProperty, xProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector3(100f, 200f);
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(xProperty, 50f);
 			blackboard.RemoveStruct<Vector3>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			vector.x = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3XLessTest()
 		{
@@ -4108,7 +4108,7 @@ namespace Zor.BehaviorTree.Tests
 			treeBuilder.AddLeaf<IsVector3XLess, BlackboardPropertyName, float>(vectorProperty, x).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector3(100f, 200f);
@@ -4118,10 +4118,10 @@ namespace Zor.BehaviorTree.Tests
 			vector.x = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3XLessVariableTest()
 		{
@@ -4134,27 +4134,27 @@ namespace Zor.BehaviorTree.Tests
 				vectorProperty, xProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector3(100f, 200f);
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(xProperty, 50f);
 			blackboard.RemoveStruct<Vector3>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			vector.x = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3YGreaterTest()
 		{
@@ -4166,7 +4166,7 @@ namespace Zor.BehaviorTree.Tests
 			treeBuilder.AddLeaf<IsVector3YGreater, BlackboardPropertyName, float>(vectorProperty, y).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector3(100f, 200f);
@@ -4176,10 +4176,10 @@ namespace Zor.BehaviorTree.Tests
 			vector.y = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3YGreaterVariableTest()
 		{
@@ -4192,27 +4192,27 @@ namespace Zor.BehaviorTree.Tests
 				vectorProperty, yProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector3(100f, 200f);
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(yProperty, 50f);
 			blackboard.RemoveStruct<Vector3>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 
 			vector.y = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3YLessTest()
 		{
@@ -4224,7 +4224,7 @@ namespace Zor.BehaviorTree.Tests
 			treeBuilder.AddLeaf<IsVector3YLess, BlackboardPropertyName, float>(vectorProperty, y).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector3(100f, 200f);
@@ -4234,10 +4234,10 @@ namespace Zor.BehaviorTree.Tests
 			vector.y = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsVector3YLessVariableTest()
 		{
@@ -4250,24 +4250,24 @@ namespace Zor.BehaviorTree.Tests
 				vectorProperty, yProperty).Complete();
 			TreeRoot treeRoot = treeBuilder.Build(blackboard);
 			treeRoot.Initialize();
-			
+
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
 
 			var vector = new Vector3(100f, 200f);
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(yProperty, 50f);
 			blackboard.RemoveStruct<Vector3>(vectorProperty);
 			Assert.AreEqual(Status.Error, treeRoot.Tick());
-			
+
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Failure, treeRoot.Tick());
 
 			vector.y = 0f;
 			blackboard.SetStructValue(vectorProperty, vector);
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 		}
 
@@ -4386,7 +4386,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void IsLayerMaskIntersectsTest()
 		{

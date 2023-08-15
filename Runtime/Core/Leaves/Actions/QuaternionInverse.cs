@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -44,7 +44,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 	/// The result is set into the <see cref="Blackboard"/> only if there's all the data and
 	/// this <see cref="Action"/> ticks with <see cref="Status.Success"/>.
 	/// </remarks>
-	public sealed class QuaternionInverse : Action, 
+	public sealed class QuaternionInverse : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName>, ISetupable<string, string>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_sourcePropertyName;

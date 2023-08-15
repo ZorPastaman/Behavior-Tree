@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Collections;
 using System.Reflection;
@@ -20,12 +20,12 @@ namespace Zor.BehaviorTree.Tests
 		{
 			const string rootFieldName = "m_rootBehavior";
 			const string childFieldName = "child";
-			
+
 			FieldInfo rootField = typeof(TreeRoot).GetField(rootFieldName,
 				BindingFlags.NonPublic | BindingFlags.Instance);
 			FieldInfo childField = typeof(Decorator).GetField(childFieldName,
 				BindingFlags.NonPublic | BindingFlags.Instance);
-			
+
 			var property = new BlackboardPropertyName("status");
 			var blackboard = new Blackboard();
 			var builder = new TreeBuilder();
@@ -1365,7 +1365,7 @@ namespace Zor.BehaviorTree.Tests
 
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
 			Assert.AreEqual(Status.Success, treeRoot.Tick());
-			
+
 			treeRoot.Dispose();
 
 			builder = new TreeBuilder();
@@ -1404,7 +1404,7 @@ namespace Zor.BehaviorTree.Tests
 
 			treeRoot.Dispose();
 		}
-		
+
 		[Test]
 		public static void WhileTest()
 		{

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -138,7 +138,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 			{
 				return StateToStatusHelper.ConditionToStatus(m_dataValid, Status.Error, Status.Failure);
 			}
-			
+
 			Vector3 agentPosition = m_agent.transform.position;
 			Vector3 followedPosition = m_followed.position;
 			Vector3 followedToAgent = agentPosition - followedPosition;

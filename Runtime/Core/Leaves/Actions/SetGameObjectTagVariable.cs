@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2022 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
+﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Behavior-Tree
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -40,7 +40,7 @@ namespace Zor.BehaviorTree.Core.Leaves.Actions
 	/// </list>
 	/// </para>
 	/// </summary>
-	public sealed class SetGameObjectTagVariable : Action, 
+	public sealed class SetGameObjectTagVariable : Action,
 		ISetupable<BlackboardPropertyName, BlackboardPropertyName>, ISetupable<string, string>
 	{
 		[BehaviorInfo] private BlackboardPropertyName m_gameObjectPropertyName;
