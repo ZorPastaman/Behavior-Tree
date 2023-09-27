@@ -33,13 +33,18 @@ namespace Zor.BehaviorTree.Components
 		private TreeRoot m_treeRoot;
 
 		/// <summary>
+		/// Cached <see cref="GameObject.name"/> to use in <see cref="Profiler.BeginSample(string)"/>.
+		/// </summary>
+		private string m_name;
+
+		/// <summary>
 		/// Calls <see cref="TreeRoot.Tick"/> of the internal behavior tree and returns its result.
 		/// </summary>
 		/// <returns>Result of the tick.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Status Tick()
 		{
-			Profiler.BeginSample(gameObject.name);
+			Profiler.BeginSample(m_name);
 
 			Status status = m_treeRoot.Tick();
 
@@ -62,7 +67,7 @@ namespace Zor.BehaviorTree.Components
 		[MethodImpl(MethodImplOptions.AggressiveInlining), ContextMenu("Abort")]
 		public Status Abort()
 		{
-			Profiler.BeginSample(gameObject.name);
+			Profiler.BeginSample(m_name);
 
 			Status status = m_treeRoot.Abort();
 
@@ -101,6 +106,8 @@ namespace Zor.BehaviorTree.Components
 
 			m_treeRoot = m_SerializedBehaviorTree.CreateTree(m_BlackboardContainer.blackboard);
 			m_treeRoot.Initialize();
+
+			m_name = gameObject.name;
 		}
 
 		private void OnDestroy()

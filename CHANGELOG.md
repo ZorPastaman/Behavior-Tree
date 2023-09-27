@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.2] - 2023-09-27
+
+### Fixed
+
+- BehaviorTreeAgent.Tick() and BehaviorTreeAgent.Abort() allocated each time if ENABLE_PROFILER was enabled.
+
 ## [1.0.1] - 2023-08-15
 
 ### Changed
@@ -23,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Unity editor support.
 - Tests.
 
-[Unreleased]: https://github.com/ZorPastaman/Behavior-Tree/compare/v1.0.1..HEAD
+[Unreleased]: https://github.com/ZorPastaman/Behavior-Tree/compare/v1.0.2..HEAD
+[1.0.2]: https://github.com/ZorPastaman/Behavior-Tree/releases/tag/v1.0.2
 [1.0.1]: https://github.com/ZorPastaman/Behavior-Tree/releases/tag/v1.0.1
 [1.0.0]: https://github.com/ZorPastaman/Behavior-Tree/releases/tag/v1.0.0
